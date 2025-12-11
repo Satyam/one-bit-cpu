@@ -1,0 +1,28 @@
+#!/usr/bin/env zx
+
+/*
+  Converts the opcodes.ods spreadsheet, exported in .csv, 
+  to a ROM image for the microcode ROM.
+  CSV file should be tab-separated fields with no quotes.
+*/
+const contents = await fs.readFile('./opcodes.csv', { encoding: 'utf8' });
+
+let instr = '';
+const microcode = ['v3.0 hex words plain'];
+contents.split('\n').forEach((line) => {
+  // The `num` column is hidden in the spreadsheet,
+  // but it tells us the actual data (not headings) is there.
+  const [num, opcode, extra, name, ...bits] = line.split('\t');
+
+  // instruction names in the spreadsheet are visually spread over several rows
+  // so I need to actually remember which one I am getting
+  instr = name || instr;
+
+  if (num) {
+    const code = parseInt(bits.join(''), 2).toString(16);
+    console.log(num, opcode, extra, instr, code, ...bits);
+    microcode.push(code);
+  }
+});
+
+await fs.writeFile('./microcode.rom', microcode.join('\n'));
