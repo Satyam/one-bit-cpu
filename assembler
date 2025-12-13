@@ -1,0 +1,171 @@
+#!/usr/bin/env zx
+
+const inFile = process.argv[3] || 'program';
+
+const keywords = {
+  and: {
+    bits: '000',
+    argLen: 5,
+  },
+  or: {
+    bits: '001',
+    argLen: 5,
+  },
+  load: {
+    bits: '010',
+    argLen: 5,
+  },
+  save: {
+    bits: '011',
+    argLen: 5,
+  },
+  not: {
+    bits: '10000000',
+  },
+  zero: {
+    bits: '10001000',
+  },
+  one: {
+    bits: '10001001',
+  },
+  ret: {
+    bits: '10010000',
+  },
+  out: {
+    bits: '10100000',
+  },
+  outinc: {
+    bits: '10101000',
+  },
+  outdec: {
+    bits: '10101001',
+  },
+  in: {
+    bits: '10110000',
+  },
+  ininc: {
+    bits: '10111000',
+  },
+  incdec: {
+    bits: '10111001',
+  },
+  infrom: {
+    bits: '11000',
+    argLen: 3,
+    extra: true,
+  },
+  outto: {
+    bits: '11001',
+    argLen: 3,
+    extra: true,
+  },
+  call: {
+    bits: '1100',
+    argLen: 4,
+    extra: true,
+  },
+  jt: {
+    bits: '1110',
+    argLen: 4,
+    extra: true,
+  },
+  jmp: {
+    bits: '1110',
+    argLen: 4,
+    extra: true,
+  },
+};
+
+const labels = {};
+let address = 0;
+const code = [];
+
+const rxComment = /^\s*#/;
+const rxAnySpaces = /\s+/;
+const rxLabel = /^[a-zA-Z]\w*$/;
+const rxBinary = /^0b([01]+)$/;
+const rxOctal = /^0o([0-7]+)$/;
+const rxHex = /^0x([0-9a-fA-F]+)$/;
+const rxDec = /^(\d+)$/;
+
+const asmFile = await fs.readFile(`${inFile}.asm`, 'utf8');
+const asm = asmFile.split('\n');
+
+for (let lineNum = 0; lineNum < asm.length; lineNum++) {
+  const line = asm[lineNum];
+
+  let argV = 0;
+
+  if (rxComment.test(line)) continue;
+  if (!line.trim()) continue;
+  try {
+    const [label, name, arg, comment] = line.toLowerCase().split(rxAnySpaces);
+    validateLine(label, name, arg, comment);
+    const instConfig = keywords[name];
+    if (instConfig.argLen) {
+      argV = readArg(arg, lineNum, instConfig);
+    }
+    generateCode(instConfig, argV);
+  } catch (err) {
+    console.error(chalk.red(`[${lineNum}]: ${err} in:\n      ${line}`));
+  }
+}
+
+function validateLine(label, name, arg, comment) {
+  if (comment && !rxComment.test(comment))
+    throw new Error(`Extraneous text at end of instruction "${comment}"`);
+  if (!name) throw new Error('Mising instruction');
+  const instConfig = keywords[name];
+  if (!instConfig) throw new Error(`Unkown instruction "${name}"`);
+  if (label) {
+    if (!rxLabel.test(label)) throw new Error(`Invalid label ${label}`);
+    if (labels[label]?.value)
+      throw new Error(`Duplicate definition of label ${label}`);
+  }
+  if (instConfig.argLen) {
+    if (!arg) throw new Error(`Missing argument for "${name}"`);
+  } else {
+    if (arg) throw new Error(`Unexpected argument "${arg}"`);
+  }
+}
+
+function readArg(arg, lineNum, instConfig) {
+  let m = rxDec.exec(arg);
+  if (m) return parseInt(m[1], 10);
+  m = rxHex.exec(arg);
+  if (m) return parseInt(m[1], 16);
+  m = rxOctal.exec(arg);
+  if (m) return parseInt(m[1], 8);
+  m = rxBinary.exec(arg);
+  if (m) return parseInt(m[1], 2);
+  if (rxLabel.test(arg)) {
+    const lblConfig = labels[arg];
+    if (lblConfig) {
+      if (lblConfig.value) return lblConfig.value;
+      else {
+        lblConfig.pending.push({ lineNum, address, instConfig });
+      }
+    } else {
+      labels[arg] = {
+        pending: [
+          {
+            lineNum,
+            address,
+            instConfig,
+          },
+        ],
+      };
+    }
+  }
+  throw new Error(`Invalid argument value ${arg}`);
+}
+
+function generateCode(config, argV) {
+  console.log(
+    address.toString(2),
+    config.bits.padEnd(8, '0'),
+    !!config.extra,
+    argV.toString(2)
+  );
+  address += config.extra ? 2 : 1;
+}
