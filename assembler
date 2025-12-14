@@ -1,6 +1,23 @@
 #!/usr/bin/env zx
 
-const inFile = argv._[0] || 'program';
+const fileName = argv._[0] || 'program';
+
+let inFile;
+let outFile;
+let hasError = false;
+
+if (path.extname(fileName)) {
+  inFile = fileName;
+  outFile = path.basename(fileName) + '.rom';
+} else {
+  inFile = fileName + '.asm';
+  outFile = fileName + '.rom';
+}
+
+if (argv.o) {
+  outFile = argv.o;
+  if (!path.extname) outFile = outFile + '.rom';
+}
 
 const keywords = {
   and: {
@@ -90,7 +107,7 @@ let rxNumbers = {
   10: /^(\d+)$/,
 };
 
-const asmFile = await fs.readFile(`${inFile}.asm`, 'utf8');
+const asmFile = await fs.readFile(inFile, 'utf8');
 const asm = asmFile.split('\n');
 
 for (let lineNum = 0; lineNum < asm.length; lineNum++) {
@@ -105,7 +122,7 @@ for (let lineNum = 0; lineNum < asm.length; lineNum++) {
     validateLine(label, name, arg, comment);
     if (label) {
       if (labels[label]) {
-        labels[label] = address;
+        labels[label].value = address;
       } else {
         labels[label] = { value: address };
       }
@@ -116,11 +133,22 @@ for (let lineNum = 0; lineNum < asm.length; lineNum++) {
     }
     generateCode(instConfig, argValue);
   } catch (err) {
-    console.error(chalk.red(`[${lineNum}]: ${err} in:\n      ${line}`));
+    console.error(chalk.red(`[${lineNum + 1}]: ${err} in:\n      ${line}`));
+    hasError = true;
   }
 }
-ROM.forEach((num) => console.log(num.toString(2).padStart(8, '0')));
-console.table(labels);
+patchPendingLabels();
+if (!hasError) {
+  fs.writeFile(
+    outFile,
+    'v3.0 hex words plain\n' +
+      ROM.map((num) => num.toString(16).padStart(2, '0')).join('\n')
+  );
+  console.log(`ROM image created in "${outFile}"`);
+}
+// console.log(asmFile);
+// ROM.forEach((num) => console.log(num.toString(2).padStart(8, '0')));
+// console.table(JSON.stringify(labels, null, 2));
 
 function validateLine(label, name, arg, comment) {
   if (comment && !rxComment.test(comment))
@@ -177,24 +205,45 @@ function readArg(arg, lineNum, instConfig) {
         ],
       };
     }
+    return 0;
   }
 
   throw new Error(`Invalid argument value ${arg}`);
 }
 
-function generateCode(config, argValue) {
+function generateCode(config, argValue, patchAddress) {
   let code = parseInt(config.bits, 2);
+  let addr = patchAddress ?? address;
   if (config.argLen) {
     code <<= config.argLen;
     code += config.extra ? argValue >>> 8 : argValue;
-    ROM.push(code);
-    address++;
+    ROM[addr] = code;
     if (config.extra) {
-      ROM.push(argValue % 256);
-      address++;
+      ROM[addr + 1] = argValue % 256;
     }
   } else {
-    ROM.push(code);
-    address++;
+    ROM[addr] = code;
+  }
+  if (typeof patchAddress == 'undefined') address += config.extra ? 2 : 1;
+}
+
+function patchPendingLabels() {
+  for (const [label, { pending, value }] of Object.entries(labels)) {
+    if (pending) {
+      pending.forEach(({ lineNum, address, instConfig }) => {
+        if (value) {
+          generateCode(instConfig, value, address);
+        } else {
+          console.error(
+            chalk.red(
+              `[${lineNum + 1}]: Label ${label} not defined in:\n      ${
+                asm[lineNum]
+              }`
+            )
+          );
+          hasError = true;
+        }
+      });
+    }
   }
 }
