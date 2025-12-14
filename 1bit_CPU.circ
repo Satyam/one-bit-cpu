@@ -329,7 +329,15 @@
       <a name="addrWidth" val="7"/>
       <a name="appearance" val="classic"/>
       <a name="contents">addr/data: 7 17
-0
+2040 0 2040 0 2040 0 2040 0
+2040 0 2040 0 2040 0 2040 0
+6040 0 6040 0 6040 0 6040 0
+6040 0 6040 0 6040 0 6040 0
+e040 0 e040 0 e040 0 e040 0
+e040 0 e040 0 e040 0 e040 0
+1040 0 1040 0 1040 0 1040 0
+1040 0 1040 0 1040 0 1040 0
+a040 0 0 0 1a040 0 16040
 </a>
       <a name="dataWidth" val="17"/>
       <a name="label" val="Microcode"/>
@@ -564,7 +572,7 @@
       <a name="addrWidth" val="12"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 12 8
-0
+89 60 21 61
 </a>
       <a name="label" val="ProgramROM"/>
       <a name="labelvisible" val="true"/>
