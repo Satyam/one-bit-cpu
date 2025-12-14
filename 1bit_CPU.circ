@@ -555,4 +555,30 @@
     <wire from="(980,350)" to="(1000,350)"/>
     <wire from="(990,1020)" to="(1010,1020)"/>
   </circuit>
+  <circuit name="CPU_and_ProgramRom">
+    <a name="appearance" val="logisim_evolution"/>
+    <a name="circuit" val="CPU_and_ProgramRom"/>
+    <a name="circuitnamedboxfixedsize" val="true"/>
+    <a name="simulationFrequency" val="1.0"/>
+    <comp lib="4" loc="(260,320)" name="ROM">
+      <a name="addrWidth" val="12"/>
+      <a name="appearance" val="logisim_evolution"/>
+      <a name="contents">addr/data: 12 8
+0
+</a>
+      <a name="label" val="ProgramROM"/>
+      <a name="labelvisible" val="true"/>
+    </comp>
+    <comp loc="(490,150)" name="One_Bit_CPU"/>
+    <wire from="(230,170)" to="(230,260)"/>
+    <wire from="(230,170)" to="(270,170)"/>
+    <wire from="(230,260)" to="(530,260)"/>
+    <wire from="(230,280)" to="(230,330)"/>
+    <wire from="(230,280)" to="(540,280)"/>
+    <wire from="(230,330)" to="(260,330)"/>
+    <wire from="(490,210)" to="(540,210)"/>
+    <wire from="(500,380)" to="(530,380)"/>
+    <wire from="(530,260)" to="(530,380)"/>
+    <wire from="(540,210)" to="(540,280)"/>
+  </circuit>
 </project>
