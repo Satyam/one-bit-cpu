@@ -1,6 +1,6 @@
 #!/usr/bin/env zx
 
-const inFile = process.argv[3] || 'program';
+const inFile = argv._[0] || 'program';
 
 const keywords = {
   and: {
@@ -78,15 +78,17 @@ const keywords = {
 
 const labels = {};
 let address = 0;
-const code = [];
+const ROM = [];
 
 const rxComment = /^\s*#/;
 const rxAnySpaces = /\s+/;
 const rxLabel = /^[a-zA-Z]\w*$/;
-const rxBinary = /^0b([01]+)$/;
-const rxOctal = /^0o([0-7]+)$/;
-const rxHex = /^0x([0-9a-fA-F]+)$/;
-const rxDec = /^(\d+)$/;
+let rxNumbers = {
+  2: /^0b([01]+)$/,
+  8: /^0o([0-7]+)$/,
+  16: /^0x([0-9a-fA-F]+)$/,
+  10: /^(\d+)$/,
+};
 
 const asmFile = await fs.readFile(`${inFile}.asm`, 'utf8');
 const asm = asmFile.split('\n');
@@ -94,22 +96,31 @@ const asm = asmFile.split('\n');
 for (let lineNum = 0; lineNum < asm.length; lineNum++) {
   const line = asm[lineNum];
 
-  let argV = 0;
+  let argValue = 0;
 
   if (rxComment.test(line)) continue;
   if (!line.trim()) continue;
   try {
     const [label, name, arg, comment] = line.toLowerCase().split(rxAnySpaces);
     validateLine(label, name, arg, comment);
+    if (label) {
+      if (labels[label]) {
+        labels[label] = address;
+      } else {
+        labels[label] = { value: address };
+      }
+    }
     const instConfig = keywords[name];
     if (instConfig.argLen) {
-      argV = readArg(arg, lineNum, instConfig);
+      argValue = readArg(arg, lineNum, instConfig);
     }
-    generateCode(instConfig, argV);
+    generateCode(instConfig, argValue);
   } catch (err) {
     console.error(chalk.red(`[${lineNum}]: ${err} in:\n      ${line}`));
   }
 }
+ROM.forEach((num) => console.log(num.toString(2).padStart(8, '0')));
+console.table(labels);
 
 function validateLine(label, name, arg, comment) {
   if (comment && !rxComment.test(comment))
@@ -130,14 +141,24 @@ function validateLine(label, name, arg, comment) {
 }
 
 function readArg(arg, lineNum, instConfig) {
-  let m = rxDec.exec(arg);
-  if (m) return parseInt(m[1], 10);
-  m = rxHex.exec(arg);
-  if (m) return parseInt(m[1], 16);
-  m = rxOctal.exec(arg);
-  if (m) return parseInt(m[1], 8);
-  m = rxBinary.exec(arg);
-  if (m) return parseInt(m[1], 2);
+  let value;
+  if (
+    Object.entries(rxNumbers).some(([base, rx]) => {
+      const m = rx.exec(arg);
+      if (m) {
+        value = parseInt(m[1], base);
+        return true;
+      }
+    })
+  ) {
+    const numBits = instConfig.argLen + (instConfig.extra ? 8 : 0);
+    if (value >= 1 << numBits) {
+      throw new Error(
+        `Numeric argument "${arg}" (${value}) larger than ${(1 << numBits) - 1}`
+      );
+    }
+    return value;
+  }
   if (rxLabel.test(arg)) {
     const lblConfig = labels[arg];
     if (lblConfig) {
@@ -157,15 +178,23 @@ function readArg(arg, lineNum, instConfig) {
       };
     }
   }
+
   throw new Error(`Invalid argument value ${arg}`);
 }
 
-function generateCode(config, argV) {
-  console.log(
-    address.toString(2),
-    config.bits.padEnd(8, '0'),
-    !!config.extra,
-    argV.toString(2)
-  );
-  address += config.extra ? 2 : 1;
+function generateCode(config, argValue) {
+  let code = parseInt(config.bits, 2);
+  if (config.argLen) {
+    code <<= config.argLen;
+    code += config.extra ? argValue >>> 8 : argValue;
+    ROM.push(code);
+    address++;
+    if (config.extra) {
+      ROM.push(argValue % 256);
+      address++;
+    }
+  } else {
+    ROM.push(code);
+    address++;
+  }
 }
