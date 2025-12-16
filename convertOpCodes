@@ -19,7 +19,7 @@ contents.split('\n').forEach((line) => {
   instr = name || instr;
 
   if (num) {
-    const code = parseInt(bits.join(''), 2).toString(16);
+    const code = parseInt(bits.toReversed().join(''), 2).toString(16);
     console.log(num, opcode, extra, instr, code, ...bits);
     microcode.push(code);
   }
