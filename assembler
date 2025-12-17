@@ -43,7 +43,7 @@ const keywords = {
     bits: '10001000',
   },
   one: {
-    bits: '10001001',
+    bits: '10001100',
   },
   ret: {
     bits: '10010000',
@@ -55,7 +55,7 @@ const keywords = {
     bits: '10101000',
   },
   outdec: {
-    bits: '10101001',
+    bits: '10101100',
   },
   in: {
     bits: '10110000',
@@ -64,7 +64,7 @@ const keywords = {
     bits: '10111000',
   },
   incdec: {
-    bits: '10111001',
+    bits: '10111100',
   },
   infrom: {
     bits: '11000',

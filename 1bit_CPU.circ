@@ -596,7 +596,7 @@ a 0 0 0 b 0 d
       <a name="addrWidth" val="12"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 12 8
-89 60 21 61
+8c 60 21 61
 </a>
       <a name="label" val="ProgramROM"/>
       <a name="labelvisible" val="true"/>
