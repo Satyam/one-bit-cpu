@@ -271,7 +271,7 @@
       <a name="incoming" val="7"/>
     </comp>
     <comp lib="0" loc="(960,390)" name="Tunnel">
-      <a name="label" val="Clk1"/>
+      <a name="label" val="Clk2"/>
     </comp>
     <comp lib="0" loc="(970,1010)" name="Splitter">
       <a name="appear" val="right"/>
