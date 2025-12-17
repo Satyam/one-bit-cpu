@@ -300,6 +300,7 @@
       <a name="fanout" val="1"/>
       <a name="incoming" val="8"/>
     </comp>
+    <comp lib="1" loc="(1150,1040)" name="NOT Gate"/>
     <comp lib="1" loc="(350,220)" name="NOT Gate"/>
     <comp lib="1" loc="(750,230)" name="AND Gate"/>
     <comp lib="1" loc="(750,300)" name="OR Gate"/>
@@ -344,15 +345,15 @@
       <a name="addrWidth" val="7"/>
       <a name="appearance" val="classic"/>
       <a name="contents">addr/data: 7 17
-408 0 408 0 408 0 408 0
-408 0 408 0 408 0 408 0
-40c 0 40c 0 40c 0 40c 0
-40c 0 40c 0 40c 0 40c 0
-40e 0 40e 0 40e 0 40e 0
-40e 0 40e 0 40e 0 40e 0
-410 0 410 0 410 0 410 0
-410 0 410 0 410 0 410 0
-40a 0 0 0 40b 0 40d
+8 0 8 0 8 0 8 0
+8 0 8 0 8 0 8 0
+c 0 c 0 c 0 c 0
+c 0 c 0 c 0 c 0
+e 0 e 0 e 0 e 0
+e 0 e 0 e 0 e 0
+10 0 10 0 10 0 10 0
+10 0 10 0 10 0 10 0
+a 0 0 0 b 0 d
 </a>
       <a name="dataWidth" val="17"/>
       <a name="label" val="Microcode"/>
@@ -405,7 +406,7 @@
     <wire from="(1080,1100)" to="(1190,1100)"/>
     <wire from="(1080,680)" to="(1190,680)"/>
     <wire from="(1100,100)" to="(1140,100)"/>
-    <wire from="(1100,1040)" to="(1190,1040)"/>
+    <wire from="(1100,1040)" to="(1120,1040)"/>
     <wire from="(1100,140)" to="(1100,520)"/>
     <wire from="(1100,140)" to="(1140,140)"/>
     <wire from="(1100,580)" to="(1100,1040)"/>
@@ -416,6 +417,7 @@
     <wire from="(1140,1010)" to="(1190,1010)"/>
     <wire from="(1140,950)" to="(1140,1010)"/>
     <wire from="(1140,950)" to="(1210,950)"/>
+    <wire from="(1150,1040)" to="(1190,1040)"/>
     <wire from="(1160,1070)" to="(1190,1070)"/>
     <wire from="(1180,1060)" to="(1190,1060)"/>
     <wire from="(1210,660)" to="(1230,660)"/>
