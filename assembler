@@ -21,157 +21,202 @@ if (argv.o) {
 
 const keywords = {
   and: {
-    bits: '000',
+    bitCode: '000',
     argLen: 5,
   },
   or: {
-    bits: '001',
+    bitCode: '001',
     argLen: 5,
   },
   load: {
-    bits: '010',
+    bitCode: '010',
     argLen: 5,
   },
   save: {
-    bits: '011',
+    bitCode: '011',
     argLen: 5,
   },
   not: {
-    bits: '10000000',
+    bitCode: '10000000',
   },
   zero: {
-    bits: '10001000',
+    bitCode: '10001000',
   },
   one: {
-    bits: '10001100',
+    bitCode: '10001100',
   },
   ret: {
-    bits: '10010000',
+    bitCode: '10010000',
   },
   out: {
-    bits: '10100000',
+    bitCode: '10100000',
   },
   outinc: {
-    bits: '10101000',
+    bitCode: '10101000',
   },
   outdec: {
-    bits: '10101100',
+    bitCode: '10101100',
   },
   in: {
-    bits: '10110000',
+    bitCode: '10110000',
   },
   ininc: {
-    bits: '10111000',
+    bitCode: '10111000',
   },
   incdec: {
-    bits: '10111100',
+    bitCode: '10111100',
   },
   infrom: {
-    bits: '11000',
+    bitCode: '11000',
     argLen: 3,
     extra: true,
   },
   outto: {
-    bits: '11001',
+    bitCode: '11001',
     argLen: 3,
     extra: true,
   },
   call: {
-    bits: '1100',
+    bitCode: '1100',
     argLen: 4,
     extra: true,
   },
   jt: {
-    bits: '1110',
+    bitCode: '1110',
     argLen: 4,
     extra: true,
   },
   jmp: {
-    bits: '1110',
+    bitCode: '1110',
     argLen: 4,
     extra: true,
   },
 };
 
-const labels = {};
-let address = 0;
-const ROM = [];
+// address values for the labels will be collected here
+const labelValues = {};
 
+// output ROM image
+const romImage = ['v3.0 hex words plain'];
+
+// Various regular expressions, mostly for validation
 const rxComment = /^\s*#/;
 const rxAnySpaces = /\s+/;
 const rxLabel = /^[a-zA-Z]\w*$/;
-let rxNumbers = {
+
+// used to detect base used for number constants
+const rxNumerBases = {
   2: /^0b([01]+)$/,
   8: /^0o([0-7]+)$/,
   16: /^0x([0-9a-fA-F]+)$/,
   10: /^(\d+)$/,
 };
 
+// read the assemblre code
 const asmFile = await fs.readFile(inFile, 'utf8');
 const asm = asmFile.split('\n');
 
+// First pass,
+// * validate lines
+// * collect addresses associated with labels
+let address = 0;
 for (let lineNum = 0; lineNum < asm.length; lineNum++) {
   const line = asm[lineNum];
 
-  let argValue = 0;
-
+  // Skip comments or empty lines
   if (rxComment.test(line)) continue;
   if (!line.trim()) continue;
+
   try {
+    // parse line
     const [label, name, arg, comment] = line.toLowerCase().split(rxAnySpaces);
+    // validate
     validateLine(label, name, arg, comment);
-    if (label) {
-      if (labels[label]) {
-        labels[label].value = address;
-      } else {
-        labels[label] = { value: address };
-      }
-    }
-    const instConfig = keywords[name];
-    if (instConfig.argLen) {
-      argValue = readArg(arg, lineNum, instConfig);
-    }
-    generateCode(instConfig, argValue);
+    // if it has a label store the instruction address
+    if (label) labelValues[label] = address;
+    // update the address
+    address += keywords[name].extra ? 2 : 1;
   } catch (err) {
     console.error(chalk.red(`[${lineNum + 1}]: ${err} in:\n      ${line}`));
     hasError = true;
   }
 }
-patchPendingLabels();
+
+// Second pass
+// * generate code
+for (let lineNum = 0; lineNum < asm.length; lineNum++) {
+  const line = asm[lineNum];
+
+  // skip comments and empty lines
+  if (rxComment.test(line)) continue;
+  if (!line.trim()) continue;
+
+  try {
+    // _label is not used in this step but it has to have a placeholder
+    const [_label, name, arg] = line.toLowerCase().split(rxAnySpaces);
+
+    const config = keywords[name];
+
+    // Convert the argument into a numeric value
+    const argValue = readArg(arg, config);
+
+    // get the actual bitcode
+    let code = parseInt(config.bitCode, 2);
+
+    // merge argument or part of it if it is a two byte instruction
+    if (config.argLen) {
+      code <<= config.argLen;
+      code += config.extra ? argValue >>> 8 : argValue;
+    }
+
+    romImage.push(
+      `${toHex(code)} ${config.extra ? toHex(argValue % 256) : ''} # [${
+        lineNum + 1
+      }]: ${line}`
+    );
+  } catch (err) {
+    console.error(chalk.red(`[${lineNum + 1}]: ${err} in:\n      ${line}`));
+    hasError = true;
+  }
+}
+
 if (!hasError) {
-  fs.writeFile(
-    outFile,
-    'v3.0 hex words plain\n' +
-      ROM.map((num) => num.toString(16).padStart(2, '0')).join('\n')
-  );
+  fs.writeFile(outFile, romImage.join('\n'));
   console.log(`ROM image created in "${outFile}"`);
 }
-// console.log(asmFile);
-// ROM.forEach((num) => console.log(num.toString(2).padStart(8, '0')));
-// console.table(JSON.stringify(labels, null, 2));
 
+function toHex(num) {
+  return num.toString(16).padStart(2, '0');
+}
+
+// validation
+// the error messages explain what it is checking
 function validateLine(label, name, arg, comment) {
   if (comment && !rxComment.test(comment))
     throw new Error(`Extraneous text at end of instruction "${comment}"`);
   if (!name) throw new Error('Mising instruction');
-  const instConfig = keywords[name];
-  if (!instConfig) throw new Error(`Unkown instruction "${name}"`);
+  const config = keywords[name];
+  if (!config) throw new Error(`Unknown instruction "${name}"`);
   if (label) {
     if (!rxLabel.test(label)) throw new Error(`Invalid label ${label}`);
-    if (labels[label]?.value)
+    if (labelValues[label])
       throw new Error(`Duplicate definition of label ${label}`);
   }
-  if (instConfig.argLen) {
+  if (config.argLen) {
     if (!arg) throw new Error(`Missing argument for "${name}"`);
   } else {
     if (arg) throw new Error(`Unexpected argument "${arg}"`);
   }
 }
 
-function readArg(arg, lineNum, instConfig) {
+function readArg(arg, config) {
+  if (!config.argLen) return 0;
   let value;
+
+  // loop over the regular expressions to check for number base prefixes
+  // and parse it accordingly if match
   if (
-    Object.entries(rxNumbers).some(([base, rx]) => {
+    Object.entries(rxNumerBases).some(([base, rx]) => {
       const m = rx.exec(arg);
       if (m) {
         value = parseInt(m[1], base);
@@ -179,7 +224,8 @@ function readArg(arg, lineNum, instConfig) {
       }
     })
   ) {
-    const numBits = instConfig.argLen + (instConfig.extra ? 8 : 0);
+    // a match was found, now check for valid argument range
+    const numBits = config.argLen + (config.extra ? 8 : 0);
     if (value >= 1 << numBits) {
       throw new Error(
         `Numeric argument "${arg}" (${value}) larger than ${(1 << numBits) - 1}`
@@ -187,63 +233,13 @@ function readArg(arg, lineNum, instConfig) {
     }
     return value;
   }
+
+  // It was not a number, perhaps it is a label?
   if (rxLabel.test(arg)) {
-    const lblConfig = labels[arg];
-    if (lblConfig) {
-      if (lblConfig.value) return lblConfig.value;
-      else {
-        lblConfig.pending.push({ lineNum, address, instConfig });
-      }
-    } else {
-      labels[arg] = {
-        pending: [
-          {
-            lineNum,
-            address,
-            instConfig,
-          },
-        ],
-      };
-    }
-    return 0;
+    value = labelValues[arg];
+    if (Number.isInteger(value)) return value;
   }
 
+  // wasn't a known label
   throw new Error(`Invalid argument value ${arg}`);
-}
-
-function generateCode(config, argValue, patchAddress) {
-  let code = parseInt(config.bits, 2);
-  let addr = patchAddress ?? address;
-  if (config.argLen) {
-    code <<= config.argLen;
-    code += config.extra ? argValue >>> 8 : argValue;
-    ROM[addr] = code;
-    if (config.extra) {
-      ROM[addr + 1] = argValue % 256;
-    }
-  } else {
-    ROM[addr] = code;
-  }
-  if (typeof patchAddress == 'undefined') address += config.extra ? 2 : 1;
-}
-
-function patchPendingLabels() {
-  for (const [label, { pending, value }] of Object.entries(labels)) {
-    if (pending) {
-      pending.forEach(({ lineNum, address, instConfig }) => {
-        if (value) {
-          generateCode(instConfig, value, address);
-        } else {
-          console.error(
-            chalk.red(
-              `[${lineNum + 1}]: Label ${label} not defined in:\n      ${
-                asm[lineNum]
-              }`
-            )
-          );
-          hasError = true;
-        }
-      });
-    }
-  }
 }
