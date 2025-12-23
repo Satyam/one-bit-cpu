@@ -142,6 +142,10 @@ for (let lineNum = 0; lineNum < asm.length; lineNum++) {
   }
 }
 
+if (hasError) {
+  console.error('Assembly canceled due to errors');
+  process.exit(1);
+}
 // Second pass
 // * generate code
 for (let lineNum = 0; lineNum < asm.length; lineNum++) {
