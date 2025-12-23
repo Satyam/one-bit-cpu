@@ -77,7 +77,7 @@ const keywords = {
     extra: true,
   },
   call: {
-    bitCode: '1100',
+    bitCode: '1101',
     argLen: 4,
     extra: true,
   },
@@ -87,7 +87,7 @@ const keywords = {
     extra: true,
   },
   jmp: {
-    bitCode: '1110',
+    bitCode: '1111',
     argLen: 4,
     extra: true,
   },
