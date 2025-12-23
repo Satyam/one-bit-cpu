@@ -81,7 +81,7 @@ const keywords = {
     argLen: 4,
     extra: true,
   },
-  jt: {
+  jmpt: {
     bitCode: '1110',
     argLen: 4,
     extra: true,
@@ -129,7 +129,7 @@ for (let lineNum = 0; lineNum < asm.length; lineNum++) {
 
   try {
     // parse line
-    const [label, name, arg, comment] = line.toLowerCase().split(rxAnySpaces);
+    const [label, name, arg, comment] = parseLine(line);
     // validate
     validateLine(label, name, arg, comment);
     // if it has a label store the instruction address
@@ -157,7 +157,7 @@ for (let lineNum = 0; lineNum < asm.length; lineNum++) {
 
   try {
     // _label is not used in this step but it has to have a placeholder
-    const [_label, name, arg] = line.toLowerCase().split(rxAnySpaces);
+    const [_label, name, arg] = parseLine(line);
 
     const config = keywords[name];
 
@@ -191,6 +191,17 @@ if (!hasError) {
 
 function toHex(num) {
   return num.toString(16).padStart(2, '0');
+}
+
+function parseLine(line) {
+  // split line in before and after the first comment
+  const [before, ...after] = line.split('#');
+  // rebuild the comments if there are any
+  const comments = after.length ? '#' + after.join('#') : '';
+  // split the instruction part
+  const [label, name, arg] = before.toLowerCase().split(rxAnySpaces);
+  // return parts.
+  return [label, name, arg, comments];
 }
 
 // validation
