@@ -71,7 +71,8 @@
       <a name="addrWidth" val="12"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 12 8
-8c 60 f0 5 61 63
+8c 60 f0 5 61 62 88 40
+41 42
 </a>
       <a name="label" val="ProgramROM"/>
       <a name="labelvisible" val="true"/>
@@ -851,11 +852,18 @@ a 0 0 0 e 0 d 49*0
       <a name="select" val="2"/>
       <a name="selloc" val="tr"/>
     </comp>
-    <comp loc="(850,170)" name="RegisterBank8"/>
-    <comp loc="(850,330)" name="RegisterBank8"/>
-    <comp loc="(850,330)" name="RegisterBank8"/>
-    <comp loc="(850,520)" name="RegisterBank8"/>
-    <comp loc="(850,690)" name="RegisterBank8"/>
+    <comp loc="(850,170)" name="RegisterBank8">
+      <a name="label" val="Regs0"/>
+    </comp>
+    <comp loc="(850,330)" name="RegisterBank8">
+      <a name="label" val="Regs1"/>
+    </comp>
+    <comp loc="(850,520)" name="RegisterBank8">
+      <a name="label" val="Regs2"/>
+    </comp>
+    <comp loc="(850,690)" name="RegisterBank8">
+      <a name="label" val="Regs3"/>
+    </comp>
     <wire from="(370,480)" to="(490,480)"/>
     <wire from="(370,770)" to="(430,770)"/>
     <wire from="(390,190)" to="(410,190)"/>
