@@ -97,7 +97,7 @@ const keywords = {
 const labelValues = {};
 
 // output ROM image
-const romImage = ['v3.0 hex words plain'];
+const romImage = ['v3.0 hex words addressed'];
 
 // Various regular expressions, mostly for validation
 const rxComment = /^\s*#/;
@@ -146,8 +146,10 @@ if (hasError) {
   console.error('Assembly canceled due to errors');
   process.exit(1);
 }
+
 // Second pass
 // * generate code
+address = 0;
 for (let lineNum = 0; lineNum < asm.length; lineNum++) {
   const line = asm[lineNum];
 
@@ -174,10 +176,11 @@ for (let lineNum = 0; lineNum < asm.length; lineNum++) {
     }
 
     romImage.push(
-      `${toHex(code)} ${config.extra ? toHex(argValue % 256) : ''} # [${
-        lineNum + 1
-      }]: ${line}`
+      `${toHex(address)}: ${toHex(code)} ${
+        config.extra ? toHex(argValue % 256) : '  '
+      }  # [${lineNum + 1}]: ${line}`
     );
+    address += config.extra ? 2 : 1;
   } catch (err) {
     console.error(chalk.red(`[${lineNum + 1}]: ${err} in:\n      ${line}`));
     hasError = true;
