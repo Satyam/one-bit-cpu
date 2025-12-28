@@ -1,0 +1,39 @@
+#!/usr/bin/env zx
+import { keywords } from './keywords.mjs';
+
+const keys = Object.keys(keywords);
+
+const truthTable = [
+  'b7 b6 b5 b4 b3 b2 | ' +
+    keys.map((k) => `c_${k.toLocaleLowerCase()}`).join(' '),
+];
+
+let bitCodes = [];
+
+for (const [k, { bitCode }] of Object.entries(keywords)) {
+  const b = bitCode.substring(0, 6);
+  bitCodes.push(b);
+  let inputs = b.padEnd(6, 'x').split('');
+  inputs.push('|');
+  keys.forEach((key) => inputs.push(key === k ? '1' : '0'));
+  truthTable.push(inputs.join(' '));
+}
+const contents = await fs.readFile('./opcodes.csv', { encoding: 'utf8' });
+
+contents.split('\n').forEach((line) => {
+  // The `num` column is hidden in the spreadsheet,
+  // but it tells us the actual data (not headings) is there.
+  const [num, opcode, extra] = line.split('\t');
+
+  if (num && extra == '0') {
+    if (!bitCodes.some((bitCode) => opcode.startsWith(bitCode))) {
+      let inputs = opcode.split('');
+      inputs.push('|');
+      keys.forEach(() => inputs.push('0'));
+      truthTable.push(inputs.join(' '));
+    }
+  }
+});
+console.log(truthTable.join('\n'));
+
+await fs.writeFile('bitCodeTruthTable.txt', truthTable.join('\n'));
