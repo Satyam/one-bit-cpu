@@ -42,7 +42,7 @@ export const keywords = {
   ininc: {
     bitCode: '10111000',
   },
-  incdec: {
+  indec: {
     bitCode: '10111100',
   },
   infrom: {
