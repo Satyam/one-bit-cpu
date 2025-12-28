@@ -9,7 +9,7 @@ let hasError = false;
 
 if (path.extname(fileName)) {
   inFile = fileName;
-  outFile = path.basename(fileName) + '.rom';
+  outFile = path.basename(fileName, path.extname(fileName)) + '.rom';
 } else {
   inFile = fileName + '.asm';
   outFile = fileName + '.rom';
