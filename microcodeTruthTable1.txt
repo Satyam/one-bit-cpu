@@ -1,0 +1,36 @@
+# Truth table
+# Exported on Sun Dec 28 15:07:16 CET 2025
+
+# Hints and Notes on Formatting:
+# * You can edit this file then import it back into Logisim!
+# * Anything after a ‘#’ is a comment and will be ignored.
+# * Blank lines and separator lines (e.g., ~~~~~~) are ignored.
+# * Keep column names simple (no spaces, punctuation, etc.)
+# * ‘Name[N..0]’ indicates an N+1 bit variable, whereas
+#   ‘Name’ by itself indicates a 1-bit variable.
+# * You can use ‘x’ or ‘-’ to indicate “don’t care” for both
+#   input and output bits.
+# * You can use binary (e.g., ‘10100011xxxx’) notation or
+#   or hex (e.g., ‘C3x’). Logisim will figure out which is which.
+
+b7 b6 b5 b4 b3 b2 extra | m_20 m_19 m_18 m_17 m_16 m_15 m_14 m_13 m_12 m_11 m_10 m_9 m_8 m_7 m_6 m_5 m_4 m_3 m_2 m_1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+0  0  0  -  -  -    0   |  0    0    0    0    0    0    0    0    0    0    0    0   0   1   0   0   1   0   0   0 
+0  -  -  -  -  -    1   |  0    0    0    0    0    0    0    0    0    0    0    0   0   0   0   0   0   0   0   0 
+0  0  1  -  -  -    0   |  0    0    0    0    0    0    0    0    0    0    0    0   0   1   0   0   1   0   0   1 
+0  1  0  -  -  -    0   |  0    0    0    0    0    0    0    0    0    0    0    0   0   1   0   0   1   0   1   1 
+0  1  1  -  -  -    0   |  0    0    0    0    0    0    0    0    0    0    0    0   0   0   0   1   0   0   0   0 
+1  0  0  0  0  0    0   |  0    0    0    0    0    0    0    0    0    0    0    0   0   1   0   0   1   0   1   0 
+1  0  -  -  -  -    1   |  0    0    0    0    0    0    0    0    0    0    0    0   0   0   0   0   0   0   0   0 
+1  0  0  0  0  1    0   |  0    0    0    0    0    0    0    0    0    0    0    0   0   0   0   0   0   0   0   0 
+1  0  0  0  1  0    0   |  0    0    0    0    0    0    0    0    0    0    0    0   0   0   0   0   1   1   1   0 
+1  0  0  0  1  1    0   |  0    0    0    0    0    0    0    0    0    0    0    0   0   0   0   0   1   1   0   1 
+1  0  -  1  -  -    0   |  0    0    0    0    0    0    0    0    0    0    0    0   0   0   0   0   0   0   0   0 
+1  0  1  0  -  -    0   |  0    0    0    0    0    0    0    0    0    0    0    0   0   0   0   0   0   0   0   0 
+1  1  -  0  -  -    0   |  0    0    0    0    1    0    0    0    0    0    0    0   0   0   0   0   0   0   0   0 
+1  1  0  0  0  -    1   |  0    0    0    0    1    0    0    0    0    0    0    1   0   0   0   0   1   1   0   0 
+1  1  0  0  1  -    1   |  0    0    0    0    1    0    0    0    0    0    0    1   1   1   1   0   0   0   0   0 
+1  1  0  1  -  -    -   |  0    0    0    0    0    0    0    0    0    0    0    0   0   0   0   0   0   0   0   0 
+1  1  1  0  -  -    1   |  0    0    0    0    1    0    0    0    1    0    0    0   0   0   0   0   0   0   0   0 
+1  1  1  1  -  -    0   |  0    0    0    0    1    0    0    0    0    0    0    0   0   0   0   0   0   0   0   0 
+1  1  1  1  -  -    1   |  0    0    0    0    1    0    0    1    0    0    0    0   0   0   0   0   0   0   0   0 

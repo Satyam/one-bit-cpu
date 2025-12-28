@@ -11,6 +11,7 @@ const truthTable = [
 const contents = await fs.readFile('./opcodes.csv', { encoding: 'utf8' });
 
 let instr = null;
+let numBits = 0;
 
 const opCodes = contents
   .split('\n')
@@ -21,6 +22,7 @@ const opCodes = contents
 
     if (num) {
       instr = name || instr;
+      numBits = bits.length;
       return [
         opcode,
         parseInt(extra, 10),
@@ -30,10 +32,6 @@ const opCodes = contents
     }
   })
   .filter((line) => Array.isArray(line));
-// const microcodeTruthTable = [
-//   'b7 b6 b5 b4 b3 b2 | ' +
-
-// ]
 
 let bitCodes = [];
 
@@ -67,3 +65,13 @@ opCodes.forEach(([opcode, extra]) => {
 console.log(truthTable.join('\n'));
 
 await fs.writeFile('bitCodeTruthTable.txt', truthTable.join('\n'));
+
+const microcodeTruthTable = [
+  'b7 b6 b5 b4 b3 b2 extra | ' +
+    Array.from({ length: numBits }, (_, i) => `m_${numBits - i - 1}`).join(' '),
+  opCodes.map(([opcode, extra, _name, ...bits]) => {
+    return [opcode.split(''), extra, '|', bits, '#', _name].flat().join(' ');
+  }),
+].flat();
+
+await fs.writeFile('microcodeTruthTable.txt', microcodeTruthTable.join('\n'));
