@@ -8,29 +8,59 @@ const truthTable = [
     keys.map((k) => `c_${k.toLocaleLowerCase()}`).join(' '),
 ];
 
+const contents = await fs.readFile('./opcodes.csv', { encoding: 'utf8' });
+
+let instr = null;
+
+const opCodes = contents
+  .split('\n')
+  .map((line) => {
+    // The `num` column is hidden in the spreadsheet,
+    // but it tells us the actual data (not headings) is there.
+    const [num, opcode, extra, name, ...bits] = line.split('\t');
+
+    if (num) {
+      instr = name || instr;
+      return [
+        opcode,
+        parseInt(extra, 10),
+        instr.toLowerCase(),
+        ...bits.map((b) => parseInt(b, 10)),
+      ];
+    }
+  })
+  .filter((line) => Array.isArray(line));
+// const microcodeTruthTable = [
+//   'b7 b6 b5 b4 b3 b2 | ' +
+
+// ]
+
 let bitCodes = [];
 
 for (const [k, { bitCode }] of Object.entries(keywords)) {
   const b = bitCode.substring(0, 6);
   bitCodes.push(b);
-  let inputs = b.padEnd(6, 'x').split('');
-  inputs.push('|');
-  keys.forEach((key) => inputs.push(key === k ? '1' : '0'));
-  truthTable.push(inputs.join(' '));
+  truthTable.push(
+    [
+      b.padEnd(6, 'x').split(''),
+      '|',
+      keys.map((key) => (key === k ? '1' : '0')),
+      '#',
+      k,
+    ]
+      .flat()
+      .join(' ')
+  );
 }
-const contents = await fs.readFile('./opcodes.csv', { encoding: 'utf8' });
 
-contents.split('\n').forEach((line) => {
-  // The `num` column is hidden in the spreadsheet,
-  // but it tells us the actual data (not headings) is there.
-  const [num, opcode, extra] = line.split('\t');
-
-  if (num && extra == '0') {
+opCodes.forEach(([opcode, extra]) => {
+  if (!extra) {
     if (!bitCodes.some((bitCode) => opcode.startsWith(bitCode))) {
-      let inputs = opcode.split('');
-      inputs.push('|');
-      keys.forEach(() => inputs.push('0'));
-      truthTable.push(inputs.join(' '));
+      truthTable.push(
+        [opcode.split(''), '|', Array(keys.length).fill('0'), '# not assigned']
+          .flat()
+          .join(' ')
+      );
     }
   }
 });
