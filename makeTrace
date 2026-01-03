@@ -1,0 +1,54 @@
+#!/usr/bin/env zx
+import { promises as fs } from 'fs';
+const file = await fs.open('./filename.txt', 'r');
+
+const rxSignalName = /^-(One_Bit_CPU\(\d*,\d*\)\/)?(\w+)\[?.*/gm;
+
+const trace = {};
+let currentSignal = null;
+for await (const line of file.readLines({ encoding: 'utf8' })) {
+  if (line.startsWith('-')) {
+    const signal = line.replace(rxSignalName, '$2');
+    currentSignal = trace[signal];
+
+    if (!currentSignal) {
+      currentSignal = trace[signal] = {};
+    }
+  } else {
+    const [time, val] = line.substring(1).split(',');
+    if (!currentSignal[time]) {
+      currentSignal[time] = parseInt(val.replaceAll(' ', ''), 2).toString(16);
+    }
+  }
+}
+file.close();
+const table = [];
+for (const [signal, values] of Object.entries(trace)) {
+  for (const [time, val] of Object.entries(values)) {
+    table.push([signal, Math.round(time / 10), val]);
+  }
+}
+table.sort((a, b) => (a[1] - b[1] ? a[1] - b[1] : a[0] - b[0]));
+
+const names = table
+  .map(([name]) => name)
+  .filter((name, index, self) => index === self.findIndex((n) => name === n));
+console.log('time,', names.join(','));
+
+let lastTime = null;
+const out = { time: '' };
+names.forEach((n) => {
+  out[n] = '';
+});
+
+table.forEach(([name, time, val]) => {
+  // console.log('-------');
+  // console.log({ name, time, val, lastTime, lastPos, out });
+  if (time !== lastTime) {
+    console.log(Object.values(out).join(','));
+    lastTime = time;
+    out.time = time;
+  }
+  out[name] = val;
+});
+console.log(Object.values(out).join(','));
