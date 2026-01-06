@@ -1,12 +1,54 @@
 #!/usr/bin/env zx
-import { promises as fs } from 'fs';
-const file = await fs.open('./filename.txt', 'r');
+import fs from 'fs';
+
+if (argv.h) {
+  console.log(`Usage:
+  
+    makeTrace [chrono file] [options]
+  where:
+    chono file: Input, raw dump from Logisim timing diagram, defaults to 'chrono.txt'
+    options:
+      -o <name>: Output, name for the CSV file to produce.  Defaults to the same as the input file with '.csv' extension
+      -r <name>: Rom image: name of program ROM image file produced by the assembler.
+      -h: help: this file
+`);
+  process.exit(0);
+}
+let fileName = argv._[0] || 'chrono';
+
+let chronoFile;
+let csvFile;
+let romFile = 'program.rom';
+
+if (path.extname(fileName)) {
+  chronoFile = fileName;
+  fileName = path.basename(fileName, path.extname(fileName));
+  csvFile = fileName + '.csv';
+} else {
+  chronoFile = fileName + '.txt';
+  csvFile = fileName + '.csv';
+}
+
+if (argv.o) {
+  csvFile = argv.o;
+}
+
+if (argv.r) {
+  romFile = argv.r;
+  if (!path.extname(romFile)) romFile += '.rom';
+}
+
+var csv = fs.createWriteStream(csvFile);
+
+csv.write('some data'); // append string to your file
+const chrono = await fs.promises.open(chronoFile, 'r');
 
 const rxSignalName = /^-(One_Bit_CPU\(\d*,\d*\)\/)?(\w+)\[?.*/gm;
+const rxRom = /([0-9a-f]+):([0-9a-f ]+)#?(.*)$/gm;
 
 const trace = {};
 let currentSignal = null;
-for await (const line of file.readLines({ encoding: 'utf8' })) {
+for await (const line of chrono.readLines({ encoding: 'utf8' })) {
   if (line.startsWith('-')) {
     const signal = line.replace(rxSignalName, '$2');
     currentSignal = trace[signal];
@@ -21,7 +63,7 @@ for await (const line of file.readLines({ encoding: 'utf8' })) {
     }
   }
 }
-file.close();
+chrono.close();
 const table = [];
 for (const [signal, values] of Object.entries(trace)) {
   for (const [time, val] of Object.entries(values)) {
@@ -33,22 +75,47 @@ table.sort((a, b) => (a[1] - b[1] ? a[1] - b[1] : a[0] - b[0]));
 const names = table
   .map(([name]) => name)
   .filter((name, index, self) => index === self.findIndex((n) => name === n));
-console.log('time,', names.join(','));
+csv.write(`time, ${names.join(',')}`);
+
+const rom = {};
+if (names.includes('InstructionAddress')) {
+  const r = await fs.promises.readFile(romFile, 'utf8');
+  console.log(r);
+
+  for (const match of r.matchAll(rxRom)) {
+    console.log(match);
+    rom[parseInt(match[1], 16)] = [match[2], match[3]];
+  }
+}
+// console.log(JSON.stringify(rom, null, 2));
 
 let lastTime = null;
+let address = null;
 const out = { time: '' };
 names.forEach((n) => {
   out[n] = '';
 });
-
+// console.log(JSON.stringify(rom, null, 2));
 table.forEach(([name, time, val]) => {
   // console.log('-------');
   // console.log({ name, time, val, lastTime, lastPos, out });
   if (time !== lastTime) {
-    console.log(Object.values(out).join(','));
+    // console.log(address, rom[address]);
+    csv.write(
+      `\n${Object.values(out).join(',')},${
+        address ? rom[address]?.join(',') : ''
+      }`
+    );
+    address = null;
     lastTime = time;
     out.time = time;
   }
+  if (name === 'InstructionAddress') {
+    console.log({ name, val });
+    address = parseInt(val, 16);
+  }
   out[name] = val;
 });
-console.log(Object.values(out).join(','));
+csv.write(
+  `\n${Object.values(out).join(',')},${address ? rom[address]?.join(',') : ''}`
+);
