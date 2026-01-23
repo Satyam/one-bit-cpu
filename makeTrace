@@ -40,11 +40,10 @@ if (argv.r) {
 
 var csv = fs.createWriteStream(csvFile);
 
-csv.write('some data'); // append string to your file
 const chrono = await fs.promises.open(chronoFile, 'r');
 
 const rxSignalName = /^-(One_Bit_CPU\(\d*,\d*\)\/)?(\w+)\[?.*/gm;
-const rxRom = /([0-9a-f]+):([0-9a-f ]+)#?(.*)$/gm;
+const rxRom = /([0-9a-f]+):([0-9a-f ]+)#?(.*)$/gim;
 
 const trace = {};
 let currentSignal = null;
@@ -80,14 +79,11 @@ csv.write(`time, ${names.join(',')}`);
 const rom = {};
 if (names.includes('InstructionAddress')) {
   const r = await fs.promises.readFile(romFile, 'utf8');
-  console.log(r);
 
   for (const match of r.matchAll(rxRom)) {
-    console.log(match);
-    rom[parseInt(match[1], 16)] = [match[2], match[3]];
+    rom[parseInt(match[1], 16)] = [match[2].trim(), match[3].trim()];
   }
 }
-// console.log(JSON.stringify(rom, null, 2));
 
 let lastTime = null;
 let address = null;
@@ -95,15 +91,12 @@ const out = { time: '' };
 names.forEach((n) => {
   out[n] = '';
 });
-// console.log(JSON.stringify(rom, null, 2));
+
 table.forEach(([name, time, val]) => {
-  // console.log('-------');
-  // console.log({ name, time, val, lastTime, lastPos, out });
-  if (time !== lastTime) {
-    // console.log(address, rom[address]);
+  if (time !== lastTime && out['MasterClock'] === '1') {
     csv.write(
       `\n${Object.values(out).join(',')},${
-        address ? rom[address]?.join(',') : ''
+        address in rom ? rom[address]?.join(',') : ''
       }`
     );
     address = null;
@@ -111,11 +104,10 @@ table.forEach(([name, time, val]) => {
     out.time = time;
   }
   if (name === 'InstructionAddress') {
-    console.log({ name, val });
     address = parseInt(val, 16);
   }
   out[name] = val;
 });
 csv.write(
-  `\n${Object.values(out).join(',')},${address ? rom[address]?.join(',') : ''}`
+  `\n${Object.values(out).join(',')},${address in rom ? rom[address]?.join(',') : ''}`
 );
