@@ -1,0 +1,2 @@
+#!/usr/bin/env zx
+$`java -jar logisim-evolution-4.1.0dev-all.jar`
