@@ -118,10 +118,31 @@ function firstPass(asm) {
         const { label, instr, arg, comment } = parseLine(line);
         // validate
         validateLine(label, instr, arg, comment);
-        // if it has a label store the instruction address
-        if (label) labelValues[label] = address;
-        // update the address
-        address += keywords[instr].extra ? 2 : 1;
+        switch (instr) {
+          case 'const': {
+            const val = parseValue(arg);
+            if (label && val !== null) {
+              labelValues[label] = val;
+            } else {
+              throw new Error(`Invalid constant declaration`);
+            }
+            break;
+          }
+          case 'org':
+            const val = parseValue(arg);
+            if (val !== null) {
+              address = val;
+            } else {
+              throw new Error(`Invalid constant declaration`);
+            }
+            break;
+          default:
+            // if it has a label store the instruction address
+            if (label) labelValues[label] = address;
+            // update the address
+            address += keywords[instr].extra ? 2 : 1;
+            break;
+        }
       } catch (err) {
         console.error(chalk.red(`[${lineNum + 1}]: ${err} in:\n      ${line}`));
         hasError = true;
@@ -148,27 +169,36 @@ function secondPass(asm) {
       try {
         // _label is not used in this step but it has to have a placeholder
         const { instr, arg } = parseLine(line);
+        switch (instr) {
+          case 'const':
+            romImage.push(`           # [${lineNum + 1}]: ${line}`);
+            break;
+          case 'org':
+            address = parseValue(arg);
+            romImage.push(`           # [${lineNum + 1}]: ${line}`);
+            break;
+          default:
+            const config = keywords[instr];
 
-        const config = keywords[instr];
+            // Convert the argument into a numeric value
+            const argValue = readArg(arg, config);
 
-        // Convert the argument into a numeric value
-        const argValue = readArg(arg, config);
+            // get the actual bitcode
+            let code = parseInt(config.bitCode, 2);
 
-        // get the actual bitcode
-        let code = parseInt(config.bitCode, 2);
+            // merge argument or part of it if it is a two byte instruction
+            if (config.argLen) {
+              code <<= config.argLen;
+              code += config.extra ? argValue >>> 8 : argValue;
+            }
 
-        // merge argument or part of it if it is a two byte instruction
-        if (config.argLen) {
-          code <<= config.argLen;
-          code += config.extra ? argValue >>> 8 : argValue;
+            romImage.push(
+              `${toHex(address)}: ${toHex(code)} ${
+                config.extra ? toHex(argValue % 256) : '  '
+              }  # [${lineNum + 1}]: ${line}`
+            );
+            address += config.extra ? 2 : 1;
         }
-
-        romImage.push(
-          `${toHex(address)}: ${toHex(code)} ${
-            config.extra ? toHex(argValue % 256) : '  '
-          }  # [${lineNum + 1}]: ${line}`
-        );
-        address += config.extra ? 2 : 1;
       } catch (err) {
         console.error(chalk.red(`[${lineNum + 1}]: ${err} in:\n      ${line}`));
         hasError = true;
@@ -217,36 +247,37 @@ function parseLine(line) {
 function validateLine(label, instr, arg, comment) {
   if (comment && !rxComment.test(comment))
     throw new Error(`Extraneous text at end of instruction "${comment}"`);
-  if (!instr) throw new Error('Mising instruction');
-  const config = keywords[instr];
-  if (!config) throw new Error(`Unknown instruction "${instr}"`);
   if (label) {
     if (!rxLabel.test(label)) throw new Error(`Invalid label "${label}"`);
     if (labelValues[label])
       throw new Error(`Duplicate definition of label "${label}"`);
   }
-  if (config.argLen) {
-    if (!arg) throw new Error(`Missing argument for "${instr}"`);
-  } else {
-    if (arg) throw new Error(`Unexpected argument "${arg}"`);
+  if (!instr) throw new Error('Mising instruction');
+  switch (instr) {
+    case 'const':
+      if (!arg) throw new Error(`Missing argument for "${instr}"`);
+      if (!label) throw new Error(`Missing label for "${instr}"`);
+      break;
+    case 'org':
+      if (!arg) throw new Error(`Missing argument for "${instr}"`);
+      break;
+    default:
+      const config = keywords[instr];
+      if (!config) throw new Error(`Unknown instruction "${instr}"`);
+      if (config.argLen) {
+        if (!arg) throw new Error(`Missing argument for "${instr}"`);
+      } else {
+        if (arg) throw new Error(`Unexpected argument "${arg}"`);
+      }
+      break;
   }
 }
 
 function readArg(arg, config) {
   if (!config.argLen) return 0;
-  let value;
+  let value = parseValue(arg);
 
-  // loop over the regular expressions to check for number base prefixes
-  // and parse it accordingly if match
-  if (
-    Object.entries(rxNumberBases).some(([base, rx]) => {
-      const m = rx.exec(arg.trim());
-      if (m) {
-        value = parseInt(m[1], base);
-        return true;
-      }
-    })
-  ) {
+  if (value !== null) {
     // a match was found, now check for valid argument range
     const numBits = config.argLen + (config.extra ? 8 : 0);
     if (value >= 1 << numBits) {
@@ -265,4 +296,19 @@ function readArg(arg, config) {
 
   // wasn't a known label
   throw new Error(`Invalid argument value ${arg}`);
+}
+
+function parseValue(arg) {
+  // loop over the regular expressions to check for number base prefixes
+  // and parse it accordingly if match
+  if (arg) {
+    for (const [base, rx] of Object.entries(rxNumberBases)) {
+      const m = rx.exec(arg.trim());
+      if (m) {
+        const val = parseInt(m[1], base);
+        if (!isNaN(val)) return val;
+      }
+    }
+  }
+  return null;
 }

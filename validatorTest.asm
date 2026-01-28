@@ -19,3 +19,9 @@ label: and 25  this is repeated
  or lbl
  or 0o999
  or 0b2
+pp1: const 1
+pp2: const
+ const 2
+org 400
+org
+qq: org 400
