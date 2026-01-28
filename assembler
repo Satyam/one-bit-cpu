@@ -2,6 +2,49 @@
 import { keywords } from './keywords.mjs';
 
 if (argv.h) {
+  showHelp();
+  process.exit(0);
+}
+
+const [inFile, outFile] = getFileNames();
+
+// address values for the labels will be collected here
+const labelValues = {};
+
+// Various regular expressions
+
+//  mostly for validation
+const rxComment = /^\s*#/;
+const rxLabel = /^[a-zA-Z]\w*$/;
+const rxAnySpaces = /\s+/;
+
+// used to detect base used for number constants
+const rxNumberBases = {
+  2: /^0b([01]+)$/,
+  8: /^0o([0-7]+)$/,
+  16: /^0x([0-9a-fA-F]+)$/,
+  10: /^(\d+)$/,
+};
+
+// read the assembly code
+const asmFile = await fs.readFile(inFile, 'utf8');
+const asm = asmFile.split('\n');
+
+if (firstPass(asm)) {
+  console.error('Assembly canceled due to errors');
+  process.exit(1);
+}
+
+const romImage = secondPass(asm);
+
+if (romImage) {
+  await fs.writeFile(outFile, romImage.join('\n'));
+  console.log(`ROM image created in "${outFile}"`);
+  process.exit(0);
+}
+process.exit(1);
+
+function showHelp() {
   console.log(`Usage
   assembler [source] [options]
     
@@ -37,124 +80,102 @@ if (argv.h) {
       Assembles "program.asm" into "something.rom"
 
 `);
-  process.exit(0);
-}
-const fileName = argv._[0] || 'program';
-
-let inFile;
-let outFile;
-let hasError = false;
-
-if (path.extname(fileName)) {
-  inFile = fileName;
-  outFile = path.basename(fileName, path.extname(fileName)) + '.rom';
-} else {
-  inFile = fileName + '.asm';
-  outFile = fileName + '.rom';
 }
 
-if (argv.o) {
-  outFile = argv.o;
-  if (!path.extname) outFile = outFile + '.rom';
+function getFileNames() {
+  const fileName = argv._[0] || 'program';
+
+  let inFile;
+  let outFile;
+
+  if (path.extname(fileName)) {
+    inFile = fileName;
+    outFile = path.basename(fileName, path.extname(fileName)) + '.rom';
+  } else {
+    inFile = fileName + '.asm';
+    outFile = fileName + '.rom';
+  }
+
+  if (argv.o) {
+    outFile = argv.o;
+    if (!path.extname) outFile = outFile + '.rom';
+  }
+  return [inFile, outFile];
 }
-
-// address values for the labels will be collected here
-const labelValues = {};
-
-// output ROM image
-const romImage = ['v3.0 hex words addressed'];
-
-// Various regular expressions, mostly for validation
-const rxComment = /^\s*#/;
-const rxAnySpaces = /\s+/;
-const rxLabel = /^[a-zA-Z]\w*$/;
-
-// used to detect base used for number constants
-const rxNumerBases = {
-  2: /^0b([01]+)$/,
-  8: /^0o([0-7]+)$/,
-  16: /^0x([0-9a-fA-F]+)$/,
-  10: /^(\d+)$/,
-};
-
-// read the assemblre code
-const asmFile = await fs.readFile(inFile, 'utf8');
-const asm = asmFile.split('\n');
 
 // First pass,
 // * validate lines
 // * collect addresses associated with labels
-let address = 0;
-for (let lineNum = 0; lineNum < asm.length; lineNum++) {
-  const line = asm[lineNum];
+function firstPass(asm) {
+  let address = 0;
+  let hasError = false;
 
-  // Skip comments or empty lines
-  if (rxComment.test(line)) continue;
-  if (!line.trim()) continue;
-
-  try {
-    // parse line
-    const [label, name, arg, comment] = parseLine(line);
-    // validate
-    validateLine(label, name, arg, comment);
-    // if it has a label store the instruction address
-    if (label) labelValues[label] = address;
-    // update the address
-    address += keywords[name].extra ? 2 : 1;
-  } catch (err) {
-    console.error(chalk.red(`[${lineNum + 1}]: ${err} in:\n      ${line}`));
-    hasError = true;
-  }
-}
-
-if (hasError) {
-  console.error('Assembly canceled due to errors');
-  process.exit(1);
+  asm.forEach((line, lineNum) => {
+    // Skip comments or empty lines
+    if (line.trim() && !rxComment.test(line)) {
+      try {
+        // parse line
+        const { label, instr, arg, comment } = parseLine(line);
+        // validate
+        validateLine(label, instr, arg, comment);
+        // if it has a label store the instruction address
+        if (label) labelValues[label] = address;
+        // update the address
+        address += keywords[instr].extra ? 2 : 1;
+      } catch (err) {
+        console.error(chalk.red(`[${lineNum + 1}]: ${err} in:\n      ${line}`));
+        hasError = true;
+      }
+    }
+  });
+  return hasError;
 }
 
 // Second pass
 // * generate code
-address = 0;
-for (let lineNum = 0; lineNum < asm.length; lineNum++) {
-  const line = asm[lineNum];
+function secondPass(asm) {
+  let address = 0;
+  let hasError = false;
 
-  // skip comments and empty lines
-  if (rxComment.test(line)) continue;
-  if (!line.trim()) continue;
+  // output ROM image
+  const romImage = ['v3.0 hex words addressed'];
 
-  try {
-    // _label is not used in this step but it has to have a placeholder
-    const [_label, name, arg] = parseLine(line);
+  asm.forEach((line, lineNum) => {
+    // skip comments and empty lines
+    if (rxComment.test(line) || !line.trim()) {
+      romImage.push(line.trim());
+    } else {
+      try {
+        // _label is not used in this step but it has to have a placeholder
+        const { instr, arg } = parseLine(line);
 
-    const config = keywords[name];
+        const config = keywords[instr];
 
-    // Convert the argument into a numeric value
-    const argValue = readArg(arg, config);
+        // Convert the argument into a numeric value
+        const argValue = readArg(arg, config);
 
-    // get the actual bitcode
-    let code = parseInt(config.bitCode, 2);
+        // get the actual bitcode
+        let code = parseInt(config.bitCode, 2);
 
-    // merge argument or part of it if it is a two byte instruction
-    if (config.argLen) {
-      code <<= config.argLen;
-      code += config.extra ? argValue >>> 8 : argValue;
+        // merge argument or part of it if it is a two byte instruction
+        if (config.argLen) {
+          code <<= config.argLen;
+          code += config.extra ? argValue >>> 8 : argValue;
+        }
+
+        romImage.push(
+          `${toHex(address)}: ${toHex(code)} ${
+            config.extra ? toHex(argValue % 256) : '  '
+          }  # [${lineNum + 1}]: ${line}`
+        );
+        address += config.extra ? 2 : 1;
+      } catch (err) {
+        console.error(chalk.red(`[${lineNum + 1}]: ${err} in:\n      ${line}`));
+        hasError = true;
+      }
     }
-
-    romImage.push(
-      `${toHex(address)}: ${toHex(code)} ${
-        config.extra ? toHex(argValue % 256) : '  '
-      }  # [${lineNum + 1}]: ${line}`
-    );
-    address += config.extra ? 2 : 1;
-  } catch (err) {
-    console.error(chalk.red(`[${lineNum + 1}]: ${err} in:\n      ${line}`));
-    hasError = true;
-  }
-}
-
-if (!hasError) {
-  fs.writeFile(outFile, romImage.join('\n'));
-  console.log(`ROM image created in "${outFile}"`);
+  });
+  return !hasError && romImage;
 }
 
 function toHex(num) {
@@ -166,27 +187,46 @@ function parseLine(line) {
   const [before, ...after] = line.split('#');
   // rebuild the comments if there are any
   const comments = after.length ? '#' + after.join('#') : '';
+  // split the label
+  let [label, ...rest] = before.split(':');
+  switch (rest.length) {
+    case 0: // no label at all
+      rest = label;
+      label = '';
+      break;
+    case 1: // there is, indeed, a label
+      rest = rest[0];
+      break;
+    default:
+      throw new Error(`Too many colons`);
+  }
+
   // split the instruction part
-  const [label, name, arg] = before.toLowerCase().split(rxAnySpaces);
+  const [instr, arg] = rest.trim().split(rxAnySpaces);
   // return parts.
-  return [label, name, arg, comments];
+  return {
+    label: label.trim(),
+    instr: instr.toLowerCase(),
+    arg,
+    comments,
+  };
 }
 
 // validation
 // the error messages explain what it is checking
-function validateLine(label, name, arg, comment) {
+function validateLine(label, instr, arg, comment) {
   if (comment && !rxComment.test(comment))
     throw new Error(`Extraneous text at end of instruction "${comment}"`);
-  if (!name) throw new Error('Mising instruction');
-  const config = keywords[name];
-  if (!config) throw new Error(`Unknown instruction "${name}"`);
+  if (!instr) throw new Error('Mising instruction');
+  const config = keywords[instr];
+  if (!config) throw new Error(`Unknown instruction "${instr}"`);
   if (label) {
-    if (!rxLabel.test(label)) throw new Error(`Invalid label ${label}`);
+    if (!rxLabel.test(label)) throw new Error(`Invalid label "${label}"`);
     if (labelValues[label])
-      throw new Error(`Duplicate definition of label ${label}`);
+      throw new Error(`Duplicate definition of label "${label}"`);
   }
   if (config.argLen) {
-    if (!arg) throw new Error(`Missing argument for "${name}"`);
+    if (!arg) throw new Error(`Missing argument for "${instr}"`);
   } else {
     if (arg) throw new Error(`Unexpected argument "${arg}"`);
   }
@@ -199,8 +239,8 @@ function readArg(arg, config) {
   // loop over the regular expressions to check for number base prefixes
   // and parse it accordingly if match
   if (
-    Object.entries(rxNumerBases).some(([base, rx]) => {
-      const m = rx.exec(arg);
+    Object.entries(rxNumberBases).some(([base, rx]) => {
+      const m = rx.exec(arg.trim());
       if (m) {
         value = parseInt(m[1], base);
         return true;
