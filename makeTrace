@@ -14,7 +14,7 @@ if (argv.h) {
 `);
   process.exit(0);
 }
-let fileName = argv._[0] || 'chrono';
+let fileName = argv._[0] || 'chronogram';
 
 let chronoFile;
 let csvFile;
