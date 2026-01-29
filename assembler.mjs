@@ -26,6 +26,10 @@ const rxNumberBases = {
   10: /^(\d+)$/,
 };
 
+// Pseudo- instructions:
+const CONST = 'const';
+const ORG = 'org';
+
 // read the assembly code
 const asmFile = await fs.readFile(inFile, 'utf8');
 const asm = asmFile.split('\n');
@@ -119,7 +123,7 @@ function firstPass(asm) {
         // validate
         validateLine(label, instr, arg, comment);
         switch (instr) {
-          case 'const': {
+          case CONST: {
             const val = parseValue(arg);
             if (label && val !== null) {
               labelValues[label] = val;
@@ -128,7 +132,7 @@ function firstPass(asm) {
             }
             break;
           }
-          case 'org':
+          case ORG:
             const val = parseValue(arg);
             if (val !== null) {
               address = val;
@@ -171,10 +175,10 @@ function secondPass(asm) {
         // _label is not used in this step but it has to have a placeholder
         const { instr, arg } = parseLine(line);
         switch (instr) {
-          case 'const':
+          case CONST:
             romImage.push(`           # [${lineNum + 1}]: ${line}`);
             break;
-          case 'org':
+          case ORG:
             address = parseValue(arg);
             romImage.push(`           # [${lineNum + 1}]: ${line}`);
             break;
@@ -255,11 +259,11 @@ function validateLine(label, instr, arg, comment) {
   }
   if (!instr) throw new Error('Mising instruction');
   switch (instr) {
-    case 'const':
+    case CONST:
       if (!arg) throw new Error(`Missing argument for "${instr}"`);
       if (!label) throw new Error(`Missing label for "${instr}"`);
       break;
-    case 'org':
+    case ORG:
       if (!arg) throw new Error(`Missing argument for "${instr}"`);
       break;
     default:
