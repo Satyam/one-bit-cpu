@@ -132,6 +132,7 @@ function firstPass(asm) {
             const val = parseValue(arg);
             if (val !== null) {
               address = val;
+              if (label) labelValues[label] = address;
             } else {
               throw new Error(`Invalid constant declaration`);
             }
