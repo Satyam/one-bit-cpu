@@ -133,11 +133,11 @@ c0 0 80 b0 c0 1 80 b0
       <a name="spacing" val="2"/>
     </comp>
     <comp lib="0" loc="(1110,470)" name="Tunnel">
-      <a name="label" val="Clk2"/>
+      <a name="label" val="Clk1"/>
     </comp>
     <comp lib="0" loc="(1160,1190)" name="Tunnel">
       <a name="facing" val="east"/>
-      <a name="label" val="Clk1"/>
+      <a name="label" val="Clk0"/>
     </comp>
     <comp lib="0" loc="(1160,800)" name="Splitter">
       <a name="appear" val="center"/>
@@ -175,14 +175,14 @@ c0 0 80 b0 c0 1 80 b0
     </comp>
     <comp lib="0" loc="(1280,810)" name="Tunnel">
       <a name="facing" val="east"/>
-      <a name="label" val="Clk2"/>
+      <a name="label" val="Clk1"/>
     </comp>
     <comp lib="0" loc="(1350,660)" name="Tunnel">
       <a name="label" val="Rst"/>
     </comp>
     <comp lib="0" loc="(1450,650)" name="Tunnel">
       <a name="facing" val="east"/>
-      <a name="label" val="Clk3"/>
+      <a name="label" val="Clk2"/>
     </comp>
     <comp lib="0" loc="(1470,1220)" name="Pin">
       <a name="appearance" val="NewPins"/>
@@ -255,7 +255,7 @@ c0 0 80 b0 c0 1 80 b0
     </comp>
     <comp lib="0" loc="(300,1130)" name="Tunnel">
       <a name="facing" val="east"/>
-      <a name="label" val="Clk1"/>
+      <a name="label" val="Clk0"/>
     </comp>
     <comp lib="0" loc="(350,1110)" name="Constant"/>
     <comp lib="0" loc="(390,1000)" name="Tunnel">
@@ -268,20 +268,20 @@ c0 0 80 b0 c0 1 80 b0
       <a name="labelloc" val="east"/>
     </comp>
     <comp lib="0" loc="(450,250)" name="Tunnel">
-      <a name="label" val="Clk1"/>
+      <a name="label" val="Clk0"/>
     </comp>
     <comp lib="0" loc="(450,290)" name="Tunnel">
-      <a name="label" val="Clk2"/>
+      <a name="label" val="Clk1"/>
     </comp>
     <comp lib="0" loc="(450,330)" name="Tunnel">
-      <a name="label" val="Clk3"/>
+      <a name="label" val="Clk2"/>
     </comp>
     <comp lib="0" loc="(450,400)" name="Tunnel">
       <a name="label" val="Rst"/>
     </comp>
     <comp lib="0" loc="(570,1250)" name="Tunnel">
       <a name="facing" val="east"/>
-      <a name="label" val="Clk1"/>
+      <a name="label" val="Clk0"/>
     </comp>
     <comp lib="0" loc="(600,570)" name="Probe">
       <a name="appearance" val="NewPins"/>
@@ -314,7 +314,7 @@ c0 0 80 b0 c0 1 80 b0
     </comp>
     <comp lib="0" loc="(690,1010)" name="Tunnel">
       <a name="facing" val="east"/>
-      <a name="label" val="Clk2"/>
+      <a name="label" val="Clk1"/>
     </comp>
     <comp lib="0" loc="(690,1080)" name="Tunnel">
       <a name="facing" val="east"/>
@@ -329,10 +329,10 @@ c0 0 80 b0 c0 1 80 b0
     </comp>
     <comp lib="0" loc="(800,1050)" name="Tunnel">
       <a name="facing" val="east"/>
-      <a name="label" val="Clk1"/>
+      <a name="label" val="Clk0"/>
     </comp>
     <comp lib="0" loc="(840,510)" name="Tunnel">
-      <a name="label" val="Clk3"/>
+      <a name="label" val="Clk2"/>
     </comp>
     <comp lib="0" loc="(880,470)" name="Tunnel">
       <a name="label" val="Rst"/>
@@ -419,6 +419,7 @@ c0 0 80 b0 c0 1 80 b0
     </comp>
     <comp lib="4" loc="(310,310)" name="Counter">
       <a name="appearance" val="classic"/>
+      <a name="label" val="ClockDivider"/>
       <a name="max" val="0x2"/>
       <a name="width" val="2"/>
     </comp>
@@ -698,5 +699,4 @@ c0 7*0 e 7*0 8500 800e 8500 800e
     <wire from="(990,1110)" to="(990,1140)"/>
     <wire from="(990,310)" to="(1080,310)"/>
   </circuit>
-  
 </project>
