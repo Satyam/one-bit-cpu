@@ -48,18 +48,15 @@ const rxRom = /([0-9a-f]+):([0-9a-f ]+)#?(.*)$/gim;
 const trace = {};
 let currentSignal = null;
 for await (const line of chrono.readLines({ encoding: 'utf8' })) {
-  if (line.startsWith('-')) {
-    const signal = line.replace(rxSignalName, '$2');
-    currentSignal = trace[signal];
+  const [time, signal, value] = line.split(',');
 
-    if (!currentSignal) {
-      currentSignal = trace[signal] = {};
-    }
-  } else {
-    const [time, val] = line.substring(1).split(',');
-    if (!currentSignal[time]) {
-      currentSignal[time] = parseInt(val.replaceAll(' ', ''), 2).toString(16);
-    }
+  currentSignal = trace[signal];
+
+  if (!currentSignal) {
+    currentSignal = trace[signal] = {};
+  }
+  if (!currentSignal[time]) {
+    currentSignal[time] = parseInt(value.replaceAll(' ', ''), 2).toString(16);
   }
 }
 chrono.close();
@@ -87,6 +84,7 @@ if (names.includes('InstructionAddress')) {
 
 let lastTime = null;
 let address = null;
+let ClkStage = null;
 const out = { time: '' };
 names.forEach((n) => {
   out[n] = '';
@@ -96,7 +94,7 @@ table.forEach(([name, time, val]) => {
   if (time !== lastTime && out['MasterClock'] === '1') {
     csv.write(
       `\n${Object.values(out).join(',')},${
-        address in rom ? rom[address]?.join(',') : ''
+        !ClkStage && address in rom ? rom[address]?.join(',') : ''
       }`
     );
     address = null;
@@ -105,6 +103,9 @@ table.forEach(([name, time, val]) => {
   }
   if (name === 'InstructionAddress') {
     address = parseInt(val, 16);
+  }
+  if (name === 'ClkStage') {
+    ClkStage = parseInt(val, 16);
   }
   out[name] = val;
 });
