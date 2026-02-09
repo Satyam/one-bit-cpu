@@ -61,6 +61,8 @@ for await (const line of chrono.readLines({ encoding: 'utf8' })) {
 }
 chrono.close();
 const table = [];
+// Horrible patch coming:
+trace['InstructionAddress']['0'] = 0;
 for (const [signal, values] of Object.entries(trace)) {
   for (const [time, val] of Object.entries(values)) {
     table.push([signal, Math.round(time / 10), val]);
@@ -82,12 +84,12 @@ if (names.includes('InstructionAddress')) {
   }
 }
 
-let lastTime = null;
+let lastTime = 0;
 let address = null;
 let ClkStage = null;
-const out = { time: '' };
+const out = { time: '0' };
 names.forEach((n) => {
-  out[n] = '';
+  out[n] = '0';
 });
 
 table.forEach(([name, time, val]) => {
@@ -110,5 +112,5 @@ table.forEach(([name, time, val]) => {
   out[name] = val;
 });
 csv.write(
-  `\n${Object.values(out).join(',')},${address in rom ? rom[address]?.join(',') : ''}`
+  `\n${Object.values(out).join(',')},${!ClkStage && address in rom ? rom[address]?.join(',') : ''}`
 );
