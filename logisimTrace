@@ -1,2 +1,7 @@
 #!/usr/bin/env zx
-$`java -jar logisim-evolution-4.1.0dev-all.jar`
+const CHRONO_TXT = 'chronogram.txt';
+const GEN_TEST = 'generalTest.rom';
+
+await fs.remove(CHRONO_TXT);
+await $`java -jar logisim-evolution-4.1.0dev-all.jar 1bit_CPU.circ --toplevel-circuit CPU_and_ProgramRom`;
+await $`./makeTrace ${CHRONO_TXT} -r ${GEN_TEST}`;
