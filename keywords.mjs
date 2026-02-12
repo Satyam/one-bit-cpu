@@ -30,19 +30,19 @@ export const keywords = {
   out: {
     bitCode: '10100000',
   },
-  outinc: {
+  outnext: {
     bitCode: '10101000',
   },
-  outdec: {
+  outprev: {
     bitCode: '10101100',
   },
   in: {
     bitCode: '10110000',
   },
-  ininc: {
+  innext: {
     bitCode: '10111000',
   },
-  indec: {
+  inprev: {
     bitCode: '10111100',
   },
   infrom: {
