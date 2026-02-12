@@ -96,6 +96,8 @@
       outPrev     # should go to 1
       outPrev     # should go to 0
 # ins
+# The way the main circuit is wired,
+# it reads the zeros from even addresses and ones from odd addresses
       inFrom 0    # should come from 0
       in          # should come from 0
       inNext      # should come from 1
@@ -104,6 +106,23 @@
       inPrev      # should come from 1
       inPrev      # should come from 0
 
+# Test jumps
+      outTo 0     # ensure known port address
+      one        #acc = 1
+      jmp skip1
+      not         # acc = 0  (should not happen)
+skip1: out        # should output 1
+      one
+      jmpt skip2  # should jump
+      not         # acc = 0 (should not happen)
+skip2: out        # should output 1
+
+      zero
+      jmpt skip3  #(should not jump)
+      not         # acc = 1, (should not happen)
+skip3: out        # should output 0
+
+
 # keep the following zeros at the end of the usable part
 # to let the signals settle from the last usable instruction
 
@@ -111,36 +130,4 @@
       zero
 
 # Nothing to see here
-
-       one #acc = 1
-       save 0  # reg[0] = 1
-       zero  # acc = 0
-       or 0  # acc = 1
-       save 1  # reg[1] = 1
-       and 1 # acc = 1
-       not # acc = 0
-       and 1 # acc = 0
-       load 0 # acc = 1
-       zero # acc = 0
-       load 1 # acc 1
-       jmp skip1
-       not # acc = 0  (should not happen)
-skip1: save 2 # reg[2] = 1
-       jmpt skip2 # should jump
-       not  # acc = 0 (should not happen)
-skip2: save 3  # reg[3] = 1
-       not  # acc = 0
-       jmpt skip3   #(should not jump)
-       not
-skip3: save 4 # reg[4] = 1
-       jmpt skip4   #(should jump)
-       not
-skip4: save 5
-       one
-       outTo 2
-       not
-       outTo 3
-       inFrom 0
-       inFrom 1
-
 
