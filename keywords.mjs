@@ -26,6 +26,17 @@ export const keywords = {
   },
   ret: {
     bitCode: '10010000',
+    // This is a special case instruction which needs a second cycle to complete
+    // even though there is no actual extra parameter
+    extra: true,
+  },
+  // this is the extra instruction to complete the RET.
+  // The assembler inserts it automatically
+  _ret2: {
+    bitCode: '10010100',
+  },
+  halt: {
+    bitCode: '10011000',
   },
   out: {
     bitCode: '10100000',

@@ -15,7 +15,7 @@ const labelValues = {};
 
 //  mostly for validation
 const rxComment = /^\s*#/;
-const rxLabel = /^[a-zA-Z]\w*$/;
+const rxIdentifier = /^[a-zA-Z]\w*$/;
 const rxAnySpaces = /\s+/;
 
 // used to detect base used for number constants
@@ -29,6 +29,11 @@ const rxNumberBases = {
 // Pseudo- instructions:
 const CONST = 'const';
 const ORG = 'org';
+
+// RET is a special case instruction because it actually takes two bytes
+const RET = 'ret';
+// This is the second byte for RET
+const _RET2 = '_ret2';
 
 // read the assembly code
 const asmFile = await fs.readFile(inFile, 'utf8');
@@ -174,6 +179,7 @@ function secondPass(asm) {
       try {
         // _label is not used in this step but it has to have a placeholder
         const { instr, arg } = parseLine(line);
+        let code;
         switch (instr) {
           case CONST:
             romImage.push(`           # [${lineNum + 1}]: ${line}`);
@@ -182,6 +188,14 @@ function secondPass(asm) {
             address = parseValue(arg);
             romImage.push(`           # [${lineNum + 1}]: ${line}`);
             break;
+          case RET:
+            code = parseInt(keywords[instr].bitCode, 2);
+            const code2 = parseInt(keywords[_RET2].bitCode, 2);
+            romImage.push(
+              `${toHex(address)}: ${toHex(code)} ${toHex(code2)}  # [${lineNum + 1}]: ${line}`
+            );
+            address += 2;
+            break;
           default:
             const config = keywords[instr];
 
@@ -189,7 +203,7 @@ function secondPass(asm) {
             const argValue = readArg(arg, config);
 
             // get the actual bitcode
-            let code = parseInt(config.bitCode, 2);
+            code = parseInt(config.bitCode, 2);
 
             // merge argument or part of it if it is a two byte instruction
             if (config.argLen) {
@@ -253,7 +267,7 @@ function validateLine(label, instr, arg, comment) {
   if (comment && !rxComment.test(comment))
     throw new Error(`Extraneous text at end of instruction "${comment}"`);
   if (label) {
-    if (!rxLabel.test(label)) throw new Error(`Invalid label "${label}"`);
+    if (!rxIdentifier.test(label)) throw new Error(`Invalid label "${label}"`);
     if (labelValues[label])
       throw new Error(`Duplicate definition of label "${label}"`);
   }
@@ -267,6 +281,8 @@ function validateLine(label, instr, arg, comment) {
       if (!arg) throw new Error(`Missing argument for "${instr}"`);
       break;
     default:
+      if (!rxIdentifier.test(instr))
+        throw new Error(`Invalid instruction "${instr}"`);
       const config = keywords[instr];
       if (!config) throw new Error(`Unknown instruction "${instr}"`);
       if (config.argLen) {
@@ -294,7 +310,7 @@ function readArg(arg, config) {
   }
 
   // It was not a number, perhaps it is a label?
-  if (rxLabel.test(arg)) {
+  if (rxIdentifier.test(arg)) {
     value = labelValues[arg];
     if (Number.isInteger(value)) return value;
   }
