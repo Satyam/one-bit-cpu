@@ -1,0 +1,57 @@
+#!/usr/bin/env zx
+
+/*
+  Converts the opcodes.ods spreadsheet, exported in .csv, 
+  to a ROM image for the microcode ROM.
+  CSV file should be tab-separated fields with no quotes.
+*/
+const contents = await fs.readFile('./microcode.csv', { encoding: 'utf8' });
+
+let instr = '';
+const microcode = [];
+contents.split('\n').forEach((line) => {
+  // The `num` column is hidden in the spreadsheet,
+  // but it tells us the actual data (not headings) is there.
+  const [num, opcode, extra, name, ...bits] = line.split('\t');
+
+  // instruction names in the spreadsheet are visually spread over several rows
+  // so I need to actually remember which one I am getting
+  instr = name || instr;
+
+  if (num) {
+    const code = parseInt(bits.map((b) => (b ? 1 : 0)).join(''), 2);
+    // console.log(num, opcode, extra, instr, code, ...bits);
+    microcode.push(code);
+  }
+});
+
+console.log(microcode.join(' '));
+await fs.writeFile('./microcode.rom', microcode.join(',\n'));
+
+/* 
+Attempt to patch the .cv file itself, but it is not safe to do it
+
+const rx =
+  /(^.*?"EEPROM":\s*\[.*? "label":\s*"Microcode",.*?"constructorParamaters":\s*\[\s*"\w+",\s*\d+,\s*\d+,\s*\[)([\s\d,]+)(].*$)/gs;
+
+
+const circuit = await fs.readFile('./1 bit CPU.cv', { encoding: 'utf8' });
+
+await fs.writeFile(
+  './xxx1.cv',
+  replaceStore(circuit, 'Microcode', microcode.join(',\n'))
+);
+
+function replaceStore(circuit, label, content) {
+  return circuit.replace(
+    new RegExp(
+      `(^.*?"EEPROM":\\s*\\[.*? "label":\\s*"${
+        label
+      }",.*?"constructorParamaters":\\s*\\[\\s*"\\w+",\\s*\\d+,\\s*\\d+,\\s*\\[)([\\s\\d,]+)(].*$)`,
+      'gs'
+    ),
+    `$1 ${content} $3`
+  );
+}
+
+*/
