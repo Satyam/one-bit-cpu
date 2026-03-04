@@ -26,7 +26,7 @@ contents.split('\n').forEach((line) => {
 });
 
 console.log(microcode.join(' '));
-await fs.writeFile('./microcode.rom', microcode.join(',\n'));
+await fs.writeFile('./microcode.bytes', microcode.join(',\n'));
 
 /* 
 Attempt to patch the .cv file itself, but it is not safe to do it
