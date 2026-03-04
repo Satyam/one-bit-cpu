@@ -1,0 +1,36 @@
+#!/usr/bin/env zx
+
+const [inFile, outFile] = getFileNames();
+
+const romFile = await fs.readFile(inFile, 'utf8');
+
+await fs.writeFile(
+  outFile,
+  romFile
+    .split('\n')
+    .map((line) => line.split('#')[0].trim())
+    .filter((line, index) => index && line.length)
+    .map((line) => line.split(':')[1].trim())
+    .join(' ')
+);
+
+function getFileNames() {
+  const fileName = argv._[0] || 'program';
+
+  let inFile;
+  let outFile;
+
+  if (path.extname(fileName)) {
+    inFile = fileName;
+    outFile = path.basename(fileName, path.extname(fileName)) + '.bytes';
+  } else {
+    inFile = fileName + '.rom';
+    outFile = fileName + '.bytes';
+  }
+
+  if (argv.o) {
+    outFile = argv.o;
+    if (!path.extname(outFile)) outFile = outFile + '.bytes';
+  }
+  return [inFile, outFile];
+}
