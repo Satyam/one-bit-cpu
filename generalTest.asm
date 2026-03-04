@@ -122,12 +122,19 @@ skip2: out        # should output 1
       not         # acc = 1, (should not happen)
 skip3: out        # should output 0
 
+# Test calls and returns
+      one
+      outTo 0
+      call sub1
+      call sub2
+      jmp   end
+sub1: out
+      ret
+sub2: call sub3
+      ret
+sub3: ret
 
-# keep the following zeros at the end of the usable part
-# to let the signals settle from the last usable instruction
+# End with a HALT
+end:  halt
 
-      zero
-      zero
-
-# Nothing to see here
 
