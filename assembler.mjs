@@ -107,7 +107,7 @@ function getFileNames() {
 
   if (argv.o) {
     outFile = argv.o;
-    if (!path.extname) outFile = outFile + '.rom';
+    if (!path.extname(outFile)) outFile = outFile + '.rom';
   }
   return [inFile, outFile];
 }
