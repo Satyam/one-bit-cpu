@@ -10,7 +10,14 @@ await fs.writeFile(
     .split('\n')
     .map((line) => line.split('#')[0].trim())
     .filter((line, index) => index && line.length)
-    .map((line) => line.split(':')[1].trim())
+    .map((line) =>
+      line
+        .split(':')[1]
+        .trim()
+        .split(/\s+/)
+        .map((v) => Number.parseInt(v, 16))
+        .join(' ')
+    )
     .join(' ')
 );
 
