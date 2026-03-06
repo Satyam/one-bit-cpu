@@ -1,8 +1,8 @@
 {
   "name": "1 bit CPU",
   "timePeriod": 500,
-  "clockEnabled": true,
-  "projectId": "3A2yb3a1l4i9ir3BK3XG",
+  "clockEnabled": false,
+  "projectId": "xNjdxBT7ha2CvRsmvXwJ",
   "focussedCircuit": 32443258289,
   "orderedTabs": [
     "26638966021",
@@ -12,7 +12,8 @@
     "91208837378",
     "61428929175",
     "32443258289",
-    "22523735200"
+    "22523735200",
+    "82164640945"
   ],
   "scopes": [
     {
@@ -4680,44 +4681,58 @@
         "currentGroup": 0,
         "testData": {
           "type": "seq",
-          "title": "74193 Orig",
+          "title": "12 bit Counter",
           "groups": [
             {
               "label": "Set 1",
               "inputs": [
                 {
-                  "label": "/Cup          ",
+                  "label": "Up ",
                   "bitWidth": 1,
                   "values": [
-                    "1",
-                    "1",
+                    "0",
                     "0",
                     "1",
                     "0",
+                    "1",
+                    "0",
+                    "0",
+                    "0"
+                  ]
+                },
+                {
+                  "label": "Down ",
+                  "bitWidth": 1,
+                  "values": [
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "1",
+                    "0"
+                  ]
+                },
+                {
+                  "label": "Clear ",
+                  "bitWidth": 1,
+                  "values": [
+                    "0",
+                    "1",
+                    "1",
+                    "1",
+                    "1",
                     "1",
                     "1",
                     "1"
                   ]
                 },
                 {
-                  "label": "/Cdown          ",
+                  "label": "Load ",
                   "bitWidth": 1,
                   "values": [
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
                     "0",
-                    "1"
-                  ]
-                },
-                {
-                  "label": "Clear    ",
-                  "bitWidth": 1,
-                  "values": [
-                    "1",
                     "0",
                     "0",
                     "0",
@@ -4728,75 +4743,61 @@
                   ]
                 },
                 {
-                  "label": "/Load  ",
-                  "bitWidth": 1,
+                  "label": "D  ",
+                  "bitWidth": 12,
                   "values": [
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1"
-                  ]
-                },
-                {
-                  "label": "D ",
-                  "bitWidth": 4,
-                  "values": [
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0000"
+                    "000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000000"
                   ]
                 }
               ],
               "outputs": [
                 {
-                  "label": "Q          ",
-                  "bitWidth": 4,
+                  "label": "Q           ",
+                  "bitWidth": 12,
                   "values": [
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0001",
-                    "0001",
-                    "0010",
-                    "0010",
-                    "0001"
+                    "000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000001",
+                    "000000000001",
+                    "000000000010",
+                    "000000000010",
+                    "000000000001"
                   ]
                 },
                 {
-                  "label": "/Carry    ",
+                  "label": "Carry ",
                   "bitWidth": 1,
                   "values": [
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1"
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0"
                   ]
                 },
                 {
-                  "label": "/Borrow    ",
+                  "label": "Borrow ",
                   "bitWidth": 1,
                   "values": [
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1"
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0"
                   ]
                 }
               ],
@@ -4806,44 +4807,44 @@
               "label": "Set 2",
               "inputs": [
                 {
-                  "label": "/Cup          ",
+                  "label": "Up ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Cdown          ",
+                  "label": "Down ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "Clear    ",
+                  "label": "Clear ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Load  ",
+                  "label": "Load ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "D ",
-                  "bitWidth": 4,
+                  "label": "D  ",
+                  "bitWidth": 12,
                   "values": []
                 }
               ],
               "outputs": [
                 {
-                  "label": "Q          ",
-                  "bitWidth": 4,
+                  "label": "Q           ",
+                  "bitWidth": 12,
                   "values": []
                 },
                 {
-                  "label": "/Carry    ",
+                  "label": "Carry ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Borrow    ",
+                  "label": "Borrow ",
                   "bitWidth": 1,
                   "values": []
                 }
@@ -4854,44 +4855,44 @@
               "label": "Set 3",
               "inputs": [
                 {
-                  "label": "/Cup          ",
+                  "label": "Up ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Cdown          ",
+                  "label": "Down ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "Clear    ",
+                  "label": "Clear ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Load  ",
+                  "label": "Load ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "D ",
-                  "bitWidth": 4,
+                  "label": "D  ",
+                  "bitWidth": 12,
                   "values": []
                 }
               ],
               "outputs": [
                 {
-                  "label": "Q          ",
-                  "bitWidth": 4,
+                  "label": "Q           ",
+                  "bitWidth": 12,
                   "values": []
                 },
                 {
-                  "label": "/Carry    ",
+                  "label": "Carry ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Borrow    ",
+                  "label": "Borrow ",
                   "bitWidth": 1,
                   "values": []
                 }
@@ -8772,9 +8773,9 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            172,
             150,
-            161
+            161,
+            172
           ]
         },
         {
@@ -8784,8 +8785,8 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            159,
-            154
+            154,
+            159
           ]
         },
         {
@@ -8805,44 +8806,58 @@
         "currentGroup": 0,
         "testData": {
           "type": "seq",
-          "title": "74193 Orig",
+          "title": "12 bit Counter",
           "groups": [
             {
               "label": "Set 1",
               "inputs": [
                 {
-                  "label": "/Cup          ",
+                  "label": "Up ",
                   "bitWidth": 1,
                   "values": [
-                    "1",
-                    "1",
+                    "0",
                     "0",
                     "1",
                     "0",
+                    "1",
+                    "0",
+                    "0",
+                    "0"
+                  ]
+                },
+                {
+                  "label": "Down ",
+                  "bitWidth": 1,
+                  "values": [
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "1",
+                    "0"
+                  ]
+                },
+                {
+                  "label": "Clear ",
+                  "bitWidth": 1,
+                  "values": [
+                    "0",
+                    "1",
+                    "1",
+                    "1",
+                    "1",
                     "1",
                     "1",
                     "1"
                   ]
                 },
                 {
-                  "label": "/Cdown          ",
+                  "label": "Load ",
                   "bitWidth": 1,
                   "values": [
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
                     "0",
-                    "1"
-                  ]
-                },
-                {
-                  "label": "Clear    ",
-                  "bitWidth": 1,
-                  "values": [
-                    "1",
                     "0",
                     "0",
                     "0",
@@ -8853,75 +8868,61 @@
                   ]
                 },
                 {
-                  "label": "/Load  ",
-                  "bitWidth": 1,
+                  "label": "D  ",
+                  "bitWidth": 12,
                   "values": [
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1"
-                  ]
-                },
-                {
-                  "label": "D ",
-                  "bitWidth": 4,
-                  "values": [
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0000"
+                    "000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000000"
                   ]
                 }
               ],
               "outputs": [
                 {
-                  "label": "Q          ",
-                  "bitWidth": 4,
+                  "label": "Q           ",
+                  "bitWidth": 12,
                   "values": [
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0001",
-                    "0001",
-                    "0010",
-                    "0010",
-                    "0001"
+                    "000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000001",
+                    "000000000001",
+                    "000000000010",
+                    "000000000010",
+                    "000000000001"
                   ]
                 },
                 {
-                  "label": "/Carry    ",
+                  "label": "Carry ",
                   "bitWidth": 1,
                   "values": [
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1"
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0"
                   ]
                 },
                 {
-                  "label": "/Borrow    ",
+                  "label": "Borrow ",
                   "bitWidth": 1,
                   "values": [
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1"
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0"
                   ]
                 }
               ],
@@ -8931,44 +8932,44 @@
               "label": "Set 2",
               "inputs": [
                 {
-                  "label": "/Cup          ",
+                  "label": "Up ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Cdown          ",
+                  "label": "Down ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "Clear    ",
+                  "label": "Clear ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Load  ",
+                  "label": "Load ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "D ",
-                  "bitWidth": 4,
+                  "label": "D  ",
+                  "bitWidth": 12,
                   "values": []
                 }
               ],
               "outputs": [
                 {
-                  "label": "Q          ",
-                  "bitWidth": 4,
+                  "label": "Q           ",
+                  "bitWidth": 12,
                   "values": []
                 },
                 {
-                  "label": "/Carry    ",
+                  "label": "Carry ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Borrow    ",
+                  "label": "Borrow ",
                   "bitWidth": 1,
                   "values": []
                 }
@@ -8979,44 +8980,44 @@
               "label": "Set 3",
               "inputs": [
                 {
-                  "label": "/Cup          ",
+                  "label": "Up ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Cdown          ",
+                  "label": "Down ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "Clear    ",
+                  "label": "Clear ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Load  ",
+                  "label": "Load ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "D ",
-                  "bitWidth": 4,
+                  "label": "D  ",
+                  "bitWidth": 12,
                   "values": []
                 }
               ],
               "outputs": [
                 {
-                  "label": "Q          ",
-                  "bitWidth": 4,
+                  "label": "Q           ",
+                  "bitWidth": 12,
                   "values": []
                 },
                 {
-                  "label": "/Carry    ",
+                  "label": "Carry ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Borrow    ",
+                  "label": "Borrow ",
                   "bitWidth": 1,
                   "values": []
                 }
@@ -11059,7 +11060,7 @@
           "bitWidth": 20,
           "label": "DATA OUT",
           "connections": [
-            49
+            48
           ]
         },
         {
@@ -11069,7 +11070,7 @@
           "bitWidth": 1,
           "label": "Clock",
           "connections": [
-            33
+            32
           ]
         },
         {
@@ -11079,7 +11080,7 @@
           "bitWidth": 8,
           "label": "D",
           "connections": [
-            34
+            33
           ]
         },
         {
@@ -11116,7 +11117,9 @@
           "type": 0,
           "bitWidth": 8,
           "label": "Preset",
-          "connections": []
+          "connections": [
+            55
+          ]
         },
         {
           "x": -10,
@@ -11124,7 +11127,9 @@
           "type": 0,
           "bitWidth": 1,
           "label": "Enable",
-          "connections": []
+          "connections": [
+            57
+          ]
         },
         {
           "x": -20,
@@ -11133,7 +11138,7 @@
           "bitWidth": 1,
           "label": "Clock",
           "connections": [
-            53
+            52
           ]
         },
         {
@@ -11143,7 +11148,7 @@
           "bitWidth": 1,
           "label": "T",
           "connections": [
-            36
+            35
           ]
         },
         {
@@ -11153,7 +11158,7 @@
           "bitWidth": 1,
           "label": "Q",
           "connections": [
-            48
+            47
           ]
         },
         {
@@ -11207,7 +11212,7 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            48
+            47
           ]
         },
         {
@@ -11228,7 +11233,7 @@
           "label": "",
           "connections": [
             8,
-            42
+            41
           ]
         },
         {
@@ -11256,7 +11261,7 @@
           "bitWidth": 8,
           "label": "",
           "connections": [
-            34
+            33
           ]
         },
         {
@@ -11266,7 +11271,7 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            35
+            34
           ]
         },
         {
@@ -11276,8 +11281,8 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            10,
-            35
+            34,
+            10
           ]
         },
         {
@@ -11299,7 +11304,7 @@
           "label": "",
           "connections": [
             29,
-            35
+            34
           ]
         },
         {
@@ -11309,29 +11314,19 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            55
+            54
           ]
         },
         {
-          "x": 580,
-          "y": 270,
-          "type": 2,
-          "bitWidth": 1,
-          "label": "",
-          "connections": [
-            33,
-            55
-          ]
-        },
-        {
-          "x": 580,
+          "x": 510,
           "y": 250,
           "type": 2,
           "bitWidth": 1,
           "label": "",
           "connections": [
             6,
-            32
+            53,
+            54
           ]
         },
         {
@@ -11343,7 +11338,7 @@
           "connections": [
             7,
             26,
-            47
+            46
           ]
         },
         {
@@ -11366,7 +11361,7 @@
           "label": "",
           "connections": [
             14,
-            37
+            36
           ]
         },
         {
@@ -11376,8 +11371,8 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            36,
-            38
+            35,
+            37
           ]
         },
         {
@@ -11387,8 +11382,8 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            37,
-            50
+            36,
+            49
           ]
         },
         {
@@ -11398,7 +11393,7 @@
           "bitWidth": 12,
           "label": "",
           "connections": [
-            45
+            44
           ]
         },
         {
@@ -11408,7 +11403,7 @@
           "bitWidth": 8,
           "label": "",
           "connections": [
-            47
+            55
           ]
         },
         {
@@ -11418,7 +11413,7 @@
           "bitWidth": 4,
           "label": "",
           "connections": [
-            44
+            42
           ]
         },
         {
@@ -11437,7 +11432,9 @@
           "type": 0,
           "bitWidth": 4,
           "label": "",
-          "connections": []
+          "connections": [
+            40
+          ]
         },
         {
           "x": 20,
@@ -11445,9 +11442,7 @@
           "type": 0,
           "bitWidth": 4,
           "label": "",
-          "connections": [
-            41
-          ]
+          "connections": []
         },
         {
           "x": 120,
@@ -11456,7 +11451,7 @@
           "bitWidth": 12,
           "label": "",
           "connections": [
-            39
+            38
           ]
         },
         {
@@ -11466,7 +11461,7 @@
           "bitWidth": 19,
           "label": "",
           "connections": [
-            51
+            50
           ]
         },
         {
@@ -11476,8 +11471,8 @@
           "bitWidth": 8,
           "label": "",
           "connections": [
-            34,
-            40
+            33,
+            55
           ]
         },
         {
@@ -11508,7 +11503,7 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            38
+            37
           ]
         },
         {
@@ -11518,7 +11513,7 @@
           "bitWidth": 19,
           "label": "",
           "connections": [
-            46
+            45
           ]
         },
         {
@@ -11528,7 +11523,7 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            54
+            53
           ]
         },
         {
@@ -11548,8 +11543,8 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            52,
-            55
+            51,
+            32
           ]
         },
         {
@@ -11560,8 +11555,40 @@
           "label": "",
           "connections": [
             31,
-            32,
-            54
+            32
+          ]
+        },
+        {
+          "x": 620,
+          "y": 320,
+          "type": 2,
+          "bitWidth": 8,
+          "label": "",
+          "connections": [
+            46,
+            11,
+            39
+          ]
+        },
+        {
+          "x": 10,
+          "y": 0,
+          "type": 1,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            57
+          ]
+        },
+        {
+          "x": 610,
+          "y": 280,
+          "type": 2,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            56,
+            12
           ]
         }
       ],
@@ -11581,7 +11608,7 @@
               "output1": 26
             },
             "values": {
-              "state": 0
+              "state": 200
             },
             "constructorParamaters": [
               "RIGHT",
@@ -11658,7 +11685,7 @@
           "propagationDelay": 0,
           "customData": {
             "nodes": {
-              "inp1": 45
+              "inp1": 44
             },
             "constructorParamaters": [
               "LEFT",
@@ -11681,7 +11708,7 @@
           "propagationDelay": 0,
           "customData": {
             "nodes": {
-              "inp1": 46
+              "inp1": 45
             },
             "constructorParamaters": [
               "LEFT",
@@ -11710,8 +11737,8 @@
               1
             ],
             "nodes": {
-              "output1": 53,
-              "inp1": 52
+              "output1": 52,
+              "inp1": 51
             }
           }
         }
@@ -11770,7 +11797,7 @@
           }
         },
         {
-          "x": 680,
+          "x": 660,
           "y": 340,
           "objectType": "Splitter",
           "label": "",
@@ -11788,10 +11815,10 @@
             ],
             "nodes": {
               "outputs": [
-                40,
-                41
+                39,
+                40
               ],
-              "inp1": 39
+              "inp1": 38
             }
           }
         },
@@ -11814,10 +11841,10 @@
             ],
             "nodes": {
               "outputs": [
-                43,
-                44
+                42,
+                43
               ],
-              "inp1": 42
+              "inp1": 41
             }
           }
         },
@@ -11840,11 +11867,32 @@
             ],
             "nodes": {
               "outputs": [
-                50,
-                51
+                49,
+                50
               ],
-              "inp1": 49
+              "inp1": 48
             }
+          }
+        }
+      ],
+      "ConstantVal": [
+        {
+          "x": 580,
+          "y": 280,
+          "objectType": "ConstantVal",
+          "label": "",
+          "direction": "RIGHT",
+          "labelDirection": "LEFT",
+          "propagationDelay": 0,
+          "customData": {
+            "nodes": {
+              "output1": 56
+            },
+            "constructorParamaters": [
+              "RIGHT",
+              1,
+              "1"
+            ]
           }
         }
       ],
@@ -12067,11 +12115,12 @@
         35,
         36,
         37,
-        38,
+        46,
         47,
-        48,
+        53,
         54,
-        55
+        55,
+        57
       ]
     },
     {
@@ -14268,87 +14317,223 @@
         "currentGroup": 0,
         "testData": {
           "type": "seq",
-          "title": "CPU",
+          "title": "12 bit Counter",
           "groups": [
             {
               "label": "Set 1",
               "inputs": [
                 {
-                  "label": "Reset    ",
+                  "label": "Up ",
                   "bitWidth": 1,
                   "values": [
+                    "0",
+                    "0",
+                    "1",
+                    "0",
+                    "1",
+                    "0",
+                    "0",
+                    "0"
+                  ]
+                },
+                {
+                  "label": "Down ",
+                  "bitWidth": 1,
+                  "values": [
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
                     "1",
                     "0"
                   ]
                 },
                 {
-                  "label": "Clock    ",
+                  "label": "Clear ",
                   "bitWidth": 1,
                   "values": [
+                    "0",
+                    "1",
+                    "1",
+                    "1",
+                    "1",
+                    "1",
+                    "1",
+                    "1"
+                  ]
+                },
+                {
+                  "label": "Load ",
+                  "bitWidth": 1,
+                  "values": [
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
                     "0",
                     "0"
                   ]
                 },
                 {
-                  "label": "InstructionIn    ",
-                  "bitWidth": 8,
+                  "label": "D  ",
+                  "bitWidth": 12,
                   "values": [
-                    "0",
-                    "0"
-                  ]
-                },
-                {
-                  "label": "DataIn  ",
-                  "bitWidth": 1,
-                  "values": [
-                    "0",
-                    "0"
+                    "000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000000"
                   ]
                 }
               ],
               "outputs": [
                 {
-                  "label": "InstructionAddress    ",
+                  "label": "Q           ",
                   "bitWidth": 12,
                   "values": [
-                    "0",
-                    "0"
+                    "000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000001",
+                    "000000000001",
+                    "000000000010",
+                    "000000000010",
+                    "000000000001"
                   ]
                 },
                 {
-                  "label": "DataOut    ",
+                  "label": "Carry ",
                   "bitWidth": 1,
                   "values": [
                     "0",
-                    "0"
-                  ]
-                },
-                {
-                  "label": "Write ",
-                  "bitWidth": 1,
-                  "values": [
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
                     "0",
                     "0"
                   ]
                 },
                 {
-                  "label": "Read ",
+                  "label": "Borrow ",
                   "bitWidth": 1,
                   "values": [
                     "0",
-                    "0"
-                  ]
-                },
-                {
-                  "label": "DataAddress ",
-                  "bitWidth": 11,
-                  "values": [
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
                     "0",
                     "0"
                   ]
                 }
               ],
-              "n": 2
+              "n": 8
+            },
+            {
+              "label": "Set 2",
+              "inputs": [
+                {
+                  "label": "Up ",
+                  "bitWidth": 1,
+                  "values": []
+                },
+                {
+                  "label": "Down ",
+                  "bitWidth": 1,
+                  "values": []
+                },
+                {
+                  "label": "Clear ",
+                  "bitWidth": 1,
+                  "values": []
+                },
+                {
+                  "label": "Load ",
+                  "bitWidth": 1,
+                  "values": []
+                },
+                {
+                  "label": "D  ",
+                  "bitWidth": 12,
+                  "values": []
+                }
+              ],
+              "outputs": [
+                {
+                  "label": "Q           ",
+                  "bitWidth": 12,
+                  "values": []
+                },
+                {
+                  "label": "Carry ",
+                  "bitWidth": 1,
+                  "values": []
+                },
+                {
+                  "label": "Borrow ",
+                  "bitWidth": 1,
+                  "values": []
+                }
+              ],
+              "n": 0
+            },
+            {
+              "label": "Set 3",
+              "inputs": [
+                {
+                  "label": "Up ",
+                  "bitWidth": 1,
+                  "values": []
+                },
+                {
+                  "label": "Down ",
+                  "bitWidth": 1,
+                  "values": []
+                },
+                {
+                  "label": "Clear ",
+                  "bitWidth": 1,
+                  "values": []
+                },
+                {
+                  "label": "Load ",
+                  "bitWidth": 1,
+                  "values": []
+                },
+                {
+                  "label": "D  ",
+                  "bitWidth": 12,
+                  "values": []
+                }
+              ],
+              "outputs": [
+                {
+                  "label": "Q           ",
+                  "bitWidth": 12,
+                  "values": []
+                },
+                {
+                  "label": "Carry ",
+                  "bitWidth": 1,
+                  "values": []
+                },
+                {
+                  "label": "Borrow ",
+                  "bitWidth": 1,
+                  "values": []
+                }
+              ],
+              "n": 0
             }
           ]
         }
@@ -14369,7 +14554,7 @@
               "output1": 11
             },
             "values": {
-              "state": 0
+              "state": 207
             },
             "constructorParamaters": [
               "RIGHT",
@@ -14447,7 +14632,7 @@
               "output1": 136
             },
             "values": {
-              "state": 1
+              "state": 0
             },
             "constructorParamaters": [
               "RIGHT",
@@ -15970,44 +16155,58 @@
         "currentGroup": 0,
         "testData": {
           "type": "seq",
-          "title": "74193 Orig",
+          "title": "12 bit Counter",
           "groups": [
             {
               "label": "Set 1",
               "inputs": [
                 {
-                  "label": "/Cup          ",
+                  "label": "Up ",
                   "bitWidth": 1,
                   "values": [
-                    "1",
-                    "1",
+                    "0",
                     "0",
                     "1",
                     "0",
+                    "1",
+                    "0",
+                    "0",
+                    "0"
+                  ]
+                },
+                {
+                  "label": "Down ",
+                  "bitWidth": 1,
+                  "values": [
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "1",
+                    "0"
+                  ]
+                },
+                {
+                  "label": "Clear ",
+                  "bitWidth": 1,
+                  "values": [
+                    "0",
+                    "1",
+                    "1",
+                    "1",
+                    "1",
                     "1",
                     "1",
                     "1"
                   ]
                 },
                 {
-                  "label": "/Cdown          ",
+                  "label": "Load ",
                   "bitWidth": 1,
                   "values": [
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
                     "0",
-                    "1"
-                  ]
-                },
-                {
-                  "label": "Clear    ",
-                  "bitWidth": 1,
-                  "values": [
-                    "1",
                     "0",
                     "0",
                     "0",
@@ -16018,75 +16217,61 @@
                   ]
                 },
                 {
-                  "label": "/Load  ",
-                  "bitWidth": 1,
+                  "label": "D  ",
+                  "bitWidth": 12,
                   "values": [
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1"
-                  ]
-                },
-                {
-                  "label": "D ",
-                  "bitWidth": 4,
-                  "values": [
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0000"
+                    "000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000000"
                   ]
                 }
               ],
               "outputs": [
                 {
-                  "label": "Q          ",
-                  "bitWidth": 4,
+                  "label": "Q           ",
+                  "bitWidth": 12,
                   "values": [
-                    "0000",
-                    "0000",
-                    "0000",
-                    "0001",
-                    "0001",
-                    "0010",
-                    "0010",
-                    "0001"
+                    "000000000000",
+                    "000000000000",
+                    "000000000000",
+                    "000000000001",
+                    "000000000001",
+                    "000000000010",
+                    "000000000010",
+                    "000000000001"
                   ]
                 },
                 {
-                  "label": "/Carry    ",
+                  "label": "Carry ",
                   "bitWidth": 1,
                   "values": [
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1"
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0"
                   ]
                 },
                 {
-                  "label": "/Borrow    ",
+                  "label": "Borrow ",
                   "bitWidth": 1,
                   "values": [
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1",
-                    "1"
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    "0"
                   ]
                 }
               ],
@@ -16096,44 +16281,44 @@
               "label": "Set 2",
               "inputs": [
                 {
-                  "label": "/Cup          ",
+                  "label": "Up ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Cdown          ",
+                  "label": "Down ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "Clear    ",
+                  "label": "Clear ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Load  ",
+                  "label": "Load ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "D ",
-                  "bitWidth": 4,
+                  "label": "D  ",
+                  "bitWidth": 12,
                   "values": []
                 }
               ],
               "outputs": [
                 {
-                  "label": "Q          ",
-                  "bitWidth": 4,
+                  "label": "Q           ",
+                  "bitWidth": 12,
                   "values": []
                 },
                 {
-                  "label": "/Carry    ",
+                  "label": "Carry ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Borrow    ",
+                  "label": "Borrow ",
                   "bitWidth": 1,
                   "values": []
                 }
@@ -16144,44 +16329,44 @@
               "label": "Set 3",
               "inputs": [
                 {
-                  "label": "/Cup          ",
+                  "label": "Up ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Cdown          ",
+                  "label": "Down ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "Clear    ",
+                  "label": "Clear ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Load  ",
+                  "label": "Load ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "D ",
-                  "bitWidth": 4,
+                  "label": "D  ",
+                  "bitWidth": 12,
                   "values": []
                 }
               ],
               "outputs": [
                 {
-                  "label": "Q          ",
-                  "bitWidth": 4,
+                  "label": "Q           ",
+                  "bitWidth": 12,
                   "values": []
                 },
                 {
-                  "label": "/Carry    ",
+                  "label": "Carry ",
                   "bitWidth": 1,
                   "values": []
                 },
                 {
-                  "label": "/Borrow    ",
+                  "label": "Borrow ",
                   "bitWidth": 1,
                   "values": []
                 }
@@ -17535,6 +17720,1842 @@
         43,
         44,
         45
+      ]
+    },
+    {
+      "layout": {
+        "width": 100,
+        "height": 140,
+        "title_x": 50,
+        "title_y": 13,
+        "titleEnabled": true
+      },
+      "verilogMetadata": {
+        "isVerilogCircuit": false,
+        "isMainCircuit": false,
+        "code": "// Write Some Verilog Code Here!",
+        "subCircuitScopeIds": []
+      },
+      "allNodes": [
+        {
+          "x": 180,
+          "y": 60,
+          "type": 1,
+          "bitWidth": 11,
+          "label": "",
+          "connections": [
+            31
+          ]
+        },
+        {
+          "x": 180,
+          "y": 30,
+          "type": 1,
+          "bitWidth": 12,
+          "label": "",
+          "connections": [
+            36
+          ]
+        },
+        {
+          "x": 180,
+          "y": 80,
+          "type": 1,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            13
+          ]
+        },
+        {
+          "x": 180,
+          "y": 100,
+          "type": 1,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            14
+          ]
+        },
+        {
+          "x": 180,
+          "y": 120,
+          "type": 1,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            15
+          ]
+        },
+        {
+          "x": 0,
+          "y": 40,
+          "type": 0,
+          "bitWidth": 8,
+          "label": "",
+          "connections": [
+            39
+          ]
+        },
+        {
+          "x": 0,
+          "y": 80,
+          "type": 0,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            34
+          ]
+        },
+        {
+          "x": 0,
+          "y": 110,
+          "type": 0,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            11
+          ]
+        },
+        {
+          "x": 80,
+          "y": 140,
+          "type": 0,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            10
+          ]
+        },
+        {
+          "x": 10,
+          "y": 0,
+          "type": 1,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            10
+          ]
+        },
+        {
+          "x": 770,
+          "y": 370,
+          "type": 2,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            8,
+            9
+          ]
+        },
+        {
+          "x": 10,
+          "y": 0,
+          "type": 1,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            7
+          ]
+        },
+        {
+          "x": 110,
+          "y": 0,
+          "type": 0,
+          "bitWidth": 11,
+          "label": "",
+          "connections": [
+            31
+          ]
+        },
+        {
+          "x": 10,
+          "y": 0,
+          "type": 0,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            2
+          ]
+        },
+        {
+          "x": 10,
+          "y": 0,
+          "type": 0,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            3
+          ]
+        },
+        {
+          "x": 10,
+          "y": 0,
+          "type": 0,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            4
+          ]
+        },
+        {
+          "x": -60,
+          "y": -20,
+          "type": 0,
+          "bitWidth": 10,
+          "label": "ADDRESS",
+          "connections": [
+            27
+          ]
+        },
+        {
+          "x": -60,
+          "y": 0,
+          "type": 0,
+          "bitWidth": 8,
+          "label": "DATA IN",
+          "connections": []
+        },
+        {
+          "x": -60,
+          "y": 20,
+          "type": 0,
+          "bitWidth": 1,
+          "label": "WRITE",
+          "connections": []
+        },
+        {
+          "x": 0,
+          "y": 40,
+          "type": 0,
+          "bitWidth": 1,
+          "label": "RESET",
+          "connections": []
+        },
+        {
+          "x": -20,
+          "y": 40,
+          "type": 0,
+          "bitWidth": 1,
+          "label": "CORE DUMP",
+          "connections": []
+        },
+        {
+          "x": 60,
+          "y": 0,
+          "type": 1,
+          "bitWidth": 8,
+          "label": "DATA OUT",
+          "connections": [
+            39
+          ]
+        },
+        {
+          "x": -10,
+          "y": 10,
+          "type": 0,
+          "bitWidth": 12,
+          "label": "",
+          "connections": [
+            36
+          ]
+        },
+        {
+          "x": 20,
+          "y": -20,
+          "type": 0,
+          "bitWidth": 10,
+          "label": "",
+          "connections": [
+            25,
+            35
+          ]
+        },
+        {
+          "x": 20,
+          "y": 0,
+          "type": 0,
+          "bitWidth": 2,
+          "label": "",
+          "connections": []
+        },
+        {
+          "x": 940,
+          "y": 160,
+          "type": 2,
+          "bitWidth": 10,
+          "label": "",
+          "connections": [
+            23,
+            26
+          ]
+        },
+        {
+          "x": 450,
+          "y": 160,
+          "type": 2,
+          "bitWidth": 10,
+          "label": "",
+          "connections": [
+            25,
+            27
+          ]
+        },
+        {
+          "x": 450,
+          "y": 220,
+          "type": 2,
+          "bitWidth": 10,
+          "label": "",
+          "connections": [
+            16,
+            26
+          ]
+        },
+        {
+          "x": -10,
+          "y": 10,
+          "type": 0,
+          "bitWidth": 11,
+          "label": "",
+          "connections": [
+            31
+          ]
+        },
+        {
+          "x": 20,
+          "y": -20,
+          "type": 0,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            32
+          ]
+        },
+        {
+          "x": 20,
+          "y": 0,
+          "type": 0,
+          "bitWidth": 10,
+          "label": "",
+          "connections": []
+        },
+        {
+          "x": 970,
+          "y": 260,
+          "type": 2,
+          "bitWidth": 11,
+          "label": "",
+          "connections": [
+            0,
+            12,
+            28
+          ]
+        },
+        {
+          "x": 1000,
+          "y": 140,
+          "type": 2,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            29,
+            33
+          ]
+        },
+        {
+          "x": 670,
+          "y": 140,
+          "type": 2,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            32,
+            34
+          ]
+        },
+        {
+          "x": 670,
+          "y": 280,
+          "type": 2,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            6,
+            33
+          ]
+        },
+        {
+          "x": 100,
+          "y": 0,
+          "type": 0,
+          "bitWidth": 10,
+          "label": "",
+          "connections": [
+            23
+          ]
+        },
+        {
+          "x": 910,
+          "y": 230,
+          "type": 2,
+          "bitWidth": 12,
+          "label": "",
+          "connections": [
+            1,
+            22
+          ]
+        },
+        {
+          "x": 80,
+          "y": 0,
+          "type": 0,
+          "bitWidth": 8,
+          "label": "",
+          "connections": [
+            38
+          ]
+        },
+        {
+          "x": 640,
+          "y": 110,
+          "type": 2,
+          "bitWidth": 8,
+          "label": "",
+          "connections": [
+            37,
+            39
+          ]
+        },
+        {
+          "x": 640,
+          "y": 240,
+          "type": 2,
+          "bitWidth": 8,
+          "label": "",
+          "connections": [
+            5,
+            21,
+            38
+          ]
+        }
+      ],
+      "testbenchData": {
+        "currentCase": 0,
+        "currentGroup": 0,
+        "testData": {
+          "type": "seq",
+          "title": "General Test",
+          "groups": [
+            {
+              "label": "Set 1",
+              "inputs": [
+                {
+                  "label": "RST   ",
+                  "bitWidth": 1,
+                  "values": [
+                    "0"
+                  ]
+                }
+              ],
+              "outputs": [
+                {
+                  "label": "DataOut   ",
+                  "bitWidth": 1,
+                  "values": [
+                    "0"
+                  ],
+                  "results": [
+                    "0"
+                  ]
+                },
+                {
+                  "label": "Read   ",
+                  "bitWidth": 1,
+                  "values": [
+                    "0"
+                  ],
+                  "results": [
+                    "0"
+                  ]
+                },
+                {
+                  "label": "Write   ",
+                  "bitWidth": 1,
+                  "values": [
+                    "0"
+                  ],
+                  "results": [
+                    "0"
+                  ]
+                },
+                {
+                  "label": "DataAddress   ",
+                  "bitWidth": 11,
+                  "values": [
+                    "00000000000"
+                  ],
+                  "results": [
+                    "00000000000"
+                  ]
+                },
+                {
+                  "label": "InstructionAddress ",
+                  "bitWidth": 10,
+                  "values": [
+                    "0000000000"
+                  ],
+                  "results": [
+                    "0000000000"
+                  ]
+                },
+                {
+                  "label": "InstructionIn ",
+                  "bitWidth": 8,
+                  "values": [
+                    "11001000"
+                  ],
+                  "results": [
+                    "11001000"
+                  ]
+                }
+              ],
+              "n": 1
+            }
+          ]
+        }
+      },
+      "id": 82164640945,
+      "name": "test",
+      "Input": [
+        {
+          "x": 700,
+          "y": 370,
+          "objectType": "Input",
+          "label": "RST",
+          "direction": "RIGHT",
+          "labelDirection": "LEFT",
+          "propagationDelay": 0,
+          "customData": {
+            "nodes": {
+              "output1": 9
+            },
+            "values": {
+              "state": 0
+            },
+            "constructorParamaters": [
+              "RIGHT",
+              1,
+              {
+                "x": 0,
+                "y": 20,
+                "id": "CdgHvVBlx8i0QjMwHMld"
+              }
+            ]
+          }
+        }
+      ],
+      "Output": [
+        {
+          "x": 1150,
+          "y": 260,
+          "objectType": "Output",
+          "label": "DataAddress",
+          "direction": "LEFT",
+          "labelDirection": "RIGHT",
+          "propagationDelay": 0,
+          "customData": {
+            "nodes": {
+              "inp1": 12
+            },
+            "constructorParamaters": [
+              "LEFT",
+              11,
+              {
+                "x": 100,
+                "y": 20,
+                "id": "eMElFUbTjIMZ9GTcsmtX"
+              }
+            ]
+          }
+        },
+        {
+          "x": 920,
+          "y": 280,
+          "objectType": "Output",
+          "label": "DataOut",
+          "direction": "LEFT",
+          "labelDirection": "RIGHT",
+          "propagationDelay": 0,
+          "customData": {
+            "nodes": {
+              "inp1": 13
+            },
+            "constructorParamaters": [
+              "LEFT",
+              1,
+              {
+                "x": 100,
+                "y": 40,
+                "id": "fOskYgESL6WVS3KRVzCV"
+              }
+            ]
+          }
+        },
+        {
+          "x": 920,
+          "y": 300,
+          "objectType": "Output",
+          "label": "Write",
+          "direction": "LEFT",
+          "labelDirection": "RIGHT",
+          "propagationDelay": 0,
+          "customData": {
+            "nodes": {
+              "inp1": 14
+            },
+            "constructorParamaters": [
+              "LEFT",
+              1,
+              {
+                "x": 100,
+                "y": 60,
+                "id": "YCPUSZrQK2stQGpxZ5xB"
+              }
+            ]
+          }
+        },
+        {
+          "x": 920,
+          "y": 320,
+          "objectType": "Output",
+          "label": "Read",
+          "direction": "LEFT",
+          "labelDirection": "RIGHT",
+          "propagationDelay": 0,
+          "customData": {
+            "nodes": {
+              "inp1": 15
+            },
+            "constructorParamaters": [
+              "LEFT",
+              1,
+              {
+                "x": 100,
+                "y": 80,
+                "id": "TaW6hP5omNzGu1FfkLoe"
+              }
+            ]
+          }
+        },
+        {
+          "x": 1140,
+          "y": 170,
+          "objectType": "Output",
+          "label": "InstructionAddress",
+          "direction": "LEFT",
+          "labelDirection": "RIGHT",
+          "propagationDelay": 0,
+          "customData": {
+            "nodes": {
+              "inp1": 35
+            },
+            "constructorParamaters": [
+              "LEFT",
+              10,
+              {
+                "x": 100,
+                "y": 100,
+                "id": "54SXplkUCYS1F6tyhNKi"
+              }
+            ]
+          }
+        },
+        {
+          "x": 1120,
+          "y": 110,
+          "objectType": "Output",
+          "label": "InstructionIn",
+          "direction": "LEFT",
+          "labelDirection": "RIGHT",
+          "propagationDelay": 0,
+          "customData": {
+            "nodes": {
+              "inp1": 37
+            },
+            "constructorParamaters": [
+              "LEFT",
+              8,
+              {
+                "x": 100,
+                "y": 120,
+                "id": "dD48836UOR1qwnptEoBt"
+              }
+            ]
+          }
+        }
+      ],
+      "Splitter": [
+        {
+          "x": 920,
+          "y": 190,
+          "objectType": "Splitter",
+          "label": "",
+          "direction": "RIGHT",
+          "labelDirection": "LEFT",
+          "propagationDelay": 10,
+          "customData": {
+            "constructorParamaters": [
+              "RIGHT",
+              12,
+              [
+                10,
+                2
+              ]
+            ],
+            "nodes": {
+              "outputs": [
+                23,
+                24
+              ],
+              "inp1": 22
+            }
+          }
+        },
+        {
+          "x": 980,
+          "y": 230,
+          "objectType": "Splitter",
+          "label": "",
+          "direction": "RIGHT",
+          "labelDirection": "LEFT",
+          "propagationDelay": 10,
+          "customData": {
+            "constructorParamaters": [
+              "RIGHT",
+              11,
+              [
+                1,
+                10
+              ]
+            ],
+            "nodes": {
+              "outputs": [
+                29,
+                30
+              ],
+              "inp1": 28
+            }
+          }
+        }
+      ],
+      "EEPROM": [
+        {
+          "x": 550,
+          "y": 240,
+          "objectType": "EEPROM",
+          "label": "",
+          "direction": "RIGHT",
+          "labelDirection": "UP",
+          "propagationDelay": 10,
+          "customData": {
+            "constructorParamaters": [
+              "RIGHT",
+              8,
+              10,
+              [
+                200,
+                0,
+                200,
+                3,
+                200,
+                1,
+                200,
+                2,
+                204,
+                0,
+                160,
+                200,
+                1,
+                136,
+                160,
+                140,
+                160,
+                140,
+                96,
+                98,
+                136,
+                97,
+                99,
+                64,
+                160,
+                65,
+                160,
+                66,
+                160,
+                67,
+                160,
+                136,
+                96,
+                140,
+                97,
+                0,
+                160,
+                140,
+                1,
+                160,
+                136,
+                1,
+                160,
+                136,
+                0,
+                160,
+                140,
+                32,
+                160,
+                140,
+                33,
+                160,
+                136,
+                33,
+                160,
+                136,
+                0,
+                160,
+                136,
+                128,
+                160,
+                128,
+                160,
+                140,
+                200,
+                0,
+                160,
+                168,
+                168,
+                160,
+                172,
+                172,
+                192,
+                0,
+                176,
+                184,
+                184,
+                176,
+                188,
+                188,
+                200,
+                0,
+                140,
+                240,
+                86,
+                128,
+                160,
+                140,
+                224,
+                91,
+                128,
+                160,
+                136,
+                224,
+                96,
+                128,
+                160,
+                140,
+                200,
+                0,
+                208,
+                106,
+                208,
+                109,
+                240,
+                115,
+                160,
+                144,
+                148,
+                208,
+                113,
+                144,
+                148,
+                144,
+                148,
+                152,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "nodes": {
+              "address": 16,
+              "dataIn": 17,
+              "write": 18,
+              "reset": 19,
+              "coreDump": 20,
+              "dataOut": 21
+            }
+          }
+        }
+      ],
+      "Clock": [
+        {
+          "x": 630,
+          "y": 310,
+          "objectType": "Clock",
+          "label": "Clock",
+          "direction": "RIGHT",
+          "labelDirection": "LEFT",
+          "propagationDelay": 0,
+          "customData": {
+            "nodes": {
+              "output1": 11
+            },
+            "constructorParamaters": [
+              "RIGHT"
+            ]
+          }
+        }
+      ],
+      "SubCircuit": [
+        {
+          "x": 690,
+          "y": 200,
+          "id": "32443258289",
+          "label": "",
+          "labelDirection": "LEFT",
+          "inputNodes": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "outputNodes": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "version": "2.0"
+        }
+      ],
+      "restrictedCircuitElementsUsed": [],
+      "nodes": [
+        10,
+        25,
+        26,
+        27,
+        31,
+        32,
+        33,
+        34,
+        36,
+        38,
+        39
       ]
     }
   ]
