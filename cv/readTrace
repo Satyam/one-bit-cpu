@@ -1,0 +1,79 @@
+#!/usr/bin/env zx
+export {};
+
+const test = await fs.readFile('../generalTest.rom', 'utf8');
+
+const code = {};
+
+for (const line of test.split('\n')) {
+  if (line === 'v3.0 hex words addressed') continue;
+  const l = line.split('#')[0].trim();
+  if (l.length === 0) continue;
+  const parts = l.split(':');
+  if (parts.length === 2) {
+    code[parts[0].trim()] = line;
+  } else {
+    console.error(line);
+  }
+}
+
+const names = [
+  'ClkCn',
+  'T',
+  'DAddr',
+  'DOut',
+  'Write',
+  'Read',
+  'IAddr',
+  'Instr',
+  'code',
+];
+const out = [];
+const values = [];
+let lastClock = 0;
+let inside = false;
+
+const trace = await fs.readFile('./trace.txt', 'utf8');
+
+for (const line of trace.split('\n')) {
+  const [name, v] = line.split(',');
+  const val = parseInt(v, 16);
+  if (/F\d+/.test(name)) continue;
+  switch (name) {
+    case 'RST':
+      if (val === 1) {
+        inside = true;
+        values.length = 0;
+        out.length = 0;
+        lastClock = 0;
+      }
+      break;
+    case 'ClkCn':
+      if (inside && val !== lastClock) {
+        lastClock = val;
+        out.push(values.join(','));
+        values.length = 0;
+      }
+      values[names.indexOf(name)] = val;
+      values[names.indexOf('T')] = val % 3;
+      break;
+    case 'IAddr':
+      const padded = v.padStart(2, '0');
+      if (code[padded]) {
+        values[names.indexOf('code')] = code[padded];
+      }
+      values[names.indexOf(name)] = padded;
+      break;
+    case 'Read':
+    case 'Write':
+      values[names.indexOf(name)] = val ? 'X' : '';
+      break;
+
+    default:
+      if (!names.includes(name)) {
+        console.error(line);
+      }
+      values[names.indexOf(name)] = v;
+  }
+}
+await fs.writeFile('./trace.csv', names.join(',') + '\n' + out.join('\n'));

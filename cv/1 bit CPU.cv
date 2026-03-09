@@ -1,9 +1,9 @@
 {
   "name": "1 bit CPU",
-  "timePeriod": 500,
+  "timePeriod": 50,
   "clockEnabled": false,
-  "projectId": "dORBbTPqOtLrQDFk8Yh9",
-  "focussedCircuit": 32443258289,
+  "projectId": "okur4lhai7O5yto38kZm",
+  "focussedCircuit": 22523735200,
   "orderedTabs": [
     "26638966021",
     "58131970203",
@@ -13760,8 +13760,8 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            138,
-            76
+            76,
+            138
           ]
         },
         {
@@ -14116,8 +14116,8 @@
           "label": "",
           "connections": [
             25,
-            188,
-            72
+            72,
+            188
           ]
         },
         {
@@ -14188,8 +14188,8 @@
           "bitWidth": 5,
           "label": "",
           "connections": [
-            195,
-            26
+            26,
+            195
           ]
         },
         {
@@ -14199,9 +14199,9 @@
           "bitWidth": 12,
           "label": "",
           "connections": [
-            192,
             6,
-            191
+            191,
+            192
           ]
         },
         {
@@ -14222,9 +14222,9 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            180,
             63,
             174,
+            180,
             217
           ]
         },
@@ -14407,8 +14407,8 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            216,
-            199
+            199,
+            216
           ]
         },
         {
@@ -14418,8 +14418,8 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            203,
-            69
+            69,
+            203
           ]
         }
       ],
@@ -15955,7 +15955,7 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            18
+            57
           ]
         },
         {
@@ -16051,7 +16051,7 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            44
+            56
           ]
         },
         {
@@ -16061,7 +16061,7 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            7
+            57
           ]
         },
         {
@@ -16304,7 +16304,7 @@
           ]
         },
         {
-          "x": 490,
+          "x": 530,
           "y": 320,
           "type": 2,
           "bitWidth": 1,
@@ -16315,7 +16315,7 @@
           ]
         },
         {
-          "x": 490,
+          "x": 530,
           "y": 180,
           "type": 2,
           "bitWidth": 1,
@@ -16332,7 +16332,8 @@
           "bitWidth": 1,
           "label": "",
           "connections": [
-            17
+            45,
+            56
           ]
         },
         {
@@ -16341,7 +16342,190 @@
           "type": 0,
           "bitWidth": 1,
           "label": "",
+          "connections": [
+            44
+          ]
+        },
+        {
+          "x": 100,
+          "y": 30,
+          "type": 1,
+          "bitWidth": 12,
+          "label": "",
+          "connections": [
+            61
+          ]
+        },
+        {
+          "x": 100,
+          "y": 90,
+          "type": 1,
+          "bitWidth": 1,
+          "label": "",
           "connections": []
+        },
+        {
+          "x": 100,
+          "y": 110,
+          "type": 1,
+          "bitWidth": 1,
+          "label": "",
+          "connections": []
+        },
+        {
+          "x": 0,
+          "y": 30,
+          "type": 0,
+          "bitWidth": 12,
+          "label": "",
+          "connections": []
+        },
+        {
+          "x": 0,
+          "y": 90,
+          "type": 0,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            60
+          ]
+        },
+        {
+          "x": 0,
+          "y": 110,
+          "type": 0,
+          "bitWidth": 1,
+          "label": "",
+          "connections": []
+        },
+        {
+          "x": 50,
+          "y": 150,
+          "type": 0,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            63
+          ]
+        },
+        {
+          "x": 0,
+          "y": 50,
+          "type": 0,
+          "bitWidth": 1,
+          "label": "",
+          "connections": []
+        },
+        {
+          "x": 1190,
+          "y": 390,
+          "type": 2,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            55,
+            63
+          ]
+        },
+        {
+          "x": 480,
+          "y": 390,
+          "type": 2,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            54,
+            56
+          ]
+        },
+        {
+          "x": 480,
+          "y": 280,
+          "type": 2,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            17,
+            44,
+            55
+          ]
+        },
+        {
+          "x": 450,
+          "y": 210,
+          "type": 2,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            7,
+            18,
+            58
+          ]
+        },
+        {
+          "x": 450,
+          "y": 420,
+          "type": 2,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            57,
+            59
+          ]
+        },
+        {
+          "x": 1110,
+          "y": 420,
+          "type": 2,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            58,
+            60
+          ]
+        },
+        {
+          "x": 1110,
+          "y": 250,
+          "type": 2,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            59,
+            50
+          ]
+        },
+        {
+          "x": 40,
+          "y": 0,
+          "type": 0,
+          "bitWidth": 12,
+          "label": "",
+          "connections": [
+            46
+          ]
+        },
+        {
+          "x": 40,
+          "y": 0,
+          "type": 0,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            63
+          ]
+        },
+        {
+          "x": 1190,
+          "y": 350,
+          "type": 2,
+          "bitWidth": 1,
+          "label": "",
+          "connections": [
+            52,
+            62,
+            54
+          ]
         }
       ],
       "testbenchData": {
@@ -17680,7 +17864,7 @@
       ],
       "Clock": [
         {
-          "x": 510,
+          "x": 390,
           "y": 210,
           "objectType": "Clock",
           "label": "",
@@ -17699,7 +17883,7 @@
       ],
       "Button": [
         {
-          "x": 510,
+          "x": 390,
           "y": 280,
           "objectType": "Button",
           "label": "",
@@ -17746,6 +17930,26 @@
             2,
             3,
             4
+          ],
+          "version": "2.0"
+        },
+        {
+          "x": 1140,
+          "y": 160,
+          "id": "26638966021",
+          "label": "",
+          "labelDirection": "LEFT",
+          "inputNodes": [
+            49,
+            50,
+            51,
+            52,
+            53
+          ],
+          "outputNodes": [
+            46,
+            47,
+            48
           ],
           "version": "2.0"
         }
@@ -17876,6 +18080,48 @@
               "identifier": "Instr"
             }
           }
+        },
+        {
+          "x": 1330,
+          "y": 190,
+          "objectType": "Flag",
+          "label": "",
+          "direction": "LEFT",
+          "labelDirection": "LEFT",
+          "propagationDelay": 0,
+          "customData": {
+            "constructorParamaters": [
+              "LEFT",
+              12
+            ],
+            "nodes": {
+              "inp1": 61
+            },
+            "values": {
+              "identifier": "ClkCn"
+            }
+          }
+        },
+        {
+          "x": 1330,
+          "y": 350,
+          "objectType": "Flag",
+          "label": "",
+          "direction": "LEFT",
+          "labelDirection": "LEFT",
+          "propagationDelay": 0,
+          "customData": {
+            "constructorParamaters": [
+              "LEFT",
+              1
+            ],
+            "nodes": {
+              "inp1": 62
+            },
+            "values": {
+              "identifier": "RST"
+            }
+          }
         }
       ],
       "Text": [
@@ -17913,7 +18159,15 @@
         41,
         42,
         43,
-        44
+        44,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        63
       ]
     },
     {
