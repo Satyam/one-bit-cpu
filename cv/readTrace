@@ -18,27 +18,62 @@ for (const line of test.split('\n')) {
 }
 
 const names = [
-  'ClkCn',
-  'T',
+  'T0',
+  'T1',
+  'T2',
   'DAddr',
   'DOut',
   'Write',
   'Read',
+  'Code',
+  'InstReg',
+  'Arg',
+  'Oper',
   'IAddr',
   'Instr',
-  'code',
+  'ASM',
 ];
+
 const out = [];
-const values = Array(names.length).fill('', 0);
-let lastClock = 0;
+const values = [];
 let inside = false;
 let rst1 = false;
-const trace = await fs.readFile('./trace.txt', 'utf8');
+const trace = await fs.readFile('./timeTrace.txt', 'utf8');
+
+const matrix = {};
+names.forEach((n) => {
+  matrix[n] = {
+    bool: true,
+    vals: [[0, 0, 0]],
+  };
+});
+
+const duplicates = {};
 
 for (const line of trace.split('\n')) {
-  const [name, valStr] = line.split(',');
+  const [circuit, name, time, valStr] = line.split(',');
   const valNum = parseInt(valStr, 16);
   if (/F\d+/.test(name)) continue;
+  if (duplicates[name]) {
+    if (duplicates[name] !== circuit) {
+      console.error(`Duplicate: ${name} in ${duplicates[name]} and ${circuit}`);
+    }
+  } else {
+    duplicates[name] = circuit;
+  }
+  if (inside) {
+    if (name) {
+      if (name in matrix) {
+        const m = matrix[name];
+        const v = m.vals;
+        v.push([time, valNum]);
+        v[v.length - 2].push(time);
+        if (valNum > 1) m.bool = false;
+      } else {
+        console.error(`${name} not found in matrix`);
+      }
+    }
+  }
   switch (name) {
     case 'RST':
       if (valNum === 1) {
@@ -50,23 +85,23 @@ for (const line of trace.split('\n')) {
       }
 
       break;
-    case 'ClkCn':
-      if (inside && valNum !== lastClock) {
-        lastClock = valNum;
-        out.push(values.concat());
-        values.fill('', 0);
+    case 'T0':
+    case 'T1':
+    case 'T2':
+      if (inside) {
+        if (values.length) out.push(values.concat());
+        values.length = 0;
       }
-      values[names.indexOf(name)] = valNum;
-      values[names.indexOf('T')] = valNum % 3;
+      values[names.indexOf(name)] = valNum ? 'X' : '';
       break;
     case 'IAddr':
       const padded = valStr.padStart(2, '0');
       if (code[padded]) {
-        values[names.indexOf('code')] = code[padded];
+        values[names.indexOf('ASM')] = code[padded];
         if (rst1 && inside && out.length === 0) {
           code[padded] = null;
-          out.push(values.concat());
-          values.fill('', 0);
+          if (values.length) out.push(values.concat());
+          values.length = 0;
         }
       }
       values[names.indexOf(name)] = padded;
@@ -79,13 +114,19 @@ for (const line of trace.split('\n')) {
     default:
       if (!names.includes(name)) {
         console.error(line);
+      } else {
+        values[names.indexOf(name)] = valStr;
       }
-      values[names.indexOf(name)] = valStr;
   }
 }
+
 await fs.writeFile(
   './trace.csv',
-  names.join(',') + '\n' + out.map((values) => values.join(',')).join('\n')
+  names.join(',') +
+    '\n' +
+    out
+      .map((values) => names.map((_, i) => values[i] || '').join(','))
+      .join('\n')
 );
 await fs.writeFile(
   './trace.html',
@@ -93,31 +134,86 @@ await fs.writeFile(
 th, td {
   border: thin solid silver;
 }
-
-.T0 {
-background-color: cyan;
+tr:nth-child(odd) {
+  background-color: cyan;
 }
-.T1 {
-background-color: light yellow;
-}
-.T2 {
-background-color: pink;
-}
-.ClkCn, .T, .DAddr,  .DOut,  .Write,  .Read,  .IAddr,  .Instr {
+.DAddr,  .DOut,  .Write,  .Read,  .IAddr,  .Instr {
   text-align: center;
 }
-.code {
+.ASM {
   font-family: monospace;
   white-space: pre;
 }
 </style></head><body><table>
-<colgroup>
-${names.map((name) => `<col class="${name}" />`).join('\n')}
-</colgroup>
 <thead>
 <tr>${names.map((name) => `<th>${name}</th>`).join('')}</tr>
 </thead>
 <tbody>
-${out.map((row) => `<tr class="T${row[1]}">${row.map((val, index) => `<td class="${names[index]}">${val}</td>`).join('')}</tr>`).join('\n')}
+${out.map((row) => `<tr>${names.map((name, index) => `<td class="${name}">${row[index] || ''}</td>`).join('')}</tr>`).join('\n')}
 </tbody></table></body></html>`
+);
+
+await fs.writeFile(
+  './timeTrace.html',
+  `<html>
+  <head>
+    <style>
+    .row:nth-child(odd) {
+      background-color:#eeeeee;
+    }
+    .name {
+      display: inline-block;
+      width: 8em;
+    }
+    .graph {
+      display: inline;
+      position: relative;
+      text-wrap-mode: nowrap;
+      border:thin solid black;
+      height: 1em;
+    }
+    .bar {
+      position: absolute;
+      top: 2px;
+      height: .8em;
+      border: solid thin gray;
+      background-color: silver;
+      border-radius: 3px;
+    }
+    .bool {
+      position: absolute;
+      top: 2px;
+      height: .8em;
+      background-color: blue;
+      border-radius: 3px;
+    }
+    </style>
+  </head>
+  <body>
+    ${names
+      .map((name) => {
+        const { bool, vals } = matrix[name];
+        return `
+          <div class="row">
+            <div class="name">${name}</div>
+            <div class="graph">
+              ${vals
+                .map(([time, value, end]) =>
+                  bool
+                    ? value
+                      ? `<span class="bool" 
+                          style="left:${Math.round(time * 5)}px;width:${Math.round((end - time) * 5)}px">
+                        </span>`
+                      : ''
+                    : `<span class="bar" 
+                      style="left:${Math.round(time * 5)}px;width:${Math.round((end - time) * 5)}px">${value.toString(16)}
+                    </span>`
+                )
+                .join('')}
+            </div>
+          </div>`;
+      })
+      .join('\n')}
+  </body>
+</html>`
 );
