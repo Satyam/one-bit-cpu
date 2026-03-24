@@ -1,6 +1,10 @@
 #!/usr/bin/env zx
 export {};
 
+const RST = 'RST';
+const IAddr = 'IAddr';
+const SCALE = 5;
+
 const test = await fs.readFile('../generalTest.rom', 'utf8');
 
 const asm = {};
@@ -28,16 +32,13 @@ const names = [
   'InstReg',
   'Arg',
   'Oper',
-  'IAddr',
   'Instr',
-  'ASM',
+  IAddr,
 ];
 
-const out = [];
-const values = [];
 let inside = false;
 let rst1 = false;
-const trace = await fs.readFile('./timeTrace.txt', 'utf8');
+
 let maxTime = 0;
 
 const matrix = {};
@@ -50,9 +51,11 @@ names.forEach((n) => {
 
 const duplicates = {};
 
-const code = Object.assign({}, asm);
+const trace = await fs.readFile('./timeTrace.txt', 'utf8');
+
 for (const line of trace.split('\n')) {
-  const [circuit, name, time, valStr] = line.split(',');
+  const [circuit, name, t, valStr] = line.split(',');
+  const time = parseFloat(t);
   const valNum = parseInt(valStr, 16);
   if (/F\d+/.test(name)) continue;
   if (duplicates[name]) {
@@ -76,104 +79,34 @@ for (const line of trace.split('\n')) {
       }
     }
   }
-  switch (name) {
-    case 'RST':
-      if (valNum === 1) {
-        rst1 = true;
-      } else {
-        if (rst1 && valNum === 0) {
-          inside = true;
-        }
+  if (name === RST) {
+    if (valNum === 1) {
+      rst1 = true;
+    } else {
+      if (rst1 && valNum === 0) {
+        inside = true;
       }
-
-      break;
-    case 'T0':
-    case 'T1':
-    case 'T2':
-      if (inside) {
-        if (values.length) out.push(values.concat());
-        values.length = 0;
-      }
-      values[names.indexOf(name)] = valNum ? 'X' : '';
-      break;
-    case 'IAddr':
-      if (code[valNum]) {
-        values[names.indexOf('ASM')] = code[valNum];
-        if (rst1 && inside && out.length === 0) {
-          code[valNum] = null;
-          if (values.length) out.push(values.concat());
-          values.length = 0;
-        }
-      }
-      values[names.indexOf(name)] = valStr.padStart(2, '0');
-      break;
-    case 'Read':
-    case 'Write':
-      values[names.indexOf(name)] = valNum ? 'X' : '';
-      break;
-
-    default:
-      if (!names.includes(name)) {
-        console.error(line);
-      } else {
-        values[names.indexOf(name)] = valStr;
-      }
+    }
   }
 }
 
-await fs.writeFile(
-  './trace.csv',
-  names.join(',') +
-    '\n' +
-    out
-      .map((values) => names.map((_, i) => values[i] || '').join(','))
-      .join('\n')
-);
-await fs.writeFile(
-  './trace.html',
-  `<html><head><style>
-th, td {
-  border: thin solid silver;
+for (const entry of Object.values(matrix)) {
+  entry.vals = entry.vals.filter(([time, value, end]) => time !== end);
 }
-tr:nth-child(odd) {
-  background-color: cyan;
-}
-.DAddr,  .DOut,  .Write,  .Read,  .IAddr,  .Instr {
-  text-align: center;
-}
-.ASM {
-  font-family: monospace;
-  white-space: pre;
-}
-</style></head><body><table>
-<thead>
-<tr>${names.map((name) => `<th>${name}</th>`).join('')}</tr>
-</thead>
-<tbody>
-${out.map((row) => `<tr>${names.map((name, index) => `<td class="${name}">${row[index] || ''}</td>`).join('')}</tr>`).join('\n')}
-</tbody></table></body></html>`
-);
 
 function printGraph(name, vals, bool) {
   return vals
     .map(([time, value, end]) => {
-      let code;
-      if (name === 'IAddr' && asm[value]) {
-        code = asm[value];
-      } else {
-        code = null;
-      }
       if (bool) {
         if (value) {
           return `<span class="bool" 
-                    style="left:${Math.round(time * 5)}px;width:${Math.round((end - time) * 5)}px">
+                    style="left:${Math.round(time * SCALE)}px;width:${Math.round((end - time) * SCALE)}px">
                   </span>`;
         }
       } else {
         return `<span 
           class="bar"
-          ${code && `title="${code}" `} 
-          style="left:${Math.round(time * 5)}px;width:${Math.round((end - time) * 5)}px">${value.toString(16)}
+          style="left:${Math.round(time * SCALE)}px;width:${Math.round((end - time) * SCALE)}px">${value.toString(16)}
         </span>`;
       }
       return '';
@@ -181,6 +114,18 @@ function printGraph(name, vals, bool) {
     .join('');
 }
 
+function printAsm() {
+  return matrix[IAddr].vals
+    .map(([time, value, end]) =>
+      !!asm[value]
+        ? `<span 
+          class="asmbar"
+          style="left:${Math.round(((time + end) / 2) * SCALE)}px">${asm[value]}
+        </span>`
+        : ''
+    )
+    .join('\n');
+}
 await fs.writeFile(
   './timeTrace.html',
   `<html>
@@ -203,7 +148,7 @@ await fs.writeFile(
       text-wrap-mode: nowrap;
       border:thin solid black;
       height: 1.2em;
-      width: ${maxTime * 5}px;
+      width: ${maxTime * SCALE}px;
       background: repeat-x url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cline x1='0' y1='0' x2='0' y2='100' stroke='black' stroke-width='1'/%3E%3C/svg%3E");
       background-size: 100px auto;
     }
@@ -223,6 +168,19 @@ await fs.writeFile(
       background-color: blue;
       border-radius: 5px;
     }
+    .asm {
+      display: inline-block;
+      position: relative;
+      text-wrap-mode: nowrap;
+      height: 1.2em;
+      width: ${maxTime * SCALE}px;
+    }
+    .asmbar {
+      position: absolute;
+      display: inline-block;
+      rotate: 45deg;
+      transform-origin: top left;
+    }
     </style>
   </head>
   <body>
@@ -238,6 +196,12 @@ await fs.writeFile(
           </div>`;
       })
       .join('\n')}
+    <div class="row">
+      <div class="name">ASM</div>
+      <div class="asm">
+        ${printAsm()}
+      </div>
+    </div>
   </body>
 </html>`
 );
