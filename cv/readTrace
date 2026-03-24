@@ -3,7 +3,7 @@ export {};
 
 const test = await fs.readFile('../generalTest.rom', 'utf8');
 
-const code = {};
+const asm = {};
 
 for (const line of test.split('\n')) {
   if (line === 'v3.0 hex words addressed') continue;
@@ -11,7 +11,7 @@ for (const line of test.split('\n')) {
   if (l.length === 0) continue;
   const parts = l.split(':');
   if (parts.length === 2) {
-    code[parts[0].trim()] = line;
+    asm[parseInt(parts[0].trim(), 16)] = line;
   } else {
     console.error(line);
   }
@@ -25,7 +25,6 @@ const names = [
   'DOut',
   'Write',
   'Read',
-  'Code',
   'InstReg',
   'Arg',
   'Oper',
@@ -39,6 +38,7 @@ const values = [];
 let inside = false;
 let rst1 = false;
 const trace = await fs.readFile('./timeTrace.txt', 'utf8');
+let maxTime = 0;
 
 const matrix = {};
 names.forEach((n) => {
@@ -50,6 +50,7 @@ names.forEach((n) => {
 
 const duplicates = {};
 
+const code = Object.assign({}, asm);
 for (const line of trace.split('\n')) {
   const [circuit, name, time, valStr] = line.split(',');
   const valNum = parseInt(valStr, 16);
@@ -62,6 +63,7 @@ for (const line of trace.split('\n')) {
     duplicates[name] = circuit;
   }
   if (inside) {
+    if (time > maxTime) maxTime = time;
     if (name) {
       if (name in matrix) {
         const m = matrix[name];
@@ -95,16 +97,15 @@ for (const line of trace.split('\n')) {
       values[names.indexOf(name)] = valNum ? 'X' : '';
       break;
     case 'IAddr':
-      const padded = valStr.padStart(2, '0');
-      if (code[padded]) {
-        values[names.indexOf('ASM')] = code[padded];
+      if (code[valNum]) {
+        values[names.indexOf('ASM')] = code[valNum];
         if (rst1 && inside && out.length === 0) {
-          code[padded] = null;
+          code[valNum] = null;
           if (values.length) out.push(values.concat());
           values.length = 0;
         }
       }
-      values[names.indexOf(name)] = padded;
+      values[names.indexOf(name)] = valStr.padStart(2, '0');
       break;
     case 'Read':
     case 'Write':
@@ -153,11 +154,42 @@ ${out.map((row) => `<tr>${names.map((name, index) => `<td class="${name}">${row[
 </tbody></table></body></html>`
 );
 
+function printGraph(name, vals, bool) {
+  return vals
+    .map(([time, value, end]) => {
+      let code;
+      if (name === 'IAddr' && asm[value]) {
+        code = asm[value];
+      } else {
+        code = null;
+      }
+      if (bool) {
+        if (value) {
+          return `<span class="bool" 
+                    style="left:${Math.round(time * 5)}px;width:${Math.round((end - time) * 5)}px">
+                  </span>`;
+        }
+      } else {
+        return `<span 
+          class="bar"
+          ${code && `title="${code}" `} 
+          style="left:${Math.round(time * 5)}px;width:${Math.round((end - time) * 5)}px">${value.toString(16)}
+        </span>`;
+      }
+      return '';
+    })
+    .join('');
+}
+
 await fs.writeFile(
   './timeTrace.html',
   `<html>
   <head>
     <style>
+    .row {
+      text-wrap-mode: nowrap;
+      font-family: sans-serif;
+    }
     .row:nth-child(odd) {
       background-color:#eeeeee;
     }
@@ -166,26 +198,30 @@ await fs.writeFile(
       width: 8em;
     }
     .graph {
-      display: inline;
+      display: inline-block;
       position: relative;
       text-wrap-mode: nowrap;
       border:thin solid black;
-      height: 1em;
+      height: 1.2em;
+      width: ${maxTime * 5}px;
+      background: repeat-x url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cline x1='0' y1='0' x2='0' y2='100' stroke='black' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: 100px auto;
     }
     .bar {
       position: absolute;
-      top: 2px;
-      height: .8em;
+      top: 1px;
+      height: 1em;
       border: solid thin gray;
       background-color: silver;
-      border-radius: 3px;
+      border-radius: 5px;
+      text-align: center;
     }
     .bool {
       position: absolute;
-      top: 2px;
-      height: .8em;
+      top: 1px;
+      height: 1em;
       background-color: blue;
-      border-radius: 3px;
+      border-radius: 5px;
     }
     </style>
   </head>
@@ -197,19 +233,7 @@ await fs.writeFile(
           <div class="row">
             <div class="name">${name}</div>
             <div class="graph">
-              ${vals
-                .map(([time, value, end]) =>
-                  bool
-                    ? value
-                      ? `<span class="bool" 
-                          style="left:${Math.round(time * 5)}px;width:${Math.round((end - time) * 5)}px">
-                        </span>`
-                      : ''
-                    : `<span class="bar" 
-                      style="left:${Math.round(time * 5)}px;width:${Math.round((end - time) * 5)}px">${value.toString(16)}
-                    </span>`
-                )
-                .join('')}
+              ${printGraph(name, vals, bool)}
             </div>
           </div>`;
       })
