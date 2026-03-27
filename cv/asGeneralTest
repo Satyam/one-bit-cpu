@@ -1,0 +1,3 @@
+#!/bin/bash 
+./assembler.mjs  -o "./generalTest" "../generalTest"
+./rom2bytes "./generalTest" 
