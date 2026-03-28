@@ -22,6 +22,8 @@ for (const line of test.split('\n')) {
 }
 
 const names = [
+  'IAddr',
+  'Instr',
   'T0',
   'T1',
   'T2',
@@ -32,8 +34,6 @@ const names = [
   'InstReg',
   'Arg',
   'Oper',
-  'Instr',
-  IAddr,
 ];
 
 let inside = false;
@@ -131,6 +131,12 @@ await fs.writeFile(
   `<html>
   <head>
     <style>
+    @media print {
+      .panel {
+        rotate: 90deg;
+        transform-origin: bottom;
+      }
+}
     .row {
       text-wrap-mode: nowrap;
       font-family: sans-serif;
@@ -172,35 +178,38 @@ await fs.writeFile(
       display: inline-block;
       position: relative;
       text-wrap-mode: nowrap;
-      height: 1.2em;
+      height: 20em;
       width: ${maxTime * SCALE}px;
     }
     .asmbar {
       position: absolute;
       display: inline-block;
-      rotate: 45deg;
+      rotate: -45deg;
       transform-origin: top left;
+      top: 19em;
     }
     </style>
   </head>
   <body>
-    ${names
-      .map((name) => {
-        const { bool, vals } = matrix[name];
-        return `
-          <div class="row">
-            <div class="name">${name}</div>
-            <div class="graph">
-              ${printGraph(name, vals, bool)}
-            </div>
-          </div>`;
-      })
-      .join('\n')}
-    <div class="row">
-      <div class="name">ASM</div>
-      <div class="asm">
-        ${printAsm()}
+    <div class="panel">
+      <div class="row">
+        <div class="name">ASM</div>
+        <div class="asm">
+          ${printAsm()}
+        </div>
       </div>
+      ${names
+        .map((name) => {
+          const { bool, vals } = matrix[name];
+          return `
+            <div class="row">
+              <div class="name">${name}</div>
+              <div class="graph">
+                ${printGraph(name, vals, bool)}
+              </div>
+            </div>`;
+        })
+        .join('\n')}
     </div>
   </body>
 </html>`
