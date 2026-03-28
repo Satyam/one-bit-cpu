@@ -1,4 +1,4 @@
-			19	18	17	16	15	14	13	12	11	10	9	7	5	4	3	2	1	0
+			17	16	15	14	13	12	11	10	9	8	7	6	5	4	3	2	1	0
 				Stack		Program Counter					Data Addr			Data Out			ALU			
 																				
 																				Sel0
@@ -15,71 +15,71 @@
 									JMPT											
 								JMP												
 							Up													
-						FetchNextByte														
+						FetchNext														
 					EN															
 				Push																
 	OpCode	Instruction	Halt																	
-0	000000	AND					X										X		X	X
-1	000001						X										X		X	X
-2	000010						X										X		X	X
-3	000011						X										X		X	X
-4	000100						X										X		X	X
-5	000101						X										X		X	X
-6	000110						X										X		X	X
-7	000111						X										X		X	X
-8	001000	OR					X										X	X		
-9	001001						X										X	X		
-10	001010						X										X	X		
-11	001011						X										X	X		
-12	001100						X										X	X		
-13	001101						X										X	X		
-14	001110						X										X	X		
-15	001111						X										X	X		
-16	010000	LOAD					X										X		X	
-17	010001						X										X		X	
-18	010010						X										X		X	
-19	010011						X										X		X	
-20	010100						X										X		X	
-21	010101						X										X		X	
-22	010110						X										X		X	
-23	010111						X										X		X	
-24	011000	SAVE					X									X				
-25	011001						X									X				
-26	011010						X									X				
-27	011011						X									X				
-28	011100						X									X				
-29	011101						X									X				
-30	011110						X									X				
-31	011111						X									X				
-32	100000	NOT					X										X	X		X
-33	100001						X													
-34	100010	ZERO					X										X			
-35	100011	ONE					X										X			X
-36	100100	RET					X	X		X										
-37	100101	[RET_2]			X		X													
-38	100110	HALT	X				X													
-39	100111						X													
-40	101000	OUT					X								X					
-41	101001						X													
-42	101010	OutNext					X					X			X					
-43	101011	OutPrev					X				X				X					
-44	101100	IN					X							X			X	X	X	
-45	101101						X													
-46	101110	InNext					X					X		X			X	X	X	
-47	101111	InPrev					X				X			X			X	X	X	
-48.5	110000	InFrom				X	X						X	X			X	X	X	
-49.5	110001					X	X						X	X			X	X	X	
-50.5	110010	OutTo				X	X						X		X					
-51.5	110011					X	X						X		X					
-52.5	110100	CALL		X	X	X		X												
-53.5	110101			X	X	X		X												
-54.5	110110			X	X	X		X												
-55.5	110111			X	X	X		X												
-56.5	111000	JMPT				X			X											
-57.5	111001					X			X											
-58.5	111010					X			X											
-59.5	111011					X			X											
-60.5	111100	JMP				X		X												
-61.5	111101					X		X												
-62.5	111110					X		X												
-63.5	111111					X		X												
+0	000000	HALT	X				X													
+1	000001	NOT					X										X	X		X
+2	000010	ZERO					X										X			
+3	000011	ONE					X										X			X
+4	000100	RET					X	X		X										
+5	000101	[RET_2]			X		X													
+6	000110																			
+7	000111																			
+8	001000																			
+9	001001	IN					X							X			X	X	X	
+10	001010	InNext					X					X		X			X	X	X	
+11	001011	InPrev					X				X			X			X	X	X	
+12	001100																			
+13	001101	OUT					X								X					
+14	001110	OutNext					X					X			X					
+15	001111	OutPrev					X				X				X					
+16	010000	InFrom				X	X						X	X			X	X	X	
+17	010001					X	X						X	X			X	X	X	
+18	010010	OutTo				X	X						X		X					
+19	010011					X	X						X		X					
+20	010100	CALL		X	X	X		X												
+21	010101			X	X	X		X												
+22	010110			X	X	X		X												
+23	010111			X	X	X		X												
+24	011000	JMPT				X			X											
+25	011001					X			X											
+26	011010					X			X											
+27	011011					X			X											
+28	011100	JMP				X		X												
+29	011101					X		X												
+30	011110					X		X												
+31	011111					X		X												
+32	100000	AND					X										X		X	X
+33	100001						X										X		X	X
+34	100010						X										X		X	X
+35	100011						X										X		X	X
+36	100100						X										X		X	X
+37	100101						X										X		X	X
+38	100110						X										X		X	X
+39	100111						X										X		X	X
+40	101000	OR					X										X	X		
+41	101001						X										X	X		
+42	101010						X										X	X		
+43	101011						X										X	X		
+44	101100						X										X	X		
+45	101101						X										X	X		
+46	101110						X										X	X		
+47	101111						X										X	X		
+48.5	110000	LOAD					X										X		X	
+49.5	110001						X										X		X	
+50.5	110010						X										X		X	
+51.5	110011						X										X		X	
+52.5	110100						X										X		X	
+53.5	110101						X										X		X	
+54.5	110110						X										X		X	
+55.5	110111						X										X		X	
+56.5	111000	SAVE					X									X				
+57.5	111001						X									X				
+58.5	111010						X									X				
+59.5	111011						X									X				
+60.5	111100						X									X				
+61.5	111101						X									X				
+62.5	111110						X									X				
+63.5	111111						X									X				
