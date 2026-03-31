@@ -5,7 +5,7 @@ const RST = 'RST';
 const IAddr = 'IAddr';
 const SCALE = 5;
 
-const test = await fs.readFile('../generalTest.rom', 'utf8');
+const test = await fs.readFile('./generalTest.rom', 'utf8');
 
 const asm = {};
 
@@ -31,7 +31,8 @@ const names = [
   'DOut',
   'Write',
   'Read',
-  'InstReg',
+  'Code',
+  'IReg',
   'Arg',
   'Oper',
 ];
