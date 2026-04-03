@@ -30,11 +30,6 @@ const rxNumberBases = {
 const CONST = 'const';
 const ORG = 'org';
 
-// RET is a special case instruction because it actually takes two bytes
-const RET = 'ret';
-// This is the second byte for RET
-const _RET2 = '_ret2';
-
 // read the assembly code
 const asmFile = await fs.readFile(inFile, 'utf8');
 const asm = asmFile.split('\n');
@@ -188,14 +183,7 @@ function secondPass(asm) {
             address = parseValue(arg);
             romImage.push(`           # [${lineNum + 1}]: ${line}`);
             break;
-          case RET:
-            code = parseInt(keywords[instr].bitCode, 2);
-            const code2 = parseInt(keywords[_RET2].bitCode, 2);
-            romImage.push(
-              `${toHex(address)}: ${toHex(code)} ${toHex(code2)}  # [${lineNum + 1}]: ${line}`
-            );
-            address += 2;
-            break;
+
           default:
             const config = keywords[instr];
 

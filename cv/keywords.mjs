@@ -13,14 +13,6 @@ export const keywords = {
   },
   ret: {
     bitCode: '00010000',
-    // This is a special case instruction which needs a second cycle to complete
-    // even though there is no actual extra parameter
-    extra: true,
-  },
-  // this is the extra instruction to complete the RET.
-  // The assembler inserts it automatically
-  _ret2: {
-    bitCode: '00010100',
   },
   in: {
     bitCode: '00100100',
