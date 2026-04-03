@@ -148,6 +148,11 @@ await fs.writeFile(
     .name {
       display: inline-block;
       width: 8em;
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      background: white;
+      top: 0;
     }
     .graph {
       display: inline-block;
