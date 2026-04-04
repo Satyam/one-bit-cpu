@@ -1,0 +1,13 @@
+v3.0 hex words addressed
+00: 8c     # [1]:       one
+01: c8 00  # [2]:       outTo 0
+03: d0 09  # [3]:       call sub1
+05: d0 0c  # [4]:       call sub2
+07: f0 12  # [5]:       jmp   end
+09: a0     # [6]: sub1: out
+0a: 90 94  # [7]:       ret
+0c: d0 10  # [8]: sub2: call sub3
+0e: 90 94  # [9]:       ret
+10: 90 94  # [10]: sub3: ret
+12: 98     # [11]: end:  halt
+
