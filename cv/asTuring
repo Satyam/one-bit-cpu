@@ -1,0 +1,3 @@
+#!/bin/bash 
+./assembler.mjs  -o "./turing" "./turing"
+./rom2bytes "./turing" 
