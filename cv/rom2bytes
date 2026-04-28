@@ -18,7 +18,8 @@ await fs.writeFile(
       const bytes = b
         .trim()
         .split(/\s+/)
-        .map((v) => Number.parseInt(v, 16));
+        // .map((v) => Number.parseInt(v, 16));
+        .map((v) => `0x${v}`);
       const pad = new Array(addr - lastAddr).fill('0');
       lastAddr = addr + bytes.length;
       return pad.concat(bytes).join(' ');
