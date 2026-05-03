@@ -141,6 +141,9 @@ function firstPass(asm) {
               throw new Error(`Invalid constant declaration`);
             }
             break;
+          case '':
+            if (label) labelValues[label] = address;
+            break;
           default:
             // if it has a label store the instruction address
             if (label) labelValues[label] = address;
@@ -183,7 +186,9 @@ function secondPass(asm) {
             address = parseValue(arg);
             romImage.push(`           # [${lineNum + 1}]: ${line}`);
             break;
-
+          case '':
+            romImage.push(`           # [${lineNum + 1}]: ${line}`);
+            break;
           default:
             const config = keywords[instr];
 
@@ -237,7 +242,6 @@ function parseLine(line) {
     default:
       throw new Error(`Too many colons`);
   }
-
   // split the instruction part
   const [instr, arg] = rest.trim().split(rxAnySpaces);
   // return parts.
@@ -259,7 +263,6 @@ function validateLine(label, instr, arg, comment) {
     if (labelValues[label])
       throw new Error(`Duplicate definition of label "${label}"`);
   }
-  if (!instr) throw new Error('Mising instruction');
   switch (instr) {
     case CONST:
       if (!arg) throw new Error(`Missing argument for "${instr}"`);
@@ -267,6 +270,9 @@ function validateLine(label, instr, arg, comment) {
       break;
     case ORG:
       if (!arg) throw new Error(`Missing argument for "${instr}"`);
+      break;
+    case '':
+      if (!label) throw new Error('Mising instruction');
       break;
     default:
       if (!rxIdentifier.test(instr))
