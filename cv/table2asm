@@ -1,0 +1,139 @@
+#!/usr/bin/env zx
+
+const table = await fs.readFile('turing.table.txt', 'utf8');
+
+const rxDecl = /^-\s*(\w+)\s*(.+)$/i;
+const rxState = /(\w+)\s+(0|1)\s+(-|0|1)\s+(-|L|R)\s+(\w+)$/i;
+
+// used to detect base used for number constants
+const rxNumberBases = {
+  2: /^0b([01]+)$/,
+  8: /^0o([0-7]+)$/,
+  16: /^0x([0-9a-fA-F]+)$/,
+  10: /^(\d+)$/,
+};
+let iPrefix = 'A'.charCodeAt(0);
+
+let states = {};
+let name = '';
+let org = null;
+
+const out = [];
+
+table
+  .split('\n')
+  .map((line) => line.split('#')[0].trim())
+  .filter((line) => line.length)
+  .map((line) => {
+    const d = rxDecl.exec(line);
+    if (d) {
+      const [_, prop, val] = d;
+      switch (prop.toLowerCase()) {
+        case 'name':
+          generate();
+          name = val;
+          org = null;
+          break;
+        case 'org':
+          org = parseValue(val);
+          break;
+        default:
+          console.error(`unknown directive ${prop} in ${line}`);
+      }
+    } else {
+      const s = rxState.exec(line);
+      if (s) {
+        const [_, state, symbol, print, op, next] = s;
+        if (!(state in states)) {
+          states[state] = [];
+        }
+        const sts = states[state];
+        if (sts[parseInt(symbol)]) {
+          console.error(`duplicate symbol ${symbol} for state ${state}`);
+        }
+        sts[parseInt(symbol)] = [print, op, next];
+      } else {
+        console.error('???', line);
+      }
+    }
+  });
+generate();
+
+await fs.writeFile('turing.table.asm', out.join('\n'));
+
+console.log((await $`./assembler.mjs ./turing.table.asm`).stdout);
+process.exit();
+
+function generate() {
+  if (name.length === 0) return;
+  console.log(name, org, states);
+  const prefix = String.fromCharCode(iPrefix++) + '_';
+  out.push(`
+    # ${name}
+    `);
+  if (org !== null) {
+    out.push(`org 0x${org.toString(16)}`);
+  }
+  for (const state of Object.keys(states).sort()) {
+    out.push(`${prefix}${state}: jmpt ${prefix}${state}_1`);
+    states[state].forEach(([print, op, next], symbol) => {
+      out.push(`${prefix}${state}_${symbol}:`);
+      switch (print) {
+        case '0':
+          out.push(`zero\nout`);
+          break;
+        case '1':
+          out.push(`one\nout`);
+          break;
+        case '-':
+          break;
+        default:
+          console.error(
+            `Unknown print command [${print}] in table: ${name}, state:  ${state}`
+          );
+          break;
+      }
+      switch (op.toLowerCase()) {
+        case 'l':
+          out.push('inNext');
+          break;
+        case 'r':
+          out.push('inPrev');
+          break;
+        case '-':
+          break;
+        default:
+          console.error(
+            `Unknown operation command [${op}] in table: ${name}, state:  ${state}`
+          );
+          break;
+      }
+      if (next.toLowerCase() === 'halt') {
+        out.push('halt');
+      } else {
+        if (next in states) {
+          out.push(`jmp ${prefix}${next}`);
+        } else {
+          console.error(
+            `Next state [${next}] not found in table: ${name}, state: ${state} `
+          );
+        }
+      }
+    });
+  }
+}
+
+function parseValue(arg) {
+  // loop over the regular expressions to check for number base prefixes
+  // and parse it accordingly if match
+  if (arg) {
+    for (const [base, rx] of Object.entries(rxNumberBases)) {
+      const m = rx.exec(arg.trim());
+      if (m) {
+        const val = parseInt(m[1], base);
+        if (!isNaN(val)) return val;
+      }
+    }
+  }
+  return null;
+}
