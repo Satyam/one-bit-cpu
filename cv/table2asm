@@ -1,6 +1,7 @@
 #!/usr/bin/env zx
+const TABLE_NAME = 'turing.table';
 
-const table = await fs.readFile('turing.table.txt', 'utf8');
+const table = await fs.readFile(`${TABLE_NAME}.txt`, 'utf8');
 
 const rxDecl = /^-\s*(\w+)\s*(.+)$/i;
 const rxState = /(\w+)\s+(0|1)\s+(-|0|1)\s+(-|L|R)\s+(\w+)$/i;
@@ -59,14 +60,17 @@ table
   });
 generate();
 
-await fs.writeFile('turing.table.asm', out.join('\n'));
+await fs.writeFile('${TABLE_NAME}.asm', out.join('\n'));
 
-console.log((await $`./assembler.mjs ./turing.table.asm`).stdout);
-process.exit();
+const asm = await $`./assembler.mjs ./${TABLE_NAME}.asm`;
+console.log(asm.toString());
+if (asm.exitCode) process.exit(asm.exitCode);
+const bytes = await $`./rom2bytes  ./${TABLE_NAME}.rom`;
+console.log(bytes.toString());
+process.exit(bytes.exitCode);
 
 function generate() {
   if (name.length === 0) return;
-  console.log(name, org, states);
   const prefix = String.fromCharCode(iPrefix++) + '_';
   out.push(`
     # ${name}
