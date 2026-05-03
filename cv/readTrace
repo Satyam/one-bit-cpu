@@ -3,9 +3,10 @@ export {};
 
 const RST = 'RST';
 const IAddr = 'IAddr';
+const HALT = 'Halt';
 const SCALE = 5;
 
-const test = await fs.readFile('./generalTest.rom', 'utf8');
+const test = await fs.readFile('./turing.rom', 'utf8');
 
 const asm = {};
 
@@ -24,17 +25,18 @@ for (const line of test.split('\n')) {
 const names = [
   'IAddr',
   'Instr',
+  'IReg',
+  'Arg',
+  'Oper',
   'T0',
   'T1',
   'T2',
   'DAddr',
+  'DIn',
   'DOut',
   'Write',
   'Read',
-  'Code',
-  'IReg',
-  'Arg',
-  'Oper',
+  'AluOu',
 ];
 
 let inside = false;
@@ -76,7 +78,9 @@ for (const line of trace.split('\n')) {
         v[v.length - 2].push(time);
         if (valNum > 1) m.bool = false;
       } else {
-        console.error(`${name} not found in matrix`);
+        if (name !== RST && name !== HALT) {
+          console.error(`${name} not found in matrix`);
+        }
       }
     }
   }
