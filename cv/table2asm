@@ -1,10 +1,19 @@
 #!/usr/bin/env zx
 const TABLE_NAME = 'turing.table';
 
+const snips = {
+  print0: `zero\nout`,
+  print1: `one\nout`,
+  moveLeft: 'inNext',
+  moveRight: 'inPrev',
+  halt: 'halt',
+};
 const table = await fs.readFile(`${TABLE_NAME}.txt`, 'utf8');
 
-const rxDecl = /^-\s*(\w+)\s*(.+)$/i;
-const rxState = /(\w+)\s+(0|1)\s+(-|0|1)\s+(-|L|R)\s+(\w+)$/i;
+const rxSection = /\{(?<header>.*?)-{3,}(?<states>.*?)\}/gs;
+const rxDecl = /^(?<prop>\w+)\s*:\s*(?<val>.+)$/i;
+const rxState =
+  /(?<state>\w+)\s+(?<symbol>0|1)\s+(?<print>-|0|1)\s+(?<op>-|L|R)\s+(?<next>\w+)$/i;
 
 // used to detect base used for number constants
 const rxNumberBases = {
@@ -15,52 +24,24 @@ const rxNumberBases = {
 };
 let iPrefix = 'A'.charCodeAt(0);
 
-let states = {};
 let name = '';
 let org = null;
 
 const out = [];
+let hasError = false;
 
-table
-  .split('\n')
-  .map((line) => line.split('#')[0].trim())
-  .filter((line) => line.length)
-  .map((line) => {
-    const d = rxDecl.exec(line);
-    if (d) {
-      const [_, prop, val] = d;
-      switch (prop.toLowerCase()) {
-        case 'name':
-          generate();
-          name = val;
-          org = null;
-          break;
-        case 'org':
-          org = parseValue(val);
-          break;
-        default:
-          console.error(`unknown directive ${prop} in ${line}`);
-      }
-    } else {
-      const s = rxState.exec(line);
-      if (s) {
-        const [_, state, symbol, print, op, next] = s;
-        if (!(state in states)) {
-          states[state] = [];
-        }
-        const sts = states[state];
-        if (sts[parseInt(symbol)]) {
-          console.error(`duplicate symbol ${symbol} for state ${state}`);
-        }
-        sts[parseInt(symbol)] = [print, op, next];
-      } else {
-        console.error('???', line);
-      }
-    }
-  });
-generate();
+let section;
+while ((section = rxSection.exec(table)) !== null) {
+  // console.log(section.groups);
+  out.push(parseHeader(section.groups.header));
+  out.push(parseStates(section.groups.states));
+}
 
-await fs.writeFile('${TABLE_NAME}.asm', out.join('\n'));
+if (hasError) {
+  process.exit(1);
+}
+
+await fs.writeFile(`${TABLE_NAME}.asm`, out.join('\n'));
 
 const asm = await $`./assembler.mjs ./${TABLE_NAME}.asm`;
 console.log(asm.toString());
@@ -69,62 +50,134 @@ const bytes = await $`./rom2bytes  ./${TABLE_NAME}.rom`;
 console.log(bytes.toString());
 process.exit(bytes.exitCode);
 
-function generate() {
-  if (name.length === 0) return;
+function parseHeader(header) {
+  return header
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length)
+    .map((line) => {
+      try {
+        const m = rxDecl.exec(line);
+        if (m) {
+          const { prop, val } = m.groups;
+          switch (prop) {
+            case 'org':
+              {
+                const v = parseValue(val);
+                if (v === null) {
+                  throw new Error('Invalid value for ORG setting');
+                } else {
+                  return `org 0x${v.toString(16)}`;
+                }
+              }
+              break;
+            case 'setup':
+              return generateSetup(val);
+            default:
+              return `# ${line}`;
+          }
+        } else {
+          return `# ${line}`;
+        }
+      } catch (err) {
+        console.error(chalk.red(`${err} in:\n      ${line}`));
+        hasError = true;
+      }
+    })
+    .join('\n');
+}
+
+function generateSetup(val) {
+  console.log(`Setup:   ${val}`);
+}
+
+function parseStates(statesTable) {
+  const states = {};
+
+  statesTable
+    .split('\n')
+    .map((line) => line.split('#')[0].trim())
+    .filter((line) => line.length)
+    .forEach((line) => {
+      try {
+        const s = rxState.exec(line);
+        if (s) {
+          const { state, symbol, print, op, next } = s.groups;
+          if (!(state in states)) {
+            states[state] = [];
+          }
+          const sts = states[state];
+          if (sts[parseInt(symbol)]) {
+            throw new Error(`duplicate symbol ${symbol} for state ${state}`);
+          }
+          sts[parseInt(symbol)] = [print, op, next, line];
+        } else {
+          throw new Error('???', line);
+        }
+      } catch (err) {
+        console.error(chalk.red(`${err} in:\n      ${line}`));
+        hasError = true;
+      }
+    });
+  return generateStates(states);
+}
+
+function generateStates(states) {
+  const out = [];
   const prefix = String.fromCharCode(iPrefix++) + '_';
-  out.push(`
-    # ${name}
-    `);
-  if (org !== null) {
-    out.push(`org 0x${org.toString(16)}`);
-  }
   for (const state of Object.keys(states).sort()) {
     out.push(`${prefix}${state}: jmpt ${prefix}${state}_1`);
-    states[state].forEach(([print, op, next], symbol) => {
-      out.push(`${prefix}${state}_${symbol}:`);
-      switch (print) {
-        case '0':
-          out.push(`zero\nout`);
-          break;
-        case '1':
-          out.push(`one\nout`);
-          break;
-        case '-':
-          break;
-        default:
-          console.error(
-            `Unknown print command [${print}] in table: ${name}, state:  ${state}`
-          );
-          break;
-      }
-      switch (op.toLowerCase()) {
-        case 'l':
-          out.push('inNext');
-          break;
-        case 'r':
-          out.push('inPrev');
-          break;
-        case '-':
-          break;
-        default:
-          console.error(
-            `Unknown operation command [${op}] in table: ${name}, state:  ${state}`
-          );
-          break;
-      }
-      if (next.toLowerCase() === 'halt') {
-        out.push('halt');
-      } else {
-        if (next in states) {
-          out.push(`jmp ${prefix}${next}`);
-        } else {
-          console.error(
-            `Next state [${next}] not found in table: ${name}, state: ${state} `
-          );
+    states[state].forEach(([print, op, next, line], symbol) => {
+      try {
+        out.push(`${prefix}${state}_${symbol}:`);
+        switch (print) {
+          case '0':
+            out.push(snips.print0);
+            break;
+          case '1':
+            out.push(snips.print1);
+            break;
+          case '-':
+            break;
+          default:
+            throw new Error(
+              `Unknown print command [${print}] in table: ${name}, state:  ${state}`
+            );
+            break;
         }
+        switch (op.toLowerCase()) {
+          case 'l':
+            out.push(snips.moveLeft);
+            break;
+          case 'r':
+            out.push(snips.moveRight);
+            break;
+          case '-':
+            break;
+          default:
+            throw new Error(
+              `Unknown operation command [${op}] in table: ${name}, state:  ${state}`
+            );
+            break;
+        }
+        if (next.toLowerCase() === 'halt') {
+          out.push('halt');
+        } else {
+          if (next in states) {
+            out.push(`jmp ${prefix}${next}`);
+          } else {
+            throw new Error(
+              `Next state [${next}] not found in table: ${name}, state: ${state} `
+            );
+          }
+        }
+      } catch (err) {
+        console.error(chalk.red(`${err} in:\n      ${line}`));
+        hasError = true;
       }
     });
   }
+  return out.join('\n');
 }
 
 function parseValue(arg) {

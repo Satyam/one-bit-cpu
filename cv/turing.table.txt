@@ -1,5 +1,8 @@
-- name copy
-#  State  Symbol   Print Operation Next State
+{
+Copy
+setup: [x]x
+---
+##State  Symbol   Print Operation Next State
    s1      0        -       -            Halt
    s1      1        0       R            s2
    s2      0        0       R            s3
@@ -10,13 +13,16 @@
    s4      1        1       L            s4
    s5      0        1       R            s1
    s5      1        1       L            s5
-
-- name Busy_Beaver
--org 0x40
-#  State  Symbol   Print Operation Next State
+}   
+{
+Busy_Beaver
+org: 0x40
+---
+##State  Symbol   Print Operation Next State
    A        0       1       L         B
    A        1       1       R         C
    B        0       1       R         A
    B        1       1       L         B
    C        0       1       R         B
    C        1       1       -         Halt
+}
