@@ -1,6 +1,6 @@
 {
-Copy
-setup: [x]x
+name: Copy
+setup: -X[x]x--x--
 ---
 ##State  Symbol   Print Operation Next State
    s1      0        -       -            Halt
@@ -15,8 +15,9 @@ setup: [x]x
    s5      1        1       L            s5
 }   
 {
-Busy_Beaver
+name: Busy_Beaver
 org: 0x40
+setup: [-]xx
 ---
 ##State  Symbol   Print Operation Next State
    A        0       1       L         B

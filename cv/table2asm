@@ -4,9 +4,9 @@ const TABLE_NAME = 'turing.table';
 const snips = {
   print0: `zero\nout`,
   print1: `one\nout`,
+  rightOut: `outPrev`,
   moveLeft: 'inNext',
   moveRight: 'inPrev',
-  halt: 'halt',
 };
 const table = await fs.readFile(`${TABLE_NAME}.txt`, 'utf8');
 
@@ -14,6 +14,7 @@ const rxSection = /\{(?<header>.*?)-{3,}(?<states>.*?)\}/gs;
 const rxDecl = /^(?<prop>\w+)\s*:\s*(?<val>.+)$/i;
 const rxState =
   /(?<state>\w+)\s+(?<symbol>0|1)\s+(?<print>-|0|1)\s+(?<op>-|L|R)\s+(?<next>\w+)$/i;
+const rxSetup = /-*(?<before>[x-]*)\[(?<center>[x-])\](?<after>[x-]*x)/i;
 
 // used to detect base used for number constants
 const rxNumberBases = {
@@ -25,7 +26,6 @@ const rxNumberBases = {
 let iPrefix = 'A'.charCodeAt(0);
 
 let name = '';
-let org = null;
 
 const out = [];
 let hasError = false;
@@ -71,6 +71,9 @@ function parseHeader(header) {
                 }
               }
               break;
+            case 'name':
+              name = val.trim();
+              break;
             case 'setup':
               return generateSetup(val);
             default:
@@ -88,7 +91,18 @@ function parseHeader(header) {
 }
 
 function generateSetup(val) {
-  console.log(`Setup:   ${val}`);
+  const mark = (val) => (val === 'x' ? snips.rightOut : snips.moveRight);
+
+  const { before, center, after } =
+    rxSetup.exec(val.trim().toLowerCase())?.groups ?? {};
+
+  return ['one']
+    .concat(
+      Array(before.length + 1).fill(snips.moveLeft),
+      [...Array.from(before), center, ...Array.from(after)].map(mark),
+      Array(after.length).fill(snips.moveLeft)
+    )
+    .join('\n');
 }
 
 function parseStates(statesTable) {
@@ -132,10 +146,10 @@ function generateStates(states) {
         out.push(`${prefix}${state}_${symbol}:`);
         switch (print) {
           case '0':
-            out.push(snips.print0);
+            symbol && out.push(snips.print0);
             break;
           case '1':
-            out.push(snips.print1);
+            !symbol && out.push(snips.print1);
             break;
           case '-':
             break;
