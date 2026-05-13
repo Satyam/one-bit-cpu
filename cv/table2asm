@@ -1,20 +1,37 @@
 #!/usr/bin/env zx
 const TABLE_NAME = 'turing.table';
 
-const snips = {
-  print0: `zero\nout`,
-  print1: `one\nout`,
-  rightOut: `outPrev`,
-  moveLeft: 'inNext',
-  moveRight: 'inPrev',
-};
+const circuits = [
+  {
+    fileName: TABLE_NAME,
+    init: `inFrom 8`,
+    snips: {
+      print0: `zero\nout`,
+      print1: `one\nout`,
+      rightPrint1: `one\noutPrev`,
+      moveLeft: 'inNext',
+      moveRight: 'inPrev',
+    },
+  },
+  {
+    fileName: 'pepe',
+    snips: {
+      print0: `#print0\nzero\noutto 1`,
+      print1: `#print1\none\noutTo 1`,
+      rightPrint1: `#rightPrint1\none\noutTo 0\noutTo 1`,
+      moveLeft: '#moveLeft\nzero\noutTo 0\nin',
+      moveRight: '#moveRight\none\noutTo 0\nin',
+    },
+  },
+];
+
 const table = await fs.readFile(`${TABLE_NAME}.txt`, 'utf8');
 
 const rxSection = /\{(?<header>.*?)-{3,}(?<states>.*?)\}/gs;
 const rxDecl = /^(?<prop>\w+)\s*:\s*(?<val>.+)$/i;
 const rxState =
   /(?<state>\w+)\s+(?<symbol>0|1)\s+(?<print>-|0|1)\s+(?<op>-|L|R)\s+(?<next>\w+)$/i;
-const rxSetup = /-*(?<before>[x-]*)\[(?<center>[x-])\](?<after>[x-]*x)/i;
+const rxSetup = /^-*(?<before>[x-]*)\[(?<center>[x-])\](?<after>[x-]*?)\-*$/i;
 
 // used to detect base used for number constants
 const rxNumberBases = {
@@ -25,37 +42,50 @@ const rxNumberBases = {
 };
 let iPrefix = 'A'.charCodeAt(0);
 
-let name = '';
-
-const out = [];
 let hasError = false;
 
-let section;
-while ((section = rxSection.exec(table)) !== null) {
-  // console.log(section.groups);
-  out.push(parseHeader(section.groups.header));
-  out.push(parseStates(section.groups.states));
-}
+const parsed = Array.from(
+  table.matchAll(rxSection).map((section) => ({
+    headers: parseHeader(section.groups.header),
+    states: parseStates(section.groups.states),
+  }))
+);
 
 if (hasError) {
   process.exit(1);
 }
 
-await fs.writeFile(`${TABLE_NAME}.asm`, out.join('\n'));
+for await (const { fileName, snips, init } of circuits) {
+  await fs.writeFile(
+    `${fileName}.asm`,
+    parsed
+      .map(
+        ({ headers, states }) => `
+    ${generateHeaders(headers)}
+    ${init ?? ''}
+    ${generateSetup(headers, snips)}
+    ${generateStates(states, snips)}
+    `
+      )
+      .join('\n')
+  );
 
-const asm = await $`./assembler.mjs ./${TABLE_NAME}.asm`;
-console.log(asm.toString());
-if (asm.exitCode) process.exit(asm.exitCode);
-const bytes = await $`./rom2bytes  ./${TABLE_NAME}.rom`;
-console.log(bytes.toString());
-process.exit(bytes.exitCode);
+  const asm = await $`./assembler.mjs ./${fileName}.asm`;
+  console.log(asm.toString());
+  if (asm.exitCode) process.exit(asm.exitCode);
+  const bytes = await $`./rom2bytes  ./${fileName}.rom`;
+  console.log(bytes.toString());
+  if (bytes.exitCode) process.exit(bytes.exitCode);
+}
+process.exit(0);
 
 function parseHeader(header) {
-  return header
+  const headers = { comments: [] };
+  header
     .split('\n')
     .map((line) => line.trim())
     .filter((line) => line.length)
-    .map((line) => {
+    .forEach((line) => {
       try {
         const m = rxDecl.exec(line);
         if (m) {
@@ -67,47 +97,67 @@ function parseHeader(header) {
                 if (v === null) {
                   throw new Error('Invalid value for ORG setting');
                 } else {
-                  return `org 0x${v.toString(16)}`;
+                  headers.org = v;
                 }
               }
               break;
             case 'name':
-              name = val.trim();
+              headers.name = val;
+              break;
+            case 'init':
+              headers.init = val;
               break;
             case 'setup':
-              return generateSetup(val);
+              {
+                const m = rxSetup.exec(val.toLowerCase());
+                if (m) {
+                  Object.assign(headers, m.groups);
+                } else {
+                  throw new Error('Invalid setup string');
+                }
+              }
+              break;
             default:
-              return `# ${line}`;
+              headers.comments.push(line);
+              break;
           }
         } else {
-          return `# ${line}`;
+          headers.comments.push(line);
         }
       } catch (err) {
         console.error(chalk.red(`${err} in:\n      ${line}`));
         hasError = true;
       }
-    })
-    .join('\n');
+    });
+  return headers;
 }
 
-function generateSetup(val) {
-  const mark = (val) => (val === 'x' ? snips.rightOut : snips.moveRight);
+function generateHeaders(headers) {
+  return `
+# ${headers.name}
+${headers.comments.map((c) => `# ${c}`).join('\n')}
+${'org' in headers ? `org 0x${headers.org.toString(16)}` : ''}
+`;
+}
 
-  const { before, center, after } =
-    rxSetup.exec(val.trim().toLowerCase())?.groups ?? {};
+function generateSetup(headers, snips) {
+  const mark = (val) => (val === 'x' ? snips.rightPrint1 : snips.moveRight);
+
+  const { before, center, after } = headers;
 
   return ['one']
     .concat(
-      Array(before.length + 1).fill(snips.moveLeft),
-      [...Array.from(before), center, ...Array.from(after)].map(mark),
-      Array(after.length).fill(snips.moveLeft)
+      before && Array(before.length + 1).fill(snips.moveLeft),
+      before && Array.from(before, mark),
+      mark(center),
+      after && Array.from(after, mark),
+      after && Array(after.length - 1).fill(snips.moveLeft)
     )
     .join('\n');
 }
 
 function parseStates(statesTable) {
   const states = {};
-
   statesTable
     .split('\n')
     .map((line) => line.split('#')[0].trim())
@@ -133,16 +183,17 @@ function parseStates(statesTable) {
         hasError = true;
       }
     });
-  return generateStates(states);
+  return states;
 }
 
-function generateStates(states) {
+function generateStates(states, snips) {
   const out = [];
   const prefix = String.fromCharCode(iPrefix++) + '_';
   for (const state of Object.keys(states).sort()) {
-    out.push(`${prefix}${state}: jmpt ${prefix}${state}_1`);
+    out.push(`\n#State: ${state}\n${prefix}${state}: jmpt ${prefix}${state}_1`);
     states[state].forEach(([print, op, next, line], symbol) => {
       try {
+        out.push(`\n# ${state}  ${symbol} ${print} ${op} ${next}`);
         out.push(`${prefix}${state}_${symbol}:`);
         switch (print) {
           case '0':
@@ -178,7 +229,7 @@ function generateStates(states) {
           out.push('halt');
         } else {
           if (next in states) {
-            out.push(`jmp ${prefix}${next}`);
+            out.push(`# Next: ${next} \njmp ${prefix}${next}`);
           } else {
             throw new Error(
               `Next state [${next}] not found in table: ${name}, state: ${state} `
