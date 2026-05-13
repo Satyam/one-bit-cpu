@@ -1,6 +1,6 @@
 {
 name: Copy
-setup: -X[x]x--x--
+setup: X[x]
 ---
 ##State  Symbol   Print Operation Next State
    s1      0        -       -            Halt
@@ -16,8 +16,7 @@ setup: -X[x]x--x--
 }   
 {
 name: Busy_Beaver
-org: 0x40
-setup: [-]xx
+org: 0x80
 ---
 ##State  Symbol   Print Operation Next State
    A        0       1       L         B
