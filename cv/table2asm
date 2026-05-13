@@ -14,7 +14,7 @@ const circuits = [
     },
   },
   {
-    fileName: 'pepe',
+    fileName: 'tape.turing',
     snips: {
       print0: `#print0\nzero\noutto 1`,
       print1: `#print1\none\noutTo 1`,
@@ -145,7 +145,7 @@ function generateSetup(headers, snips) {
 
   const { before, center, after } = headers;
 
-  return ['one']
+  return []
     .concat(
       before && Array(before.length + 1).fill(snips.moveLeft),
       before && Array.from(before, mark),
