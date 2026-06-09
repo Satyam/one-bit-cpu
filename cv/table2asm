@@ -1,6 +1,16 @@
 #!/usr/bin/env zx
 const TABLE_NAME = 'turing.table';
 
+const bitPatterns = {
+  write: 1 << 6,
+  move: 1 << 7,
+  dataOne: 1 << 8,
+  dataZero: 0,
+  dirRight: 0,
+  dirLeft: 1 << 9,
+  halt: 0b111111,
+};
+
 const circuits = [
   {
     fileName: TABLE_NAME,
@@ -49,6 +59,21 @@ const parsed = Array.from(
     headers: parseHeader(section.groups.header),
     states: parseStates(section.groups.states),
   }))
+);
+
+console.log(
+  generatePlain(parsed)
+    .flat(Infinity)
+    .map((byte) => `0x${byte.toString(16)}`)
+    .join(' ')
+);
+
+await fs.writeFile(
+  'plainStates.bytes',
+  generatePlain(parsed)
+    .flat(Infinity)
+    .map((byte) => `0x${byte.toString(16)}`)
+    .join(' ')
 );
 
 if (hasError) {
@@ -243,6 +268,52 @@ function generateStates(states, snips) {
     });
   }
   return out.join('\n');
+}
+
+function generatePlain(parsed) {
+  console.log(JSON.stringify(bitPatterns, null, 2));
+  return parsed.map(({ states }) => {
+    const keys = Object.keys(states);
+    const bytes = keys
+      .map((k, i) => {
+        return states[k].map(([print, op, next, line], symbol) => {
+          let byte = 0;
+          if (next.toLowerCase() === 'halt') {
+            byte = bitPatterns.halt;
+          } else {
+            console.log(print);
+            switch (print) {
+              case '0':
+                byte += bitPatterns.dataZero + bitPatterns.write;
+                break;
+              case '1':
+                byte += bitPatterns.dataOne + bitPatterns.write;
+                break;
+              case '-':
+                break;
+            }
+            console.log({ print, byte });
+            switch (op.toLowerCase()) {
+              case 'l':
+                byte += bitPatterns.dirLeft + bitPatterns.move;
+                break;
+              case 'r':
+                byte += bitPatterns.dirRight + bitPatterns.move;
+                break;
+              case '-':
+                break;
+            }
+            byte += keys.indexOf(next);
+          }
+          console.log(line);
+          console.log({ print, op, next });
+          console.log(symbol, byte.toString(2), byte.toString(16));
+          return byte;
+        });
+      })
+      .flat(Infinity);
+    return [bytes, Array(128 - bytes.length).fill(0)];
+  });
 }
 
 function parseValue(arg) {
