@@ -1,0 +1,188 @@
+#!/usr/bin/env zx
+const TABLE_NAME = 'turing.table';
+const PLAIN_BYTE_NAME = 'plainStates.bytes';
+const CHUNK_SIZE = 128;
+
+const bitPatterns = {
+  write: 1 << 6,
+  move: 1 << 7,
+  dataOne: 1 << 8,
+  dataZero: 0,
+  dirRight: 0,
+  dirLeft: 1 << 9,
+  halt: 0b111111,
+};
+
+const table = await fs.readFile(`${TABLE_NAME}.txt`, 'utf8');
+
+const rxSection = /\{(?<header>.*?)-{3,}(?<states>.*?)\}/gs;
+const rxDecl = /^(?<prop>\w+)\s*:\s*(?<val>.+)$/i;
+const rxState =
+  /(?<state>\w+)\s+(?<symbol>0|1)\s+(?<print>-|0|1)\s+(?<op>-|L|R)\s+(?<next>\w+)$/i;
+const rxSetup = /^-*(?<before>[x-]*)\[(?<center>[x-])\](?<after>[x-]*?)\-*$/i;
+
+// used to detect base used for number constants
+const rxNumberBases = {
+  2: /^0b([01]+)$/,
+  8: /^0o([0-7]+)$/,
+  16: /^0x([0-9a-fA-F]+)$/,
+  10: /^(\d+)$/,
+};
+
+let hasError = false;
+
+const parsed = Array.from(
+  table.matchAll(rxSection).map((section) => ({
+    headers: parseHeader(section.groups.header),
+    states: parseStates(section.groups.states),
+  }))
+);
+
+if (hasError) {
+  console.error('No output due to errors');
+  process.exit(1);
+}
+
+console.log('Output file:', PLAIN_BYTE_NAME);
+
+await fs.writeFile(
+  PLAIN_BYTE_NAME,
+  generatePlain(parsed)
+    .flat(Infinity)
+    .map((byte) => `0x${byte.toString(16)}`)
+    .join('\n')
+);
+
+function parseHeader(header) {
+  const headers = { comments: [] };
+  header
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length)
+    .forEach((line) => {
+      try {
+        const m = rxDecl.exec(line);
+        if (m) {
+          const { prop, val } = m.groups;
+          switch (prop) {
+            case 'org':
+              // Used for other purposes
+              break;
+            case 'name':
+              headers.name = val;
+              break;
+            case 'setup':
+              {
+                const m = rxSetup.exec(val.toLowerCase());
+                if (m) {
+                  Object.assign(headers, m.groups);
+                  headers.setup = val;
+                } else {
+                  throw new Error('Invalid setup string');
+                }
+              }
+              break;
+            default:
+              headers.comments.push(line);
+              break;
+          }
+        } else {
+          headers.comments.push(line);
+        }
+      } catch (err) {
+        console.error(chalk.red(`${err} in:\n      ${line}`));
+        hasError = true;
+      }
+    });
+  return headers;
+}
+
+function parseStates(statesTable) {
+  const states = {};
+  statesTable
+    .split('\n')
+    .map((line) => line.split('#')[0].trim())
+    .filter((line) => line.length)
+    .forEach((line) => {
+      try {
+        const s = rxState.exec(line);
+        if (s) {
+          const { state, symbol, print, op, next } = s.groups;
+          if (!(state in states)) {
+            states[state] = [];
+          }
+          const sts = states[state];
+          if (sts[parseInt(symbol)]) {
+            throw new Error(`duplicate symbol ${symbol} for state ${state}`);
+          }
+          sts[parseInt(symbol)] = [print, op, next, line];
+        } else {
+          throw new Error('???', line);
+        }
+      } catch (err) {
+        console.error(chalk.red(`${err} in:\n      ${line}`));
+        hasError = true;
+      }
+    });
+  return states;
+}
+
+function generatePlain(parsed) {
+  // console.log(JSON.stringify(parsed, null, 2));
+  return parsed.map(({ headers, states }, program) => {
+    console.log(
+      `Program [${program.toString(2).padStart(3, '0')}]:  "${headers.name}"  at ${program * CHUNK_SIZE} Setup: ${headers.setup ?? '--[-]--'}`
+    );
+    if (headers.comments.length) console.log(headers.comments.join('\n'));
+    const keys = Object.keys(states);
+    const bytes = keys.map((k) => {
+      return states[k].map(([print, op, next, line], symbol) => {
+        let byte = 0;
+        if (next.toLowerCase() === 'halt') {
+          byte = bitPatterns.halt;
+        } else {
+          switch (print) {
+            case '0':
+              byte += bitPatterns.dataZero + bitPatterns.write;
+              break;
+            case '1':
+              byte += bitPatterns.dataOne + bitPatterns.write;
+              break;
+            case '-':
+              break;
+          }
+          switch (op.toLowerCase()) {
+            case 'l':
+              byte += bitPatterns.dirLeft + bitPatterns.move;
+              break;
+            case 'r':
+              byte += bitPatterns.dirRight + bitPatterns.move;
+              break;
+            case '-':
+              break;
+          }
+          byte += keys.indexOf(next);
+        }
+
+        return byte;
+      });
+    });
+    const pBytes = bytes.flat(Infinity);
+    return pBytes.concat(Array(CHUNK_SIZE - pBytes.length).fill(0));
+  });
+}
+
+function parseValue(arg) {
+  // loop over the regular expressions to check for number base prefixes
+  // and parse it accordingly if match
+  if (arg) {
+    for (const [base, rx] of Object.entries(rxNumberBases)) {
+      const m = rx.exec(arg.trim());
+      if (m) {
+        const val = parseInt(m[1], base);
+        if (!isNaN(val)) return val;
+      }
+    }
+  }
+  return null;
+}
