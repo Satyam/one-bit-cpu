@@ -50,7 +50,7 @@ await fs.writeFile(
   generatePlain(parsed)
     .flat(Infinity)
     .map((byte) => `0x${byte.toString(16)}`)
-    .join('\n')
+    .join(' ')
 );
 
 function parseHeader(header) {

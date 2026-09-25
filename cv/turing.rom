@@ -1,0 +1,188 @@
+v3.0 hex words addressed
+# https://en.wikipedia.org/wiki/Turing_machine_examples#Turing's_first_example
+
+# Configuration    Behavior
+# state        symbol    Print  move    new state
+#   b          blank        0   R             c
+#   c          blank            R             e
+#   e          blank        1   R             f
+#   f          blank            R             b
+
+# The issue is that blank, 0 and 1 are three states so it is not binary
+# I changed so that 0 is blank, which means it will have 1's spaced three 0's apart
+# Also, I added a 1 at the right most position so that it marks the end of the run.
+
+# setup
+           # [15]:       org   0
+00: 0c     # [16]:       one
+01: 48 0f  # [17]:       outTo 15
+03: 40 00  # [18]:       inFrom 0
+# run
+05: 60 1c  # [20]: b:    jmpt  end
+07: 08     # [21]:       zero
+08: 28     # [22]:       inNext
+09: 70 0b  # [23]:       jmp   c
+
+0b: 60 1c  # [25]: c:    jmpt  end
+0d: 28     # [26]:       inNext
+0e: 70 10  # [27]:       jmp   e
+
+10: 60 1c  # [29]: e:    jmpt  end
+12: 0c     # [30]:       one
+13: 34     # [31]:       out
+14: 28     # [32]:       inNext
+15: 70 17  # [33]:       jmp   f
+
+17: 60 1c  # [35]: f:    jmpt  end
+19: 28     # [36]:       inNext
+1a: 70 05  # [37]:       jmp   b
+
+1c: 00     # [39]: end:  halt
+
+# https://en.wikipedia.org/wiki/Turing_machine_examples#A_copy_subroutine
+
+
+#  State  Symbol   Print Operation Next State
+#   s1      0        -       -            H
+#   s1      1        0       R            s2
+#   s2      0        0       R            s3
+#   s2      1        1       R            s2
+#   s3      0        1       L            s4
+#   s3      1        1       R            s3
+#   s4      0        0       L            s5
+#   s4      1        1       L            s4
+#   s5      0        1       R            s1
+#   s5      1        1       L            s5
+#   H       —        —       —
+
+# Setup:
+           # [58]:       org   64
+40: 0c     # [59]:       one
+41: 48 07  # [60]:       outTo 7
+43: 48 08  # [61]:       outTo 8
+45: 40 08  # [62]:       inFrom 8
+#run:
+
+47: 60 4a  # [65]: s1:   jmpt s1_1
+
+#   s1    0      -       -            H
+49: 00     # [68]: s1_0: halt
+
+#   s1    1      0       R            s2
+4a: 08     # [71]: s1_1: zero
+4b: 34     # [72]:       out
+4c: 2c     # [73]:       inPrev
+4d: 70 4f  # [74]:       jmp s2
+
+4f: 60 56  # [76]: s2:   jmpt s2_1
+
+#   s2    0      0       R            s3
+51: 08     # [79]: s2_0: zero
+52: 34     # [80]:       out
+53: 2c     # [81]:       inPrev
+54: 70 5b  # [82]:       jmp s3
+
+#   s2    1      1       R            s2
+56: 0c     # [85]: s2_1: one
+57: 34     # [86]:       out
+58: 2c     # [87]:       inPrev
+59: 70 4f  # [88]:       jmp s2
+
+5b: 60 62  # [90]: s3:   jmpt  s3_1
+
+#   s3    0      1       L            s4
+5d: 0c     # [93]: s3_0: one
+5e: 34     # [94]:       out
+5f: 28     # [95]:       inNext
+60: 70 67  # [96]:       jmp s4
+
+#   s3    1      1       R            s3
+62: 0c     # [99]: s3_1: one
+63: 34     # [100]:       out
+64: 2c     # [101]:       inPrev
+65: 70 5b  # [102]:       jmp s3
+
+67: 60 6e  # [104]: s4:   jmpt  s4_1
+#   s4    0      0       L            s5
+69: 08     # [106]: s4_0: zero
+6a: 34     # [107]:       out
+6b: 28     # [108]:       inNext
+6c: 70 73  # [109]:       jmp s5
+
+#   s4    1      1       L            s4
+6e: 0c     # [112]: s4_1: one
+6f: 34     # [113]:       out
+70: 28     # [114]:       inNext
+71: 70 67  # [115]:       jmp   s4
+
+73: 60 7a  # [117]: s5:   jmpt  s5_1
+
+#   s5    0      1       R            s1
+75: 0c     # [120]: s5_0: one
+76: 34     # [121]:       out
+77: 2c     # [122]:       inPrev
+78: 70 47  # [123]:       jmp   s1
+
+#   s5    1      1       L            s5
+7a: 0c     # [126]: s5_1: one
+7b: 34     # [127]:       out
+7c: 28     # [128]:       inNext
+7d: 70 73  # [129]:       jmp   s5
+
+# https://en.wikipedia.org/wiki/Turing_machine_examples#3-state_Busy_Beaver
+# Busy beaver
+
+#  State  Symbol   Print Operation Next State
+#   A        0       1       L         B
+#   A        1       1       R         C
+#   B        0       1       R         A
+#   B        1       1       L         B
+#   C        0       1       R         B
+#   C        1       1       -         Halt
+
+# setup
+           # [143]:       org 128
+80: 40 08  # [144]:       inFrom  8
+
+# run
+
+82: 60 89  # [148]: A:    jmpt  A_1
+
+#   A        0       1       L         B
+84: 0c     # [151]: A_0:  one
+85: 34     # [152]:       out
+86: 28     # [153]:       inNext
+87: 70 8e  # [154]:       jmp   B
+
+#   A        1       1       R         C
+89: 0c     # [157]: A_1:  one
+8a: 34     # [158]:       out
+8b: 2c     # [159]:       inPrev
+8c: 70 9a  # [160]:       jmp C
+
+8e: 60 95  # [162]: B:    jmpt  B_1
+
+#   B        0       1       R         A
+90: 0c     # [165]: B_0:  one
+91: 34     # [166]:       out
+92: 2c     # [167]:       inPrev
+93: 70 82  # [168]:       jmp A
+
+#   B        1       1       L         B
+95: 0c     # [171]: B_1:  one
+96: 34     # [172]:       out
+97: 28     # [173]:       inNext
+98: 70 8e  # [174]:       jmp   B
+
+9a: 60 a1  # [176]: C:    jmpt  C_1
+
+#   C        0       1       R         B
+9c: 0c     # [179]: C_0:  one
+9d: 34     # [180]:       out
+9e: 2c     # [181]:       inPrev
+9f: 70 8e  # [182]:       jmp B
+
+#   C        1       1       -         Halt
+a1: 0c     # [185]: C_1:  one
+a2: 34     # [186]:       out
+a3: 00     # [187]:       halt

@@ -1,0 +1,218 @@
+v3.0 hex words addressed
+
+
+# Copy
+
+
+
+
+#moveLeft
+00: 08     # [9]: zero
+01: 48 00  # [10]: outTo 0
+03: 24     # [11]: in
+#moveLeft
+04: 08     # [13]: zero
+05: 48 00  # [14]: outTo 0
+07: 24     # [15]: in
+#rightPrint1
+08: 0c     # [17]: one
+09: 48 00  # [18]: outTo 0
+0b: 48 01  # [19]: outTo 1
+#rightPrint1
+0d: 0c     # [21]: one
+0e: 48 00  # [22]: outTo 0
+10: 48 01  # [23]: outTo 1
+
+
+
+#State: s1
+12: 60 15  # [28]: C_s1: jmpt C_s1_1
+
+# s1  0 - - Halt
+           # [31]: C_s1_0:
+14: 00     # [32]: halt
+
+# s1  1 0 R s2
+           # [35]: C_s1_1:
+#print0
+15: 08     # [37]: zero
+16: 48 01  # [38]: outto 1
+#moveRight
+18: 0c     # [40]: one
+19: 48 00  # [41]: outTo 0
+1b: 24     # [42]: in
+# Next: s2
+1c: 70 1e  # [44]: jmp C_s2
+
+#State: s2
+1e: 60 26  # [47]: C_s2: jmpt C_s2_1
+
+# s2  0 0 R s3
+           # [50]: C_s2_0:
+#moveRight
+20: 0c     # [52]: one
+21: 48 00  # [53]: outTo 0
+23: 24     # [54]: in
+# Next: s3
+24: 70 2c  # [56]: jmp C_s3
+
+# s2  1 1 R s2
+           # [59]: C_s2_1:
+#moveRight
+26: 0c     # [61]: one
+27: 48 00  # [62]: outTo 0
+29: 24     # [63]: in
+# Next: s2
+2a: 70 1e  # [65]: jmp C_s2
+
+#State: s3
+2c: 60 37  # [68]: C_s3: jmpt C_s3_1
+
+# s3  0 1 L s4
+           # [71]: C_s3_0:
+#print1
+2e: 0c     # [73]: one
+2f: 48 01  # [74]: outTo 1
+#moveLeft
+31: 08     # [76]: zero
+32: 48 00  # [77]: outTo 0
+34: 24     # [78]: in
+# Next: s4
+35: 70 3d  # [80]: jmp C_s4
+
+# s3  1 1 R s3
+           # [83]: C_s3_1:
+#moveRight
+37: 0c     # [85]: one
+38: 48 00  # [86]: outTo 0
+3a: 24     # [87]: in
+# Next: s3
+3b: 70 2c  # [89]: jmp C_s3
+
+#State: s4
+3d: 60 45  # [92]: C_s4: jmpt C_s4_1
+
+# s4  0 0 L s5
+           # [95]: C_s4_0:
+#moveLeft
+3f: 08     # [97]: zero
+40: 48 00  # [98]: outTo 0
+42: 24     # [99]: in
+# Next: s5
+43: 70 4b  # [101]: jmp C_s5
+
+# s4  1 1 L s4
+           # [104]: C_s4_1:
+#moveLeft
+45: 08     # [106]: zero
+46: 48 00  # [107]: outTo 0
+48: 24     # [108]: in
+# Next: s4
+49: 70 3d  # [110]: jmp C_s4
+
+#State: s5
+4b: 60 56  # [113]: C_s5: jmpt C_s5_1
+
+# s5  0 1 R s1
+           # [116]: C_s5_0:
+#print1
+4d: 0c     # [118]: one
+4e: 48 01  # [119]: outTo 1
+#moveRight
+50: 0c     # [121]: one
+51: 48 00  # [122]: outTo 0
+53: 24     # [123]: in
+# Next: s1
+54: 70 12  # [125]: jmp C_s1
+
+# s5  1 1 L s5
+           # [128]: C_s5_1:
+#moveLeft
+56: 08     # [130]: zero
+57: 48 00  # [131]: outTo 0
+59: 24     # [132]: in
+# Next: s5
+5a: 70 4b  # [134]: jmp C_s5
+
+
+
+# Busy_Beaver
+
+           # [140]: org 0x80
+
+
+
+
+#moveRight
+80: 0c     # [146]: one
+81: 48 00  # [147]: outTo 0
+83: 24     # [148]: in
+
+
+
+#State: A
+84: 60 8f  # [153]: D_A: jmpt D_A_1
+
+# A  0 1 L B
+           # [156]: D_A_0:
+#print1
+86: 0c     # [158]: one
+87: 48 01  # [159]: outTo 1
+#moveLeft
+89: 08     # [161]: zero
+8a: 48 00  # [162]: outTo 0
+8c: 24     # [163]: in
+# Next: B
+8d: 70 95  # [165]: jmp D_B
+
+# A  1 1 R C
+           # [168]: D_A_1:
+#moveRight
+8f: 0c     # [170]: one
+90: 48 00  # [171]: outTo 0
+92: 24     # [172]: in
+# Next: C
+93: 70 a6  # [174]: jmp D_C
+
+#State: B
+95: 60 a0  # [177]: D_B: jmpt D_B_1
+
+# B  0 1 R A
+           # [180]: D_B_0:
+#print1
+97: 0c     # [182]: one
+98: 48 01  # [183]: outTo 1
+#moveRight
+9a: 0c     # [185]: one
+9b: 48 00  # [186]: outTo 0
+9d: 24     # [187]: in
+# Next: A
+9e: 70 84  # [189]: jmp D_A
+
+# B  1 1 L B
+           # [192]: D_B_1:
+#moveLeft
+a0: 08     # [194]: zero
+a1: 48 00  # [195]: outTo 0
+a3: 24     # [196]: in
+# Next: B
+a4: 70 95  # [198]: jmp D_B
+
+#State: C
+a6: 60 b1  # [201]: D_C: jmpt D_C_1
+
+# C  0 1 R B
+           # [204]: D_C_0:
+#print1
+a8: 0c     # [206]: one
+a9: 48 01  # [207]: outTo 1
+#moveRight
+ab: 0c     # [209]: one
+ac: 48 00  # [210]: outTo 0
+ae: 24     # [211]: in
+# Next: B
+af: 70 95  # [213]: jmp D_B
+
+# C  1 1 - Halt
+           # [216]: D_C_1:
+b1: 00     # [217]: halt

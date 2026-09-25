@@ -1,0 +1,63 @@
+{
+name: Copy
+setup: X[x]
+---
+##State  Symbol   Print Operation Next State
+   s1      0        -       -            Halt
+   s1      1        0       R            s2
+   s2      0        0       R            s3
+   s2      1        1       R            s2
+   s3      0        1       L            s4
+   s3      1        1       R            s3
+   s4      0        0       L            s5
+   s4      1        1       L            s4
+   s5      0        1       R            s1
+   s5      1        1       L            s5
+}   
+{
+name: Busy_Beaver
+org: 0x80
+---
+##State  Symbol   Print Operation Next State
+   A        0       1       L         B
+   A        1       1       R         C
+   B        0       1       R         A
+   B        1       1       L         B
+   C        0       1       R         B
+   C        1       1       -         Halt
+}
+{
+name: Alt Copy
+setup: Xx-[-]
+org: 0x100
+---
+##State  Symbol   Print Operation Next State
+   s0      0        -       R            s0
+   s0      1        -       -            s1
+   s1      0        -       -            Halt
+   s1      1        0       R            s2
+   s2      0        -       R            s3
+   s2      1        -       R            s2
+   s3      0        1       L            s4
+   s3      1        -       R            s3
+   s4      0        -       L            s5
+   s4      1        -       L            s4
+   s5      0        1       R            s1
+   s5      1        -       L            s5
+}   
+{
+   name: Overflow Right
+   ---
+   A 0 1 R B
+   A 1 - R B
+   B 0 - R B
+   B 1 0 R B
+}
+{
+   name: Overflow Left
+   ---
+   A 0 1 L B
+   A 1 1 L B
+   B 0 - L B
+   B 1 0 L B
+}

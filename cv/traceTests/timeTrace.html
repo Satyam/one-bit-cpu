@@ -1,0 +1,232 @@
+<html>
+  <head>
+    <style>
+    @media print {
+      .panel {
+        rotate: 90deg;
+        transform-origin: bottom;
+      }
+}
+    .row {
+      text-wrap-mode: nowrap;
+      font-family: sans-serif;
+    }
+    .row:nth-child(odd) {
+      background-color:#eeeeee;
+    }
+    .name {
+      display: inline-block;
+      width: 8em;
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      background: white;
+      top: 0;
+    }
+    .graph {
+      display: inline-block;
+      position: relative;
+      text-wrap-mode: nowrap;
+      border:thin solid black;
+      height: 1.2em;
+      width: 286px;
+      background: repeat-x url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cline x1='0' y1='0' x2='0' y2='100' stroke='black' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: 100px auto;
+    }
+    .bar {
+      position: absolute;
+      top: 1px;
+      height: 1em;
+      border: solid thin gray;
+      background-color: silver;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .bool {
+      position: absolute;
+      top: 1px;
+      height: 1em;
+      background-color: blue;
+      border-radius: 5px;
+    }
+    .asm {
+      display: inline-block;
+      position: relative;
+      text-wrap-mode: nowrap;
+      height: 20em;
+      width: 286px;
+    }
+    .asmbar {
+      position: absolute;
+      display: inline-block;
+      rotate: -45deg;
+      transform-origin: top left;
+      top: 19em;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="panel">
+      <div class="row">
+        <div class="name">ASM</div>
+        <div class="asm">
+          
+        </div>
+      </div>
+      
+            <div class="row">
+              <div class="name">RST</div>
+              <div class="graph">
+                
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="name">Symb</div>
+              <div class="graph">
+                <span class="bool" 
+                    style="left:127px;width:19px">
+                  </span><span class="bool" 
+                    style="left:247px;width:19px">
+                  </span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="name">State</div>
+              <div class="graph">
+                <span 
+          class="bar"
+          style="left:46px;width:60px">2
+        </span><span 
+          class="bar"
+          style="left:106px;width:60px">4
+        </span><span 
+          class="bar"
+          style="left:166px;width:60px">6
+        </span><span 
+          class="bar"
+          style="left:226px;width:60px">8
+        </span><span 
+          class="bar"
+          style="left:286px;width:NaNpx">0
+        </span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="name">Code</div>
+              <div class="graph">
+                <span 
+          class="bar"
+          style="left:46px;width:60px">2c2
+        </span><span 
+          class="bar"
+          style="left:106px;width:60px">1c3
+        </span><span 
+          class="bar"
+          style="left:166px;width:60px">c4
+        </span><span 
+          class="bar"
+          style="left:226px;width:60px">3c0
+        </span><span 
+          class="bar"
+          style="left:286px;width:NaNpx">3f
+        </span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="name">DirR</div>
+              <div class="graph">
+                <span class="bool" 
+                    style="left:226px;width:60px">
+                  </span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="name">Next</div>
+              <div class="graph">
+                <span 
+          class="bar"
+          style="left:46px;width:60px">2
+        </span><span 
+          class="bar"
+          style="left:106px;width:60px">3
+        </span><span 
+          class="bar"
+          style="left:166px;width:60px">4
+        </span><span 
+          class="bar"
+          style="left:226px;width:60px">0
+        </span><span 
+          class="bar"
+          style="left:286px;width:NaNpx">3f
+        </span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="name">Halt</div>
+              <div class="graph">
+                <span class="bool" 
+                    style="left:286px;width:NaNpx">
+                  </span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="name">Write</div>
+              <div class="graph">
+                <span class="bool" 
+                    style="left:6px;width:10px">
+                  </span><span class="bool" 
+                    style="left:66px;width:10px">
+                  </span><span class="bool" 
+                    style="left:126px;width:10px">
+                  </span><span class="bool" 
+                    style="left:186px;width:9px">
+                  </span><span class="bool" 
+                    style="left:246px;width:9px">
+                  </span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="name">Move</div>
+              <div class="graph">
+                <span class="bool" 
+                    style="left:26px;width:10px">
+                  </span><span class="bool" 
+                    style="left:86px;width:10px">
+                  </span><span class="bool" 
+                    style="left:146px;width:10px">
+                  </span><span class="bool" 
+                    style="left:206px;width:10px">
+                  </span><span class="bool" 
+                    style="left:266px;width:10px">
+                  </span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="name">Print</div>
+              <div class="graph">
+                <span class="bool" 
+                    style="left:106px;width:60px">
+                  </span><span class="bool" 
+                    style="left:226px;width:60px">
+                  </span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="name">undefined</div>
+              <div class="graph">
+                
+              </div>
+            </div>
+    </div>
+  </body>
+</html>

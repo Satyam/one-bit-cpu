@@ -30,30 +30,31 @@ Instructions are case insensitive.  Arguments, when indicated, are mandatory. Th
 
 Arguments can use constants defined with the `Const` pseudo-instruction, as described later.
 
-All instructions take 1 byte except those that have either a `Port Addr` or `Inst Addr` as an argument which take two bytes.
+All instructions take 1 byte except those that have either a `Port Addr` or `Inst Addr` as an argument which take two bytes. Exceptionally, `Ret` also takes two bytes even though it has no extra arguments.
 
 
-| Instruction | Argument  | Description                                                                     |
-| ----------- | --------- | ------------------------------------------------------------------------------- |
-| And         | Reg       | Logical `And` of `Acc` with bit in given register                               |
-| Or          | Reg       | Logical `Or` of `Acc` with bit in given register                                |
-| Load        | Reg       | Load `Acc` with bit in given register                                           |
-| Save        | Reg       | Save `Acc` in given register                                                    |
-| Not         |           | Invert bit in `Acc`                                                             |
-| Zero        |           | Load a 0 in the `Acc`                                                           |
-| One         |           | Load a 1 in the `Acc`                                                           |
-| OutTo       | Port Addr | Output value at `Acc` to given port address                                     |
-| Out         |           | Output value at `Acc` to port address previously set                            |
-| OutInc      |           | Output value at `Acc` to the next port address. Leaves address incremented      |
-| OutDec      |           | Output value at `Acc` to the previous port address. Leaves address decremented  |
-| InFrom      | Port Addr | Input value to `Acc` from given port address                                    |
-| In          |           | Input value to `Acc` from port address previously set                           |
-| InInc       |           | Input value to `Acc` from the next port address. Leaves address incremented     |
-| InDec       |           | Input value to `Acc` from the previous port address. Leaves address decremented |
-| Jmp         | Inst Addr | Jump to given instruction address                                               |
-| JmpT        | Inst Addr | Jump to given instruction address if `Acc` is true                              |
-| Call        | Inst Addr | Call subroutine at given instruction address                                    |
-| Ret         |           | Return from subroutine call                                                     |
+| Instruction | Argument  | Description                                                        |
+| ----------- | --------- | ------------------------------------------------------------------ |
+| And         | Reg       | Logical `And` of `Acc` with bit in given register                  |
+| Or          | Reg       | Logical `Or` of `Acc` with bit in given register                   |
+| Load        | Reg       | Load `Acc` with bit in given register                              |
+| Save        | Reg       | Save `Acc` in given register                                       |
+| Not         |           | Invert bit in `Acc`                                                |
+| Zero        |           | Load a 0 in the `Acc`                                              |
+| One         |           | Load a 1 in the `Acc`                                              |
+| OutTo       | Port Addr | Output value at `Acc` to given port address                        |
+| Out         |           | Output value at `Acc` to port address previously set               |
+| OutNext     |           | Increment port address and output value in `Acc` to that address.  |
+| OutPrev     |           | Decrement port address and output value in `Acc` to that address.  |
+| InFrom      | Port Addr | Input value to `Acc` from given port address                       |
+| In          |           | Input value to `Acc` from port address previously set              |
+| InNext      |           | Increment port address and input value from that address to `Acc`. |
+| InPrev      |           | Decrement port address and input value from that address to `Acc`. |
+| Jmp         | Inst Addr | Jump to given instruction address                                  |
+| JmpT        | Inst Addr | Jump to given instruction address if `Acc` is true                 |
+| Call        | Inst Addr | Call subroutine at given instruction address                       |
+| Ret         |           | Return from subroutine call                                        |
+| Halt        |           | Stop the clock. It can only resume via hardware Reset              |
     
 Where:		
 * Reg is up to 31 or 0x1f		

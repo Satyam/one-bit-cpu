@@ -1,0 +1,141 @@
+v3.0 hex words addressed
+# Since RAM locations cannot be shown in timing diagram, I must output all results on I/O ports
+
+# Check that outputs can go to various addresses (doesn't matter which data)
+# (basically, check DataAddress and Write pins)
+00: 48 00  # [5]:       outTo 0
+02: 48 03  # [6]:       outTo 3
+04: 48 01  # [7]:       outTo 1
+06: 48 02  # [8]:       outTo 2
+08: 4c 00  # [9]:       outTo 1024
+
+0a: 34     # [11]:       out       # Also check that out remembers the previous address
+
+
+# Now check sending a 0 and a 1. (check DataOut pin)
+# Since I will be using the `out` instruction with always the same address
+# I have to check that one as well.
+0b: 48 01  # [17]:       outTo 1   #set a fixed DataAdress so the rest of `out`s go there.
+
+# Check ONE and ZERO
+0d: 08     # [20]:       zero
+0e: 34     # [21]:       out       # Acc should be zero
+0f: 0c     # [22]:       one       # Acc should be 1
+10: 34     # [23]:       out       # port address 1 now 1.
+
+# Now store data in regs and output it to ensure it got there.
+11: 0c     # [26]:       one
+12: e0     # [27]:       save 0      # save ones in regs 0 and 2
+13: e2     # [28]:       save 2
+14: 08     # [29]:       zero
+15: e1     # [30]:       save 1
+16: e3     # [31]:       save 3
+
+# check all regs from 0 to 3
+17: c0     # [34]:       load 0
+18: 34     # [35]:       out         # should be 1
+19: c1     # [36]:       load 1
+1a: 34     # [37]:       out         # should be 0
+1b: c2     # [38]:       load 2
+1c: 34     # [39]:       out         # should be 1
+1d: c3     # [40]:       load 3
+1e: 34     # [41]:       out         # should be 0
+
+# Check logical operations on the Acc
+1f: 08     # [44]:       zero
+20: e0     # [45]:       save 0      # get a 0 into reg 0
+21: 0c     # [46]:       one
+22: e1     # [47]:       save 1      # get a 1 into reg 1
+# test and
+23: 80     # [49]:       and 0
+24: 34     # [50]:       out       # 1 and 0 => 0
+
+25: 0c     # [52]:       one
+26: 81     # [53]:       and 1
+27: 34     # [54]:       out       # should be 1
+
+28: 08     # [56]:       zero
+29: 81     # [57]:       and 1
+2a: 34     # [58]:       out       # should be zero
+
+2b: 08     # [60]:       zero
+2c: 80     # [61]:       and 0
+2d: 34     # [62]:       out       # should be zero
+
+#test OR
+2e: 0c     # [65]:       one
+2f: a0     # [66]:       or 0
+30: 34     # [67]:       out       # 1 and 0 => 1
+
+31: 0c     # [69]:       one
+32: a1     # [70]:       or 1
+33: 34     # [71]:       out       # should be 1
+
+34: 08     # [73]:       zero
+35: a1     # [74]:       or 1
+36: 34     # [75]:       out       # should be 1
+
+37: 08     # [77]:       zero
+38: 80     # [78]:       and 0
+39: 34     # [79]:       out       # should be 0
+
+# Test NOT
+3a: 08     # [82]:       zero
+3b: 04     # [83]:       not
+3c: 34     # [84]:       out         # should be 1
+3d: 04     # [85]:       not
+3e: 34     # [86]:       out         # should be 0
+
+# check in and out with increment and decrement.
+#outs
+3f: 0c     # [90]:       one
+40: 48 00  # [91]:       outTo 0     # should go to 0
+42: 34     # [92]:       out         # should go to 0
+43: 38     # [93]:       outNext     # should go to 1
+44: 38     # [94]:       outNext     # should go to 2
+45: 34     # [95]:       out         # should go to 2
+46: 3c     # [96]:       outPrev     # should go to 1
+47: 3c     # [97]:       outPrev     # should go to 0
+# ins
+# The way the main circuit is wired,
+# it reads the zeros from even addresses and ones from odd addresses
+48: 40 00  # [101]:       inFrom 0    # should come from 0
+4a: 24     # [102]:       in          # should come from 0
+4b: 28     # [103]:       inNext      # should come from 1
+4c: 28     # [104]:       inNext      # should come from 2
+4d: 24     # [105]:       in          # should come from 2
+4e: 2c     # [106]:       inPrev      # should come from 1
+4f: 2c     # [107]:       inPrev      # should come from 0
+
+# Test jumps
+50: 48 00  # [110]:       outTo 0     # ensure known port address
+52: 0c     # [111]:       one        #acc = 1
+53: 70 56  # [112]:       jmp skip1
+55: 04     # [113]:       not         # acc = 0  (should not happen)
+56: 34     # [114]: skip1: out        # should output 1
+57: 0c     # [115]:       one
+58: 60 5b  # [116]:       jmpt skip2  # should jump
+5a: 04     # [117]:       not         # acc = 0 (should not happen)
+5b: 34     # [118]: skip2: out        # should output 1
+
+5c: 08     # [120]:       zero
+5d: 60 60  # [121]:       jmpt skip3  #(should not jump)
+5f: 04     # [122]:       not         # acc = 1, (should not happen)
+60: 34     # [123]: skip3: out        # should output 0
+
+# Test calls and returns
+61: 0c     # [126]:       one
+62: 48 00  # [127]:       outTo 0
+64: 50 6a  # [128]:       call sub1
+66: 50 6c  # [129]:       call sub2
+68: 70 70  # [130]:       jmp   end
+6a: 34     # [131]: sub1: out
+6b: 10     # [132]:       ret
+6c: 50 6f  # [133]: sub2: call sub3
+6e: 10     # [134]:       ret
+6f: 10     # [135]: sub3: ret
+
+# End with a HALT
+70: 00     # [138]: end:  halt
+
+

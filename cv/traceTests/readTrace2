@@ -1,0 +1,189 @@
+#!/usr/bin/env zx
+export {};
+
+const RST = 'RST';
+const HALT = 'Halt';
+const SCALE = 5;
+
+const names = [];
+const trace = await fs.readFile('./timeTrace.txt', 'utf8');
+
+for (const line of trace.split('\n')) {
+  const [circuit, name, t, valStr] = line.split(',');
+  if (!names.includes(name)) names.push(name);
+}
+
+let inside = false;
+let rst1 = false;
+
+let maxTime = 0;
+
+const matrix = {};
+names.forEach((n) => {
+  matrix[n] = {
+    bool: true,
+    vals: [[0, 0, 0]],
+  };
+});
+
+const duplicates = {};
+
+for (const line of trace.split('\n')) {
+  const [circuit, name, t, valStr] = line.split(',');
+  const time = parseFloat(t);
+  const valNum = parseInt(valStr, 16);
+  if (/F\d+/.test(name)) continue;
+  if (duplicates[name]) {
+    if (duplicates[name] !== circuit) {
+      console.error(`Duplicate: ${name} in ${duplicates[name]} and ${circuit}`);
+    }
+  } else {
+    duplicates[name] = circuit;
+  }
+  if (inside) {
+    if (time > maxTime) maxTime = time;
+    if (name) {
+      if (name in matrix) {
+        const m = matrix[name];
+        const v = m.vals;
+        v.push([time, valNum]);
+        v[v.length - 2].push(time);
+        if (valNum > 1) m.bool = false;
+      } else {
+        if (name !== RST && name !== HALT) {
+          console.error(`${name} not found in matrix`);
+        }
+      }
+    }
+  }
+  if (name === RST) {
+    if (valNum === 1) {
+      rst1 = true;
+    } else {
+      if (rst1 && valNum === 0) {
+        inside = true;
+      }
+    }
+  }
+}
+
+for (const entry of Object.values(matrix)) {
+  entry.vals = entry.vals.filter(([time, value, end]) => time !== end);
+}
+
+function printGraph(name, vals, bool) {
+  return vals
+    .map(([time, value, end]) => {
+      if (bool) {
+        if (value) {
+          return `<span class="bool" 
+                    style="left:${Math.round(time * SCALE)}px;width:${Math.round((end - time) * SCALE)}px">
+                  </span>`;
+        }
+      } else {
+        return `<span 
+          class="bar"
+          style="left:${Math.round(time * SCALE)}px;width:${Math.round((end - time) * SCALE)}px">${value.toString(16)}
+        </span>`;
+      }
+      return '';
+    })
+    .join('');
+}
+
+function printAsm() {
+  return '';
+}
+await fs.writeFile(
+  './timeTrace.html',
+  `<html>
+  <head>
+    <style>
+    @media print {
+      .panel {
+        rotate: 90deg;
+        transform-origin: bottom;
+      }
+}
+    .row {
+      text-wrap-mode: nowrap;
+      font-family: sans-serif;
+    }
+    .row:nth-child(odd) {
+      background-color:#eeeeee;
+    }
+    .name {
+      display: inline-block;
+      width: 8em;
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      background: white;
+      top: 0;
+    }
+    .graph {
+      display: inline-block;
+      position: relative;
+      text-wrap-mode: nowrap;
+      border:thin solid black;
+      height: 1.2em;
+      width: ${maxTime * SCALE}px;
+      background: repeat-x url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cline x1='0' y1='0' x2='0' y2='100' stroke='black' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: 100px auto;
+    }
+    .bar {
+      position: absolute;
+      top: 1px;
+      height: 1em;
+      border: solid thin gray;
+      background-color: silver;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .bool {
+      position: absolute;
+      top: 1px;
+      height: 1em;
+      background-color: blue;
+      border-radius: 5px;
+    }
+    .asm {
+      display: inline-block;
+      position: relative;
+      text-wrap-mode: nowrap;
+      height: 20em;
+      width: ${maxTime * SCALE}px;
+    }
+    .asmbar {
+      position: absolute;
+      display: inline-block;
+      rotate: -45deg;
+      transform-origin: top left;
+      top: 19em;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="panel">
+      <div class="row">
+        <div class="name">ASM</div>
+        <div class="asm">
+          ${printAsm()}
+        </div>
+      </div>
+      ${names
+        .map((name) => {
+          const { bool, vals } = matrix[name];
+          return `
+            <div class="row">
+              <div class="name">${name}</div>
+              <div class="graph">
+                ${printGraph(name, vals, bool)}
+              </div>
+            </div>`;
+        })
+        .join('\n')}
+    </div>
+  </body>
+</html>`
+);
