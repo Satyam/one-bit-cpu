@@ -74,10 +74,13 @@ if (firstPass(asm)) {
   process.exit(1);
 }
 
-const romImage = secondPass(asm);
+const bytes = secondPass(asm);
 
-if (romImage) {
-  await fs.writeFile(outFile, romImage.join('\n'));
+if (bytes) {
+  await fs.writeFile(
+    outFile,
+    Array.from(bytes, (b) => `0x${b ?? 0}`).join('\n')
+  );
   console.log(`ROM image created in "${outFile}"`);
   process.exit(0);
 }
@@ -87,8 +90,8 @@ function showHelp() {
   console.log(`Usage
   assembler [source] [options]
     
-    Assembles the source file into a Logisim "v3.0 hex words addressed" format
-    to load into the program ROM of the CPU.
+    Assembles the source file into a string of bytes
+    to load into the program ROM.
 
   [source]  Name of the file containing the code to be assembled.
             If omitted "program.asm" will be used.
@@ -210,11 +213,19 @@ function secondPass(asm) {
   // output ROM image
   const bytes = [];
 
+  function pushByte(byte) {
+    if (typeof bytes[address] === 'undefined') {
+      bytes[address] = byte;
+    } else {
+      throw new Error(`Overlapping code at location ${address}`);
+    }
+    address++;
+  }
+
   asm.forEach((line, lineNum) => {
     // skip comments and empty lines
     if (rxComment.test(line) || !line.trim()) return;
     try {
-      // _label is not used in this step but it has to have a placeholder
       const { instr, arg } = parseLine(line);
       let code;
       switch (instr) {
@@ -225,8 +236,6 @@ function secondPass(asm) {
           break;
         case ORG:
           address = parseValue(arg);
-          // TODO
-          // need to pad the bytestream, check that the new address is not already taken
           break;
         default:
           // get the actual bitcode
@@ -236,21 +245,19 @@ function secondPass(asm) {
           const argValue = readArg(arg);
 
           if (extra > 0) {
-            code = (code << (extra + argValue)) >> extra2;
+            code = (code << extra) + (argValue >> extra2);
           }
-          bytes.push(toHex(code));
+          pushByte(toHex(code));
           if (extra2 > 0) {
-            bytes.push(argValue & ((1 << extra2) - 1));
+            pushByte(argValue & ((1 << extra2) - 1));
           }
-
-          address += extra2 ? 2 : 1;
       }
     } catch (err) {
       console.error(chalk.red(`[${lineNum + 1}]: ${err} in:\n      ${line}`));
       hasError = true;
     }
   });
-  return !hasError && romImage;
+  return !hasError && bytes;
 }
 
 function toHex(num) {
@@ -301,6 +308,8 @@ function validateLine(label, instr, arg, comment) {
       if (!arg) throw new Error(`Missing argument for "${instr}"`);
       if (!label) throw new Error(`Missing label for "${instr}"`);
       break;
+    case EXTRA:
+    case EXTRA2:
     case ORG:
       if (!arg) throw new Error(`Missing argument for "${instr}"`);
       break;
@@ -310,18 +319,14 @@ function validateLine(label, instr, arg, comment) {
     default:
       if (!rxIdentifier.test(instr))
         throw new Error(`Invalid instruction "${instr}"`);
-      const config = keywords[instr];
-      if (!config) throw new Error(`Unknown instruction "${instr}"`);
-      if (config.argLen) {
-        if (!arg) throw new Error(`Missing argument for "${instr}"`);
-      } else {
-        if (arg) throw new Error(`Unexpected argument "${arg}"`);
-      }
+      if (!keywords.includes(instr))
+        throw new Error(`Unknown instruction "${instr}"`);
       break;
   }
 }
 
 function readArg(arg) {
+  if (typeof arg === 'undefined') return 0;
   let value = parseValue(arg);
   if (value !== null) {
     const numBits = extra + extra2;
