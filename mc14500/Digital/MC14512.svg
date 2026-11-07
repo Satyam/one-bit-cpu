@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<svg width="220" height="400" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" version="1.1">
+ <g class="layer" display="inline">
+  <title>Layer 1</title>
+  <rect stroke="#000000" stroke-width="3.87" fill="#ffffb4" fill-opacity="0.78" x="0" y="0" width="80" height="180" id="rect1"/>
+  <text id="label" fill="#808080" font-size="20px" text-anchor="middle" x="40" y="200">Label</text>
+  <g id="g1">
+   <circle fill="#0000b2" id="pin:A" cx="0" cy="60" r="3"/>
+   <text fill="#808080" font-size="18px" x="4" y="66" id="text1">A</text>
+  </g>
+  <g id="g2">
+   <circle fill="#0000b2" id="pin:B" cx="0" cy="80" r="3"/>
+   <text fill="#808080" font-size="18px" x="4" y="86" id="text2">B</text>
+  </g>
+  <g id="g3">
+   <circle fill="#0000b2" id="pin:C" cx="0" cy="100" r="3"/>
+   <text fill="#808080" font-size="18px" x="4" y="106" id="text3">C</text>
+  </g>
+  <g id="g4">
+   <circle fill="#0000b2" id="pin:INH" cx="0" cy="140" r="3"/>
+   <text fill="#808080" font-size="18px" x="4" y="146" id="text4">INH</text>
+  </g>
+  <g id="g5">
+   <circle fill="#0000b2" id="pin:DIS" cx="0" cy="160" r="3"/>
+   <text fill="#808080" font-size="18px" x="4" y="166" id="text5">DIS</text>
+  </g>
+  <g id="g6">
+   <circle fill="#0000b2" id="pin:X0" cx="80" cy="20" r="3"/>
+   <text fill="#808080" font-size="18px" text-anchor="end" x="74" y="26" id="text6">X0</text>
+  </g>
+  <g id="g7">
+   <circle fill="#0000b2" id="pin:X1" cx="80" cy="40" r="3"/>
+   <text fill="#808080" font-size="18px" text-anchor="end" x="74" y="46" id="text7">X1</text>
+  </g>
+  <g id="g8">
+   <circle fill="#0000b2" id="pin:X2" cx="80" cy="60" r="3"/>
+   <text fill="#808080" font-size="18px" text-anchor="end" x="74" y="66" id="text8">X2</text>
+  </g>
+  <g id="g9">
+   <circle fill="#0000b2" id="pin:X3" cx="80" cy="80" r="3"/>
+   <text fill="#808080" font-size="18px" text-anchor="end" x="74" y="86" id="text9">X3</text>
+  </g>
+  <g id="g10">
+   <circle fill="#0000b2" id="pin:X4" cx="80" cy="100" r="3"/>
+   <text fill="#808080" font-size="18px" text-anchor="end" x="74" y="106" id="text10">X4</text>
+  </g>
+  <g id="g11">
+   <circle fill="#0000b2" id="pin:X5" cx="80" cy="120" r="3"/>
+   <text fill="#808080" font-size="18px" text-anchor="end" x="74" y="126" id="text11">X5</text>
+  </g>
+  <g id="g12">
+   <circle fill="#0000b2" id="pin:X6" cx="80" cy="140" r="3"/>
+   <text fill="#808080" font-size="18px" text-anchor="end" x="74" y="146" id="text12">X6</text>
+  </g>
+  <g id="g13">
+   <circle fill="#0000b2" id="pin:X7" cx="80" cy="160" r="3"/>
+   <text fill="#808080" font-size="18px" text-anchor="end" x="74" y="166" id="text13">X7</text>
+  </g>
+  <g id="g14">
+   <circle fill="#b20000" id="pin:Z" cx="0" cy="20" r="3"/>
+   <text fill="#808080" font-size="18px" text-anchor="start" x="4" y="26" id="text14">Z</text>
+  </g>
+ </g>
+</svg>

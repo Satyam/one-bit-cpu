@@ -1,7 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <circuit>
   <version>2</version>
-  <attributes/>
+  <attributes>
+    <entry>
+      <string>Label</string>
+      <string>MC14500</string>
+    </entry>
+    <entry>
+      <string>shapeType</string>
+      <shapeType>LAYOUT</shapeType>
+    </entry>
+    <entry>
+      <string>romContent</string>
+      <romList>
+        <roms/>
+      </romList>
+    </entry>
+    <entry>
+      <string>Height</string>
+      <int>8</int>
+    </entry>
+    <entry>
+      <string>Width</string>
+      <int>5</int>
+    </entry>
+    <entry>
+      <string>showDataTable</string>
+      <boolean>true</boolean>
+    </entry>
+  </attributes>
   <visualElements>
     <visualElement>
       <elementName>LU.dig</elementName>
