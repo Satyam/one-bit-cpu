@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<circuit>
+  <version>2</version>
+  <attributes>
+    <entry>
+      <string>shapeType</string>
+      <shapeType>LAYOUT</shapeType>
+    </entry>
+    <entry>
+      <string>Description</string>
+      <string>Two phase clock generator</string>
+    </entry>
+    <entry>
+      <string>Label</string>
+      <string>ClkGen</string>
+    </entry>
+    <entry>
+      <string>romContent</string>
+      <romList>
+        <roms/>
+      </romList>
+    </entry>
+    <entry>
+      <string>Width</string>
+      <int>4</int>
+    </entry>
+  </attributes>
+  <visualElements>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>T0</string>
+        </entry>
+      </elementAttributes>
+      <pos x="500" y="840"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>T1</string>
+        </entry>
+      </elementAttributes>
+      <pos x="500" y="940"/>
+    </visualElement>
+    <visualElement>
+      <elementName>RS_FF_AS</elementName>
+      <elementAttributes/>
+      <pos x="400" y="840"/>
+    </visualElement>
+    <visualElement>
+      <elementName>RS_FF_AS</elementName>
+      <elementAttributes/>
+      <pos x="400" y="940"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Not</elementName>
+      <elementAttributes/>
+      <pos x="220" y="900"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Delay</elementName>
+      <elementAttributes>
+        <entry>
+          <string>delayTime</string>
+          <int>2</int>
+        </entry>
+      </elementAttributes>
+      <pos x="320" y="840"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Delay</elementName>
+      <elementAttributes/>
+      <pos x="320" y="940"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Or</elementName>
+      <elementAttributes/>
+      <pos x="120" y="880"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>Reset</string>
+        </entry>
+      </elementAttributes>
+      <pos x="80" y="920"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>ClkIn</string>
+        </entry>
+      </elementAttributes>
+      <pos x="80" y="880"/>
+    </visualElement>
+  </visualElements>
+  <wires>
+    <wire>
+      <p1 x="200" y="960"/>
+      <p2 x="400" y="960"/>
+    </wire>
+    <wire>
+      <p1 x="80" y="880"/>
+      <p2 x="120" y="880"/>
+    </wire>
+    <wire>
+      <p1 x="180" y="900"/>
+      <p2 x="200" y="900"/>
+    </wire>
+    <wire>
+      <p1 x="260" y="900"/>
+      <p2 x="280" y="900"/>
+    </wire>
+    <wire>
+      <p1 x="200" y="900"/>
+      <p2 x="220" y="900"/>
+    </wire>
+    <wire>
+      <p1 x="80" y="920"/>
+      <p2 x="120" y="920"/>
+    </wire>
+    <wire>
+      <p1 x="460" y="840"/>
+      <p2 x="500" y="840"/>
+    </wire>
+    <wire>
+      <p1 x="200" y="840"/>
+      <p2 x="320" y="840"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="840"/>
+      <p2 x="400" y="840"/>
+    </wire>
+    <wire>
+      <p1 x="360" y="940"/>
+      <p2 x="400" y="940"/>
+    </wire>
+    <wire>
+      <p1 x="460" y="940"/>
+      <p2 x="500" y="940"/>
+    </wire>
+    <wire>
+      <p1 x="280" y="940"/>
+      <p2 x="320" y="940"/>
+    </wire>
+    <wire>
+      <p1 x="280" y="860"/>
+      <p2 x="400" y="860"/>
+    </wire>
+    <wire>
+      <p1 x="280" y="860"/>
+      <p2 x="280" y="900"/>
+    </wire>
+    <wire>
+      <p1 x="280" y="900"/>
+      <p2 x="280" y="940"/>
+    </wire>
+    <wire>
+      <p1 x="200" y="840"/>
+      <p2 x="200" y="900"/>
+    </wire>
+    <wire>
+      <p1 x="200" y="900"/>
+      <p2 x="200" y="960"/>
+    </wire>
+  </wires>
+  <measurementOrdering/>
+</circuit>

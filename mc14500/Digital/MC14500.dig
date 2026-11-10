@@ -3,12 +3,12 @@
   <version>2</version>
   <attributes>
     <entry>
-      <string>Label</string>
-      <string>MC14500</string>
-    </entry>
-    <entry>
       <string>shapeType</string>
       <shapeType>LAYOUT</shapeType>
+    </entry>
+    <entry>
+      <string>Label</string>
+      <string>MC14500</string>
     </entry>
     <entry>
       <string>romContent</string>
@@ -72,11 +72,6 @@
         </entry>
       </elementAttributes>
       <pos x="560" y="420"/>
-    </visualElement>
-    <visualElement>
-      <elementName>ClkGen.dig</elementName>
-      <elementAttributes/>
-      <pos x="-380" y="720"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -526,6 +521,11 @@
         </entry>
       </elementAttributes>
       <pos x="920" y="-20"/>
+    </visualElement>
+    <visualElement>
+      <elementName>ClkGen1.dig</elementName>
+      <elementAttributes/>
+      <pos x="-380" y="700"/>
     </visualElement>
   </visualElements>
   <wires>
