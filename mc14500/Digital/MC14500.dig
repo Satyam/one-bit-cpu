@@ -226,7 +226,7 @@
       <elementAttributes>
         <entry>
           <string>NetName</string>
-          <string>T0</string>
+          <string>T1</string>
         </entry>
       </elementAttributes>
       <pos x="-120" y="500"/>

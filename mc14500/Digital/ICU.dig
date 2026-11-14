@@ -40,7 +40,7 @@
         </entry>
         <entry>
           <string>Data</string>
-          <data>0,1,2,3</data>
+          <data>0,f,c,d</data>
         </entry>
         <entry>
           <string>lastDataFile</string>
@@ -94,16 +94,6 @@
       <elementName>Const</elementName>
       <elementAttributes/>
       <pos x="320" y="240"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Not</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="1"/>
-        </entry>
-      </elementAttributes>
-      <pos x="100" y="320"/>
     </visualElement>
     <visualElement>
       <elementName>Or</elementName>
@@ -999,16 +989,16 @@ Memory</string>
   </visualElements>
   <wires>
     <wire>
-      <p1 x="-80" y="320"/>
-      <p2 x="-20" y="320"/>
-    </wire>
-    <wire>
       <p1 x="740" y="320"/>
       <p2 x="820" y="320"/>
     </wire>
     <wire>
       <p1 x="1420" y="320"/>
       <p2 x="1460" y="320"/>
+    </wire>
+    <wire>
+      <p1 x="-80" y="320"/>
+      <p2 x="-20" y="320"/>
     </wire>
     <wire>
       <p1 x="820" y="320"/>
@@ -1127,10 +1117,6 @@ Memory</string>
       <p2 x="1460" y="720"/>
     </wire>
     <wire>
-      <p1 x="40" y="340"/>
-      <p2 x="640" y="340"/>
-    </wire>
-    <wire>
       <p1 x="740" y="340"/>
       <p2 x="800" y="340"/>
     </wire>
@@ -1141,6 +1127,10 @@ Memory</string>
     <wire>
       <p1 x="1420" y="340"/>
       <p2 x="1460" y="340"/>
+    </wire>
+    <wire>
+      <p1 x="40" y="340"/>
+      <p2 x="640" y="340"/>
     </wire>
     <wire>
       <p1 x="800" y="340"/>
@@ -1251,10 +1241,6 @@ Memory</string>
       <p2 x="1460" y="740"/>
     </wire>
     <wire>
-      <p1 x="-40" y="360"/>
-      <p2 x="-20" y="360"/>
-    </wire>
-    <wire>
       <p1 x="740" y="360"/>
       <p2 x="780" y="360"/>
     </wire>
@@ -1265,6 +1251,10 @@ Memory</string>
     <wire>
       <p1 x="1420" y="360"/>
       <p2 x="1460" y="360"/>
+    </wire>
+    <wire>
+      <p1 x="-40" y="360"/>
+      <p2 x="-20" y="360"/>
     </wire>
     <wire>
       <p1 x="780" y="360"/>
@@ -1492,10 +1482,6 @@ Memory</string>
     </wire>
     <wire>
       <p1 x="100" y="220"/>
-      <p2 x="100" y="280"/>
-    </wire>
-    <wire>
-      <p1 x="100" y="320"/>
       <p2 x="100" y="440"/>
     </wire>
     <wire>
@@ -1579,5 +1565,39 @@ Memory</string>
       <p2 x="1020" y="660"/>
     </wire>
   </wires>
-  <measurementOrdering/>
+  <measurementOrdering>
+    <string>Clk/X1</string>
+    <string>PgmCtr</string>
+    <string>Instruction</string>
+    <string>FLG0</string>
+    <string>FLGF</string>
+    <string>JMP</string>
+    <string>RTN</string>
+    <string>RR</string>
+    <string>Data</string>
+    <string>Write</string>
+    <string>I1</string>
+    <string>I2</string>
+    <string>I3</string>
+    <string>I4</string>
+    <string>I5</string>
+    <string>I6</string>
+    <string>I7</string>
+    <string>O0</string>
+    <string>O1</string>
+    <string>O2</string>
+    <string>O3</string>
+    <string>O4</string>
+    <string>O5</string>
+    <string>O6</string>
+    <string>O7</string>
+    <string>O8</string>
+    <string>O9</string>
+    <string>O10</string>
+    <string>O11</string>
+    <string>O12</string>
+    <string>O13</string>
+    <string>O14</string>
+    <string>O15</string>
+  </measurementOrdering>
 </circuit>
