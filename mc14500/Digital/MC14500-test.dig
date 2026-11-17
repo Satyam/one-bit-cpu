@@ -13,7 +13,7 @@
         <entry>
           <string>Testdata</string>
           <testData>
-            <dataString>Clk X1 RST  A I   Data Write RR JMP RTN FLG0 FLGF
+            <dataString>Clk X1 RST  A I   JMP RTN FLG0 FLGF
 
 #       NOP0, NOPF, JMP
 program(0,0xf,0xc, 0xd) 
@@ -21,19 +21,19 @@ program(0,0xf,0xc, 0xd)
 # On C, set =&gt; clock =&gt; compare
 
 # Reset
-repeat(3) C   x  1    0 0     z   0     0  0   0   0    0
+C   x  1    0 0     0   0   0    0
 
 # NOP0
-0   X  0    0 0     z   0     0  0   0   1    0
+0   X  0    0 0     0   0   1    0
 
 # NOPF
-C   X  0    1 0xf   z   0     0  0   0   0    1
+C   X  0    1 0xf   0   0   0    1
 
 # JMP
-C   X  0    2 0xc   z   0     0  1   0   0    0
+C   X  0    2 0xc   1   0   0    0
 
 # RTN
-C   X  0    3 0xd   z   0     0  0   1   0    0
+C   X  0    3 0xd   0   1   0    0
 
 </dataString>
           </testData>
@@ -247,6 +247,43 @@ C   X  0    3 0xd   z   0     0  0   1   0    0
         </entry>
       </elementAttributes>
       <pos x="800" y="560"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>Loads</string>
+        </entry>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>Clk RST X1 A I Data RR
+
+program(1,1,2,2)
+
+# reset
+C   1  x 0 1    z  0
+
+# LD 0
+0   0  x 0 1    0  0
+
+# LD 1
+C   0  x 1 1    1  1
+0   0  x 1 1    1  1
+
+# LDC 0
+C   0  x 2 2    0  1
+0   0  x 2 2    0  1
+
+# LDC 1
+C   0  x 3 2    1  0
+0   0  x 3 2    1  0
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="320" y="280"/>
     </visualElement>
   </visualElements>
   <wires>
