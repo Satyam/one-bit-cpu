@@ -98,7 +98,7 @@ repeat(4)   5    bits(1, n &amp; 1) bits(1, n &gt;&gt; 1)   bits(1, (n &amp; 1) 
 repeat(4)   6    bits(1, n &amp; 1) bits(1, n &gt;&gt; 1)   bits(1, !(n &amp; 1) | (n &gt;&gt; 1))
 
 # XNOR
-repeat(4)   7    bits(1, n &amp; 1) bits(1, n &gt;&gt; 1)   bits(1, (!(n &amp; 1) &amp; (n &gt;&gt; 1)) | ((n &amp; 1) &amp; !(n &gt;&gt; 1)))
+repeat(4)   7    bits(1, n &amp; 1) bits(1, n &gt;&gt; 1)   bits(1, ((n &amp; 1) &amp; (n &gt;&gt; 1)) | (!(n &amp; 1) &amp; !(n &gt;&gt; 1)))
 </dataString>
           </testData>
         </entry>
