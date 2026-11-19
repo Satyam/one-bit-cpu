@@ -299,9 +299,9 @@ program(1,1,2,2)
         <entry>
           <string>Testdata</string>
           <testData>
-            <dataString>Clk RST X1 A I Data RR
+            <dataString>Clk RST X1  A I   Data RR
 
-program(3,3,1,3,3,4,4,4,4)
+program(3,3,1,3,3,4,4,1,4,4)
 
 # reset
 0   1   1   0 3    z  0
@@ -312,27 +312,152 @@ program(3,3,1,3,3,4,4,4,4)
 1   0   1   1 3    0  0
 
 # AND D=1, RR=0
-0   0   0   1 3    0  0
+0   0   0   1 3    1  0
 1   0   1   2 1    1  0
 
 # LD 1
 0   0   0   2 1    1  0
 1   0   1   3 3    1  1
 
-# AND D=0, RR=1
-0   0   0   3 3    1  1
-1   0   1   4 3    0  1
-
 # AND D=1, RR=1
-0   0   0   4 3    0  1
-1   0   1   5 4    1  0
+0   0   0   3 3    1  1
+1   0   1   4 3    1  1
 
-0   0   0   5 4    1  0
+# AND D=0, RR=1
+0   0   0   4 3    0  1
+1   0   1   5 4    0  0
+
+
+# ANDC D=0, RR=0
+0   0   0   5 4    0  0
+1   0   1   6 4    0  0
+
+# ANDC D=1, RR=0
+0   0   0   6 4    1  0
+1   0   1   7 1    1  0
+
+# LD 1
+0   0   0   7 1    1  0
+1   0   1   8 4    1  1
+
+# ANDC D=0, RR=1
+0   0   0   8 4    0  1
+1   0   1   9 4    0  1
+
+# ANDC D=1, RR=1
+0   0   0   9 4    1  1
+1   0   1  10 0    1  0
+
 </dataString>
           </testData>
         </entry>
       </elementAttributes>
       <pos x="440" y="280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>Ors</string>
+        </entry>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>Clk RST X1  A I   Data RR
+
+program(5,5,1,5,5,6,6,1,6,6)
+
+# reset
+0   1   1   0 5    z  0
+1   1   1   0 5    z  0
+
+# OR D=0, RR=0
+0   0   0   0 5    0  0
+1   0   1   1 5    0  0
+
+# OR D=1, RR=0
+0   0   0   1 5    1  0
+1   0   1   2 1    1  1
+
+# LD 1
+0   0   0   2 1    1  1
+1   0   1   3 5    1  1
+
+# OR D=1, RR=1
+0   0   0   3 5    1  1
+1   0   1   4 5    1  1
+
+# OR D=0, RR=1
+0   0   0   4 5    0  1
+1   0   1   5 6    0  1
+
+
+# ORC D=0, RR=0
+0   0   0   5 6    0  1
+1   0   1   6 6    0  1
+
+# ORC D=1, RR=0
+0   0   0   6 6    1  1
+1   0   1   7 1    1  1
+
+# LD 1
+0   0   0   7 1    1  1
+1   0   1   8 6    1  1
+
+# ORC D=0, RR=1
+0   0   0   8 6    0  1
+1   0   1   9 6    0  1
+
+# ORC D=1, RR=1
+0   0   0   9 6    1  1
+1   0   1  10 0    1  1
+
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="560" y="280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Testcase</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>Xnors</string>
+        </entry>
+        <entry>
+          <string>Testdata</string>
+          <testData>
+            <dataString>Clk RST X1  A I   Data RR
+
+program(7,7,7,7)
+
+# reset
+0   1   1   0 7    z  0
+1   1   1   0 7    z  0
+
+# XNOR D=0, RR=0
+0   0   0   0 7    0  0
+1   0   1   1 7    0  1
+
+# XNOR D=1, RR=1
+0   0   0   1 7    1  1
+1   0   1   2 7    1  1
+
+# XNOR D=0, RR=1
+0   0   0   2 7    0  1
+1   0   1   3 7    0  0
+
+# XNOR D=1, RR=0
+0   0   0   3 7    1  0
+1   0   1   4 0    1  0
+
+</dataString>
+          </testData>
+        </entry>
+      </elementAttributes>
+      <pos x="680" y="280"/>
     </visualElement>
   </visualElements>
   <wires>
